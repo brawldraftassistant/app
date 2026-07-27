@@ -993,18 +993,21 @@ function banOrder(){
 function bestForRole(role, n){
   const roles = Array.isArray(role) ? role : [role];
   const seen = new Set(), out = [];
+  // Збираємо кандидатів з УСІХ ролей списку разом, а не по черзі — інакше слабший
+  // боєць з першої ролі (напр. gem carry низького тіру) випереджав би сильнішого
+  // з другої ролі (control) тільки через порядок ролей у конфігу.
   roles.forEach(r=>{
     B.filter(b=>!used().includes(b.n) && !seen.has(b.n) && b.roles.includes(r) && mapFit(b)
                && !(b.badModes && b.badModes.includes(mode)))
-      .map(b=>{
+      .forEach(b=>{
+        seen.add(b.n);
         let m = 1;
         if(b.goodModes && b.goodModes.includes(mode)) m *= 1.25;
         if(b.roles[0]===r) m *= 1.15;      // основна роль важить більше за другу
-        return {b, s: power(b)*m};
-      })
-      .sort((x,y)=>y.s-x.s)
-      .forEach(x=>{ seen.add(x.b.n); out.push(x); });
+        out.push({b, s: power(b)*m});
+      });
   });
+  out.sort((x,y)=>y.s-x.s);   // єдине сортування по силі для всього об'єднаного списку
   return out.slice(0, n||3);
 }
 const roleLabel = r => (Array.isArray(r) ? r : [r]).map(ROLE).join(" / ");
