@@ -16,7 +16,7 @@
 <title>Драфт-асистент — Brawl Stars Ranked</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Oswald:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#0B0F1A; --panel:#151C2B; --panel2:#1B2436; --line:#26314A;
@@ -258,36 +258,527 @@ body{padding-top:calc(16px + env(safe-area-inset-top)); padding-bottom:calc(60px
   letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:99px}
 #netbadge.show{display:block}
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+
+
+
+/* ================================================================
+   ARCADE POP — мультяшна тема: соковиті кольори, товсті рамки,
+   «натискні» кнопки з жорсткою тінню, грайливі форми.
+   ВАЖЛИВО: контент ВИДИМИЙ за замовчуванням. Анімації лише
+   додаються згори через (prefers-reduced-motion: no-preference),
+   тому якщо анімації вимкнені — нічого не зникає.
+   ================================================================ */
+:root{
+  --ink:#241155; --panel:#3A2088; --panel2:#4A2CA6; --line:#160B3B;
+  --ally:#38B6FF; --enemy:#FF4D6D; --signal:#FFD230;
+  --text:#FFFFFF; --muted:#C3B4F5;
+  --radius:20px;
+  --edge:#160B3B;                     /* контур і тінь «мультяшності» */
+  --sun:#FFB020; --berry:#FF3D8B; --mint:#2BE0B7; --grape:#A855F7;
+  --grad:linear-gradient(180deg,#FFD230 0%,#FF9F1C 100%);
+}
+/* Фон живе на html, а body ПРОЗОРИЙ — інакше суцільний фон body малюється
+   лише всередині колонки max-width і на широкому екрані видно «шов» по боках. */
+html{
+  background:
+    radial-gradient(70% 50% at 50% -8%, #5B32C9 0%, #3A1E86 45%, #241155 100%)
+    fixed #241155;
+}
+body{
+  background:transparent; color:var(--text);
+  font-family:Nunito,system-ui,sans-serif; font-weight:700; font-size:16px;
+}
+/* --- живий фон: три шари, що повільно рухаються --- */
+.bgfx{ position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden }
+.bgfx b{                       /* світлові плями */
+  position:absolute; border-radius:50%; filter:blur(60px); opacity:.5;
+}
+.bgfx b:nth-child(1){ width:340px; height:340px; left:-90px; top:-60px; background:#7C3AED }
+.bgfx b:nth-child(2){ width:300px; height:300px; right:-90px; top:22%; background:#FF3D8B }
+.bgfx b:nth-child(3){ width:320px; height:320px; left:18%; bottom:-90px; background:#0EA5E9 }
+.bgfx i{                       /* «конфеті», що спливає вгору */
+  position:absolute; display:block; width:12px; height:12px; border-radius:4px;
+  border:3px solid rgba(22,11,59,.55); opacity:.75;
+}
+.bgfx i:nth-child(4){ left:8%;  bottom:-40px; background:var(--sun) }
+.bgfx i:nth-child(5){ left:26%; bottom:-40px; background:var(--mint); border-radius:50% }
+.bgfx i:nth-child(6){ left:44%; bottom:-40px; background:var(--berry) }
+.bgfx i:nth-child(7){ left:62%; bottom:-40px; background:#38B6FF; border-radius:50% }
+.bgfx i:nth-child(8){ left:80%; bottom:-40px; background:var(--grape) }
+.bgfx i:nth-child(9){ left:92%; bottom:-40px; background:var(--sun); border-radius:50% }
+
+h1{
+  font-family:Rubik,system-ui,sans-serif; font-weight:900; font-style:italic;
+  font-size:17px; letter-spacing:.01em; text-transform:uppercase; color:#fff;
+  text-shadow:2px 2px 0 var(--edge);
+}
+.sub{ color:var(--muted); font-weight:700 }
+h2{
+  font-family:Rubik,system-ui,sans-serif; font-weight:900; font-size:17px;
+  letter-spacing:.02em; text-transform:uppercase; color:var(--signal);
+  text-shadow:2px 2px 0 var(--edge); transform:skewX(-5deg); transform-origin:left bottom;
+}
+h2::before{ display:none }
+
+/* ---------- кнопки: товсті, «натискні» ---------- */
+button{
+  font-family:Nunito,system-ui,sans-serif; font-weight:900;
+  background:#4A2CA6; color:#fff;
+  border:3px solid var(--edge); border-radius:16px;
+  box-shadow:0 5px 0 var(--edge);
+  transition:transform .07s, box-shadow .07s, filter .15s, background .15s;
+}
+button:hover{ filter:brightness(1.14) }
+button:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--edge) }
+button.on{
+  background:var(--grad); color:#3A1500;
+  box-shadow:0 5px 0 #8A5A00, inset 0 3px 0 rgba(255,255,255,.6);
+  text-shadow:none;
+}
+button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
+
+/* ---------- шапка з вкладками ---------- */
+.top{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin-inline:calc(50% - 50vw); padding:10px calc(50vw - 50% + 14px) 0;
+  background:#2E1670; border-bottom:4px solid var(--edge);
+  box-shadow:0 6px 0 rgba(0,0,0,.22);
+}
+.brand{ display:flex; align-items:center; gap:9px; cursor:pointer; flex:1 1 auto; min-width:0 }
+.logodot{
+  width:20px; height:20px; border-radius:7px; flex:0 0 auto;
+  background:var(--grad); border:3px solid var(--edge);
+}
+.tabs{
+  order:3; flex:1 0 100%; display:flex; gap:6px; justify-content:flex-start;
+  overflow-x:auto; scrollbar-width:none; padding-bottom:8px; margin-top:4px;
+}
+.tabs::-webkit-scrollbar{ display:none }
+.tabs button{
+  padding:9px 15px; font-size:14px; border-radius:14px; white-space:nowrap;
+  background:#3A2088; color:var(--muted); box-shadow:0 4px 0 var(--edge);
+}
+.tabs button.on{ background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00, inset 0 2px 0 rgba(255,255,255,.55) }
+.langbox{ flex:0 0 auto }
+.langbtn{ padding:8px 11px; box-shadow:0 4px 0 var(--edge) }
+.langmenu{
+  background:#3A2088; border:3px solid var(--edge); border-radius:18px;
+  box-shadow:0 8px 0 var(--edge), 0 22px 40px rgba(0,0,0,.5);
+}
+.langmenu button{ border:none; box-shadow:none; background:transparent; border-radius:10px }
+.langmenu button.on{ background:rgba(255,210,48,.2); color:var(--signal); box-shadow:none }
+
+/* ---------- головний екран ---------- */
+.hero{ position:relative; padding:26px 0 8px }
+.heroin{ position:relative }
+.eyebrow{
+  display:inline-block; font-family:Rubik,sans-serif; font-weight:900; font-size:12px;
+  letter-spacing:.14em; color:#3A1500; background:var(--mint);
+  border:3px solid var(--edge); border-radius:999px; padding:6px 14px;
+  box-shadow:0 4px 0 var(--edge); transform:rotate(-2deg);
+}
+.herotitle{
+  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:44px;
+  line-height:1.02; text-transform:uppercase; margin:16px 0 14px; color:#fff;
+  text-shadow:3px 3px 0 var(--edge), 6px 6px 0 rgba(0,0,0,.28);
+}
+.herotag{ color:var(--muted); font-size:17px; line-height:1.5; margin:0 0 18px; max-width:32ch; font-weight:700 }
+.statchips{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:22px }
+.schip{
+  font-size:13px; font-weight:900; padding:9px 15px; border-radius:999px;
+  border:3px solid var(--edge); box-shadow:0 4px 0 var(--edge); color:#3A1500;
+}
+.schip:nth-child(1){ background:var(--sun); transform:rotate(-1.5deg) }
+.schip:nth-child(2){ background:var(--berry); color:#fff; transform:rotate(1.5deg) }
+.schip:nth-child(3){ background:var(--mint); transform:rotate(-1deg) }
+.cta{
+  display:block; width:100%; padding:19px 22px; font-size:20px; font-weight:900;
+  font-family:Rubik,sans-serif; font-style:italic; text-transform:uppercase;
+  border-radius:999px; border:4px solid var(--edge); color:#3A1500;
+  background:var(--grad); box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35);
+}
+.cta:hover{ filter:brightness(1.08) }
+.cta:active{ transform:translateY(6px); box-shadow:0 1px 0 #8A5A00 }
+
+/* ---------- «Як працює» / FAQ ---------- */
+#howview, #faqview{ padding-top:20px }
+.howgrid{ display:grid; gap:14px; margin-top:16px }
+.howcard{
+  position:relative; background:var(--panel); border:3px solid var(--edge);
+  border-radius:var(--radius); box-shadow:0 6px 0 var(--edge);
+  padding:20px 18px 16px 66px;
+}
+.howcard:nth-child(1){ transform:rotate(-.6deg) }
+.howcard:nth-child(3){ transform:rotate(.6deg) }
+.howcard b{ display:block; font-size:17px; margin-bottom:5px; font-weight:900 }
+.howcard p{ margin:0; color:var(--muted); font-size:15px; line-height:1.55; font-weight:700 }
+.hnum{
+  position:absolute; left:16px; top:18px; width:36px; height:36px; border-radius:12px;
+  display:grid; place-items:center; font-family:Rubik,sans-serif; font-weight:900; font-size:17px;
+  color:#3A1500; border:3px solid var(--edge); box-shadow:0 4px 0 var(--edge);
+}
+.howcard:nth-child(1) .hnum{ background:var(--sun) }
+.howcard:nth-child(2) .hnum{ background:var(--mint) }
+.howcard:nth-child(3) .hnum{ background:var(--berry); color:#fff }
+
+.faq{
+  background:var(--panel); border:3px solid var(--edge); border-radius:18px;
+  box-shadow:0 5px 0 var(--edge); padding:0 18px; margin-top:12px;
+}
+.faq summary{
+  cursor:pointer; list-style:none; font-weight:900; font-size:16px; padding:16px 0;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.faq summary::-webkit-details-marker{ display:none }
+.faq summary::after{
+  content:"+"; width:28px; height:28px; flex:0 0 auto; border-radius:9px;
+  background:var(--signal); color:#3A1500; border:3px solid var(--edge);
+  display:grid; place-items:center; font-size:17px; line-height:1;
+  transition:transform .25s;
+}
+.faq[open] summary::after{ transform:rotate(45deg) }
+.faq p{ margin:0 0 16px; color:var(--muted); font-size:15px; line-height:1.6; font-weight:700 }
+
+/* ---------- майстер ---------- */
+.wstep{ display:none } .wstep.on{ display:block }
+#modes button, #maps button{
+  width:100%; text-align:left; font-size:17px; padding:15px 17px; margin:0 0 12px;
+  display:flex; align-items:center; justify-content:flex-start; gap:13px; border-radius:18px;
+}
+[dir=rtl] #modes button, [dir=rtl] #maps button{ text-align:right }
+#maps button .tag{ margin-inline-start:auto }
+#modes button::after, #maps button::after{ content:"›"; opacity:.55; font-size:24px; margin-inline-start:auto }
+[dir=rtl] #modes button::after, [dir=rtl] #maps button::after{ content:"‹" }
+#maps button .tag ~ ::after{ margin-inline-start:8px }
+#rank button, #first button{ font-size:16px; padding:14px 16px }
+.mlab{ display:flex; align-items:center; gap:13px }
+.micon{ width:34px; height:34px; display:grid; place-items:center; flex:0 0 auto; position:relative }
+.micon svg{ width:28px; height:28px; display:block }
+.micon img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain }
+.mapthumb{
+  width:44px; height:56px; border-radius:12px; object-fit:cover; flex:0 0 auto;
+  border:3px solid var(--edge); box-shadow:0 3px 0 var(--edge);
+}
+.wnav{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:20px }
+#wback,#wskip{ min-width:64px; padding:13px 20px; font-size:19px; border-radius:999px }
+#wskip{ background:var(--grad); color:#3A1500; box-shadow:0 5px 0 #8A5A00, inset 0 2px 0 rgba(255,255,255,.55) }
+.wdots{ display:flex; gap:9px }
+.wdots i{ width:11px; height:11px; border-radius:50%; background:#3A2088; border:3px solid var(--edge); transition:transform .2s, background .2s }
+.wdots i.on{ background:var(--signal); transform:scale(1.3) }
+
+/* ---------- зведення налаштувань ---------- */
+.setchip{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px;
+  background:var(--panel); border:3px solid var(--edge); border-radius:18px;
+  box-shadow:0 5px 0 var(--edge); padding:12px 14px; margin-bottom:18px; font-weight:900;
+}
+.setchip b{ font-family:Rubik,sans-serif; font-weight:900; color:var(--signal); text-shadow:1.5px 1.5px 0 var(--edge); text-transform:uppercase; font-size:14px }
+.setchip .sep{ opacity:.35 }
+.setchip button{ margin-inline-start:auto; padding:9px 16px; font-size:13.5px; border-radius:999px; background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00 }
+
+/* ---------- драфт ---------- */
+.slot{
+  position:relative; background:var(--panel); border:3px solid var(--edge);
+  border-radius:18px; box-shadow:0 5px 0 var(--edge);
+}
+.slot.ally{ background:linear-gradient(180deg,#2E6FD6,#1F4FA8) }
+.slot.enemy{ background:linear-gradient(180deg,#D63B57,#A8283F) }
+.slot.active{ border-color:var(--signal); box-shadow:0 5px 0 #8A5A00 }
+.slotport{ width:36px; height:36px; border-radius:50%; display:block; margin:5px auto 2px; border:3px solid var(--edge) }
+
+.rec{
+  background:var(--panel); border:3px solid var(--edge); border-radius:var(--radius);
+  box-shadow:0 6px 0 var(--edge);
+}
+.rec.n1{ background:linear-gradient(180deg,#5231B8,#3A2088); border-color:var(--signal); box-shadow:0 6px 0 #8A5A00 }
+.rec:active{ transform:translateY(4px); box-shadow:0 2px 0 var(--edge) }
+.rec .name{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
+.score{ font-family:Rubik,sans-serif; font-weight:900; color:var(--signal); text-shadow:2px 2px 0 var(--edge) }
+.tier{ border:3px solid var(--edge); border-radius:10px; font-weight:900; color:#3A1500 }
+.tier.S{ background:var(--grad) }
+.bport{ width:40px; height:40px; border-radius:13px; object-fit:cover; flex:0 0 auto; border:3px solid var(--edge) }
+.alt{ background:var(--panel); border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge) }
+.alt .an{ display:flex; align-items:center; gap:9px; flex-wrap:wrap }
+.alt .bport{ width:30px; height:30px; border-radius:10px }
+.bq{ display:inline-flex; align-items:center; gap:7px; border-radius:999px; box-shadow:0 4px 0 var(--edge) }
+.bq .bport{ width:24px; height:24px; border-radius:8px; border-width:2px }
+.qb,.addban,.util{ border-radius:999px; box-shadow:0 4px 0 var(--edge) }
+.tag{ border-radius:999px; border:3px solid var(--edge); font-weight:900; color:#3A1500 }
+.t-closed{ background:var(--berry); color:#fff } .t-mid{ background:var(--mint) } .t-open{ background:var(--sun) }
+#blist > button{ display:flex; align-items:center; gap:11px; flex-wrap:wrap }
+.listport{ width:32px; height:32px; border-radius:10px; border:3px solid var(--edge) }
+.pickpanel{ background:#3A2088; border:4px solid var(--edge); border-radius:24px; box-shadow:0 10px 0 var(--edge), 0 30px 60px rgba(0,0,0,.55) }
+input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radius:14px; color:#fff; font-family:Nunito,sans-serif; font-weight:800 }
+#installbar{ background:#3A2088; border:3px solid var(--edge); border-radius:20px; box-shadow:0 6px 0 var(--edge) }
+#installbtn{ background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00 }
+#netbadge{ background:var(--grad); color:#3A1500; border:3px solid var(--edge); box-shadow:0 4px 0 #8A5A00 }
+
+/* ---------- широкий екран: контент не «губиться» ---------- */
+@media (min-width:760px){
+  body{ max-width:1120px }
+  .top{ padding-bottom:10px }
+  .tabs{ order:0; flex:1 1 auto; justify-content:center; margin-top:0; padding-bottom:0 }
+  .hero{ padding:40px 0 16px }
+  .herotitle{ font-size:60px }
+  .herotag{ font-size:19px; max-width:44ch }
+  .cta{ width:auto; min-width:340px; padding:20px 44px }
+  .howgrid{ grid-template-columns:repeat(3,1fr) }
+  .howcard{ padding-top:64px; padding-left:20px }
+  .hnum{ top:18px; left:20px }
+  #modes button, #maps button{ font-size:18px; padding:17px 20px }
+  /* герой у дві колонки: текст ліворуч, швидкий старт праворуч */
+  #home{ display:grid; grid-template-columns:1.05fr .95fr; gap:34px; align-items:center;
+         min-height:calc(100vh - 190px) }
+  .hero{ grid-column:1 }
+  .quickstart{ grid-column:2; margin-top:0 }
+  .qsgrid{ grid-template-columns:repeat(2,1fr) }
+  .qs{ padding:16px 16px; font-size:15.5px; border-radius:20px }
+  /* майстер і драфт лишаються однією колонкою по центру */
+  #wizard, #draftview{ max-width:720px; margin-inline:auto }
+  .faq{ max-width:840px; margin-inline:auto }
+}
+@media (min-width:1024px){
+  .herotitle{ font-size:68px }
+  #modes button, #maps button{ font-size:18.5px }
+}
+
+/* ---------- анімації: додаються ЗГОРИ, нічого не ховають ---------- */
+@media (prefers-reduced-motion: no-preference){
+  .heroin > *{ animation:popUp .5s cubic-bezier(.2,1.3,.4,1) backwards }
+  .heroin > :nth-child(2){ animation-delay:.07s }
+  .heroin > :nth-child(3){ animation-delay:.14s }
+  .heroin > :nth-child(4){ animation-delay:.21s }
+  .heroin > :nth-child(5){ animation-delay:.28s }
+  @keyframes popUp{ from{opacity:0; transform:translateY(16px) scale(.96)} to{opacity:1; transform:none} }
+
+  .cta{ animation:popUp .5s cubic-bezier(.2,1.3,.4,1) .28s backwards, ctaGlow 2.6s ease-in-out 1s infinite }
+  @keyframes ctaGlow{
+    0%,100%{ box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35), 0 0 0 rgba(255,210,48,0) }
+    50%    { box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35), 0 0 26px rgba(255,210,48,.55) }
+  }
+
+  .logodot{ animation:dotSpin 6s ease-in-out infinite }
+  @keyframes dotSpin{ 0%,100%{transform:rotate(0)} 50%{transform:rotate(180deg)} }
+
+  .howcard{ animation:popUp .45s cubic-bezier(.2,1.3,.4,1) backwards }
+  .howcard:nth-child(2){ animation-delay:.08s }
+  .howcard:nth-child(3){ animation-delay:.16s }
+  .faq{ animation:popUp .4s cubic-bezier(.2,1.3,.4,1) backwards }
+  .faq:nth-child(3){ animation-delay:.06s }
+  .faq:nth-child(4){ animation-delay:.12s }
+  .faq:nth-child(5){ animation-delay:.18s }
+
+  .rec{ animation:popUp .4s cubic-bezier(.2,1.3,.4,1) backwards }
+  .rec.n2{ animation-delay:.06s } .rec.n3{ animation-delay:.12s }
+
+  .wstep.on{ animation:slideIn .3s cubic-bezier(.2,1.2,.4,1) }
+  @keyframes slideIn{ from{opacity:0; transform:translateX(22px)} to{opacity:1; transform:none} }
+
+  .slot.active{ animation:slotBounce 1.6s ease-in-out infinite }
+  @keyframes slotBounce{
+    0%,100%{ box-shadow:0 5px 0 #8A5A00 }
+    50%    { box-shadow:0 5px 0 #8A5A00, 0 0 20px rgba(255,210,48,.6) }
+  }
+
+  .bgfx b{ animation:blobDrift 18s ease-in-out infinite alternate }
+  .bgfx b:nth-child(2){ animation-duration:23s; animation-delay:-6s }
+  .bgfx b:nth-child(3){ animation-duration:27s; animation-delay:-11s }
+  @keyframes blobDrift{ from{transform:translate(0,0) scale(1)} to{transform:translate(38px,-30px) scale(1.12)} }
+
+  .bgfx i{ animation:floatUp linear infinite }
+  .bgfx i:nth-child(4){ animation-duration:19s; animation-delay:-2s }
+  .bgfx i:nth-child(5){ animation-duration:24s; animation-delay:-9s }
+  .bgfx i:nth-child(6){ animation-duration:21s; animation-delay:-14s }
+  .bgfx i:nth-child(7){ animation-duration:27s; animation-delay:-5s }
+  .bgfx i:nth-child(8){ animation-duration:23s; animation-delay:-17s }
+  .bgfx i:nth-child(9){ animation-duration:30s; animation-delay:-21s }
+  @keyframes floatUp{
+    from{ transform:translateY(0) rotate(0deg) }
+    to  { transform:translateY(-115vh) rotate(420deg) }
+  }
+}
+
+
+/* швидкий старт по режимах на головній */
+.quickstart{ margin-top:26px }
+.qslabel{
+  font-family:Rubik,sans-serif; font-weight:900; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:12px;
+}
+.qsgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:11px }
+.qs{
+  display:flex; align-items:center; gap:11px; padding:13px 14px; border-radius:18px;
+  background:var(--panel); font-size:14.5px; font-weight:900; text-align:left;
+}
+.qs .micon{ width:30px; height:30px }
+.qs .micon svg{ width:26px; height:26px }
+.qsn{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.qs:nth-child(1){ background:linear-gradient(180deg,#4A2CA6,#3A2088) }
+.qs:nth-child(2){ background:linear-gradient(180deg,#7C3AED,#5B21B6) }
+.qs:nth-child(3){ background:linear-gradient(180deg,#C2410C,#9A3412) }
+.qs:nth-child(4){ background:linear-gradient(180deg,#0E7490,#155E75) }
+.qs:nth-child(5){ background:linear-gradient(180deg,#BE185D,#9D174D) }
+.qs:nth-child(6){ background:linear-gradient(180deg,#B45309,#92400E) }
+@media (min-width:760px){ .qsgrid{ grid-template-columns:repeat(3,1fr) } }
+@media (prefers-reduced-motion: no-preference){
+  .qs{ animation:popUp .4s cubic-bezier(.2,1.3,.4,1) backwards }
+  .qs:nth-child(2){ animation-delay:.04s } .qs:nth-child(3){ animation-delay:.08s }
+  .qs:nth-child(4){ animation-delay:.12s } .qs:nth-child(5){ animation-delay:.16s }
+  .qs:nth-child(6){ animation-delay:.2s }
+}
+
+
+/* ---------- режими: квадратні плитки 3×2 ---------- */
+#modes{ display:grid; grid-template-columns:repeat(3,1fr); gap:11px }
+#modes button{
+  width:auto; margin:0; padding:14px 8px 12px; border-radius:20px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;
+  text-align:center; font-size:13px; line-height:1.15; min-height:104px;
+}
+#modes button::after{ display:none }          /* стрілка тут зайва */
+#modes .mlab{ flex-direction:column; gap:9px; align-items:center }
+#modes .micon{ width:42px; height:42px }
+#modes .micon svg{ width:36px; height:36px }
+#modes button:nth-child(1){ background:linear-gradient(180deg,#4C7BE8,#2E51B8) }
+#modes button:nth-child(2){ background:linear-gradient(180deg,#A855F7,#7326C9) }
+#modes button:nth-child(3){ background:linear-gradient(180deg,#F97316,#C2410C) }
+#modes button:nth-child(4){ background:linear-gradient(180deg,#06B6D4,#0E7490) }
+#modes button:nth-child(5){ background:linear-gradient(180deg,#F43F5E,#9F1239) }
+#modes button:nth-child(6){ background:linear-gradient(180deg,#FB7185,#BE123C) }
+#modes button.on{
+  background:var(--grad); color:#3A1500;
+  box-shadow:0 5px 0 #8A5A00, inset 0 3px 0 rgba(255,255,255,.6);
+}
+
+/* ---------- карта: вибір без миттєвого стрибка ---------- */
+#maps button.on{ position:relative }
+#maps button.on::before{
+  content:"✓"; position:absolute; inset-inline-end:12px; top:50%; transform:translateY(-50%);
+  width:28px; height:28px; border-radius:9px; display:grid; place-items:center;
+  background:#3A1500; color:var(--signal); font-size:16px; font-weight:900;
+}
+#maps button.on::after{ opacity:0 }
+
+/* ---------- контраст: цифри слотів і зведення ---------- */
+.slot .n{
+  color:#fff; font-weight:900;
+  background:rgba(22,11,59,.72); border:2px solid var(--edge);
+  border-radius:9px; padding:1px 8px; display:inline-block; line-height:1.35;
+  text-shadow:none;
+}
+.slot .who{ color:#fff; opacity:.95; font-weight:800 }
+.slot.ally .n, .slot.enemy .n{ color:#fff }
+.setchip{ background:#2E1670 }
+.setchip > span{ color:#fff }
+.setchip .tag{ color:#3A1500 }
+.setchip .sep{ color:var(--muted); opacity:.6 }
+
+/* ---------- рекомендації: нічого не обрізається ---------- */
+.rec{ overflow:visible; margin-bottom:16px }
+.rec .rechead{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.rec .score{ flex:0 0 auto }
+.rec .why{ overflow-wrap:anywhere }
+
+@media (min-width:760px){
+  #modes{ gap:14px }
+  #modes button{ min-height:124px; font-size:14.5px }
+  #modes .micon{ width:48px; height:48px }
+  #modes .micon svg{ width:42px; height:42px }
+}
+
 </style>
 <script data-goatcounter="https://xailyx.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+<div class="bgfx" aria-hidden="true"><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-<div class="top">
-  <div>
-    <h1 id="t-title">Draft Assistant</h1>
-    <div class="sub" id="t-sub" style="margin-bottom:0">Ranked · 1-2-2-1-1-2 pick order · knowledge base, July 2026</div>
-  </div>
+<header class="top" id="topbar">
+  <div class="brand" id="brand"><span class="logodot"></span><h1 id="t-title">Draft Assistant</h1></div>
+  <nav class="tabs" id="tabs">
+    <button type="button" data-tab="draft" class="on" id="tabDraft">Драфт</button>
+    <button type="button" data-tab="how" id="tabHow">Як працює</button>
+    <button type="button" data-tab="faq" id="tabFaq">FAQ</button>
+  </nav>
   <div class="langbox">
     <button class="langbtn" id="langbtn"><span class="flag">🇬🇧</span><span class="code">EN</span><span style="opacity:.5">▾</span></button>
     <div class="langmenu" id="langmenu"><button><span class="flag">🇺🇦</span><span class="code">UA</span><span>Українська</span></button><button class="on"><span class="flag">🇬🇧</span><span class="code">EN</span><span>English</span></button><button><span class="flag">🇪🇸</span><span class="code">ES</span><span>Español</span></button><button><span class="flag">🇧🇷</span><span class="code">PT</span><span>Português</span></button><button><span class="flag">🇷🇺</span><span class="code">RU</span><span>Русский</span></button><button><span class="flag">🇹🇷</span><span class="code">TR</span><span>Türkçe</span></button><button><span class="flag">🇸🇦</span><span class="code">AR</span><span>العربية</span></button><button><span class="flag">🇩🇪</span><span class="code">DE</span><span>Deutsch</span></button></div>
   </div>
-</div>
-<div style="height:20px"></div>
+</header>
+<div class="sub" id="t-sub" style="display:none">Ranked · 1-2-2-1-1-2 pick order · knowledge base, July 2026</div>
 
-<h2 id="h-rank">Rank</h2>
+<div id="home">
+  <div class="hero">
+    <div class="orb o1"></div><div class="orb o2"></div>
+    <div class="heroin">
+      <div class="eyebrow" id="hEyebrow">RANKED DRAFT TOOL</div>
+      <div class="herotitle" id="hTitle">Перемагай<br>у драфті</div>
+      <p class="herotag" id="hTag">Розумні піки для Ranked: карта, склади обох команд і бани — все враховано.</p>
+      <div class="statchips">
+        <span class="schip" id="hC1">105 бравлерів</span>
+        <span class="schip" id="hC2">6 режимів</span>
+        <span class="schip" id="hC3">Працює офлайн</span>
+      </div>
+      <button id="startbtn" class="cta" type="button">Почати драфт</button>
+    </div>
+  </div>
+  <div class="quickstart">
+    <div class="qslabel" id="hQuick">Або одразу режим</div>
+    <div class="qsgrid" id="qsgrid"></div>
+  </div>
+
+
+</div>
+
+<div id="howview" style="display:none">
+  <section class="how">
+    <h2 id="hHowT">Як це працює</h2>
+    <div class="howgrid">
+      <div class="howcard"><div class="hnum">1</div><b id="hH1t">Обери режим і карту</b><p id="hH1d">Кожна рекомендація підлаштована під конкретну карту, а не під загальний тірлист.</p></div>
+      <div class="howcard"><div class="hnum">2</div><b id="hH2t">Вводь піки й бани</b><p id="hH2d">Позначай вибори обох команд у порядку 1-2-2-1-1-2 — як у справжньому драфті.</p></div>
+      <div class="howcard"><div class="hnum">3</div><b id="hH3t">Отримуй найкращий пік</b><p id="hH3d">Асистент рахує контри, ролі й тип карти — і пояснює, чому саме цей бравлер.</p></div>
+    </div>
+  </section>
+</div>
+<div id="faqview" style="display:none">
+  <section class="faqsec">
+    <h2 id="hFaqT">Часті питання</h2>
+    <details class="faq"><summary id="hF1q">Це безкоштовно?</summary><p id="hF1a">Так, повністю. Без реклами й без реєстрації.</p></details>
+    <details class="faq"><summary id="hF2q">Чи працює без інтернету?</summary><p id="hF2a">Так — після першого відкриття застосунок повністю працює офлайн.</p></details>
+    <details class="faq"><summary id="hF3q">Звідки дані про бравлерів?</summary><p id="hF3a">База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.</p></details>
+    <details class="faq"><summary id="hF4q">Це офіційний застосунок Supercell?</summary><p id="hF4a">Ні, це фанатський проєкт, не пов'язаний із Supercell.</p></details>
+  </section>
+</div>
+
+<div id="wizard" style="display:none">
+  <div class="wsteps">
+    <section class="wstep on" data-w="0"><h2 id="h-rank">Rank</h2>
 <div class="row" id="rank"><button class="on">Mythic and above</button><button>Below Mythic</button></div>
 
-<div id="blk-first"><h2 id="h-first">First pick</h2>
-<div class="row" id="first"><button class="on">Ours</button><button>Theirs</button></div></div>
-
-<h2 id="h-mode">Mode</h2>
+</section>
+    <section class="wstep" data-w="1"><h2 id="h-mode">Mode</h2>
 <div class="row" id="modes"><button class="on">Brawl Ball</button><button>Gem Grab</button><button>Heist</button><button>Bounty</button><button>Knockout</button><button>Hot Zone</button></div>
 
-<h2 id="h-map">Map</h2>
+</section>
+    <section class="wstep" data-w="2"><h2 id="h-map">Map</h2>
 <div class="row" id="maps"><button class="map on">Center Stage <span class="tag t-closed">closed</span></button><button class="map">Pinball Dreams <span class="tag t-mid">medium</span></button><button class="map">Sneaky Fields <span class="tag t-closed">closed</span></button><button class="map">Triple Dribble <span class="tag t-closed">closed</span></button></div>
 
+</section>
+    <section class="wstep" data-w="3"><div id="blk-first"><h2 id="h-first">First pick</h2>
+<div class="row" id="first"><button class="on">Ours</button><button>Theirs</button></div></div>
+
+</section>
+  </div>
+  <div class="wnav">
+    <button id="wback" type="button">←</button>
+    <div class="wdots" id="wdots"><i class="on"></i><i></i><i></i><i></i></div>
+    <button id="wskip" type="button">▶</button>
+  </div>
+</div>
+
+<div id="draftview" style="display:none">
+<div class="setchip" id="setchip"></div>
 <div id="blk-bans"><h2 id="h-bans">Who to ban <span style="text-transform:none;letter-spacing:0">(optional)</span></h2>
 <div class="row" id="bans"></div>
 <div class="quick" id="quickbans"><button class="bq top" onclick="doBan(&#39;Meeple&#39;)"><span class="num">1</span><span>Meeple</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Sirius&#39;)"><span class="num">2</span><span>Sirius</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Starr Nova&#39;)"><span class="num">3</span><span>Starr Nova</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Damian&#39;)"><span>Damian</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Mortis&#39;)"><span>Mortis</span><span class="bt s">S</span><span class="bz">⚡</span></button><button class="bq alt" onclick="doBan(&#39;Edgar&#39;)"><span>Edgar</span><span class="bt s">S</span><span class="bz">⚡</span></button><div class="banhelp">Tap a brawler to ban</div><button class="addban" onclick="openPicker(&#39;ban&#39;)">+ Ban</button></div></div>
@@ -328,7 +819,10 @@ body{padding-top:calc(16px + env(safe-area-inset-top)); padding-bottom:calc(60px
       </div></div></div>
 
 <div class="note" id="t-foot">Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — all local and free. Brawler notes are in the original language (Ukrainian).</div>
+<div class="note" style="opacity:.6; font-size:11.5px; margin-top:6px">Unofficial fan project — not affiliated with, endorsed, or supported by Supercell. Brawler artwork © Supercell, used under Supercell's Fan Content Policy (supercell.com/fan-content-policy).</div>
 
+
+</div>
 
 <div id="netbadge">Офлайн — працює</div>
 <div id="installbar">
@@ -384,7 +878,7 @@ const B = [
 {n:"Nita",      t:"A", rr:2, roles:["antitank"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control","antitank"], ban:1.5, buffie:true, tri:"dps"},
 {n:"Raffs",     t:"A", rr:2, roles:["support"],             maps:["mid","closed"],        beats:[],                                      losesTo:["assassin"],           ban:1, tri:"lowhp"},
 {n:"Charlie",   t:"A", rr:4, roles:["control"],             maps:["mid","open"],          beats:[],                            losesTo:["tank","assassin"],    ban:1, tri:"dps"},
-{n:"Griff",     t:"A", rr:2, roles:["antitank","dmg"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control","thrower"],  burst:true, ban:1.5, buffie:true, note:"бафнули — тому в A-tier; бафер приємний бонус, але й сам непоганий", tri:"dps"},
+{n:"Griff",     t:"S", rr:2, roles:["antitank","dmg"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control","thrower"],  burst:true, ban:2, buffie:true, note:"зараз у топі мети — потужний burst упритул; бафер приємний бонус, але й сам сильний", tri:"dps"},
 {n:"Kit",       t:"A", rr:2, roles:["support","assassin"],  maps:["closed","mid"],        beats:["control","thrower"],                   losesTo:["antitank","tank"],    weakAs:"assassin", ban:1.5,note:"здебільшого саппорт; як вбивця — тільки на закритих. Дає працювати сетапу Darryl+Kit", tri:"highhp"},
 {n:"Nadia",     t:"A", rr:2, roles:["sniper"],    maps:["mid","open"],          beats:[],                            losesTo:["assassin"],           ban:2, tri:"lowhp"},
 {n:"Otis",      t:"A", rr:4, roles:["antitank","dmg"],            maps:["mid","closed"],        beats:["tank","assassin"],                     losesTo:["control"], weakAs:"antitank", ban:1.5, note:"фіксований урон на дистанції, не burst", tri:"dps"},
@@ -1573,6 +2067,300 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
 
 
+<script>
+/* ============ МАЙСТЕР НАЛАШТУВАНЬ ============ */
+(function(){
+  // власні SVG-іконки режимів (оригінальні, не ігрові ресурси) — працюють офлайн
+  const MODE_ICONS = {
+    "Brawl Ball": '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7ED957" stroke-width="2"/><path d="M12 8.2l3.3 2.4-1.26 3.9H9.96L8.7 10.6 12 8.2z" fill="#7ED957"/><path d="M12 3.4v4.8M5.2 7.6l3.5 3M18.8 7.6l-3.5 3M7 20l2.96-5.5M17 20l-2.96-5.5" stroke="#7ED957" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    "Gem Grab":   '<svg viewBox="0 0 24 24" fill="none"><path d="M7 4.5h10l3.8 4.7L12 20.5 3.2 9.2 7 4.5z" stroke="#B57BFF" stroke-width="2" stroke-linejoin="round"/><path d="M3.6 9.2h16.8M9.6 9.2L12 19.6l2.4-10.4M7.2 4.8l2.4 4.4L12 4.8l2.4 4.4 2.4-4.4" stroke="#B57BFF" stroke-width="1.3"/></svg>',
+    "Heist":      '<svg viewBox="0 0 24 24" fill="none" stroke="#FFB03D" stroke-width="2"><rect x="3.6" y="4" width="16.8" height="15.6" rx="2.6"/><circle cx="12" cy="11.8" r="3.9"/><path d="M12 9.3v2.5l1.7 1.3" stroke-width="1.5" stroke-linecap="round"/><path d="M6.6 19.8v1.7M17.4 19.8v1.7" stroke-linecap="round"/></svg>',
+    "Bounty":     '<svg viewBox="0 0 24 24"><path d="M12 3.2l2.6 5.4 6 .8-4.4 4.1 1.1 5.9-5.3-2.9-5.3 2.9 1.1-5.9L3.4 9.4l6-.8L12 3.2z" fill="#FFD84D"/></svg>',
+    "Knockout":   '<svg viewBox="0 0 24 24" fill="#E8E4F5"><path d="M12 3a8 8 0 00-8 8c0 2.7 1.4 5 3.5 6.4V20c0 .8.7 1.5 1.5 1.5h6c.8 0 1.5-.7 1.5-1.5v-2.6C18.6 16 20 13.7 20 11a8 8 0 00-8-8z"/><circle cx="9.1" cy="11.2" r="1.9" fill="#0B0A12"/><circle cx="14.9" cy="11.2" r="1.9" fill="#0B0A12"/><path d="M10.5 15.4h3l-1.5 2.3-1.5-2.3z" fill="#0B0A12"/></svg>',
+    "Hot Zone":   '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FF6B4A" stroke-width="2" stroke-dasharray="3.4 3"/><path d="M12 6.6c1.8 2 3.7 3.8 3.7 6a3.7 3.7 0 11-7.4 0c0-.9.35-1.8.95-2.8.5 1 .9 1.45 1.5 1.75-.3-1.65 0-3.3 1.25-4.95z" fill="#FF6B4A"/></svg>'
+  };
+  // офіційні іконки режимів з CDN Brawlify (ID стабільні); SVG нижче — запасний
+  // варіант: якщо картинка не завантажилась, вона зникає і видно намальовану іконку
+  const MODE_IMG = {
+    "Brawl Ball": "https://cdn.brawlify.com/game-modes/regular/48000005.png",
+    "Gem Grab":   "https://cdn.brawlify.com/game-modes/regular/48000000.png",
+    "Heist":      "https://cdn.brawlify.com/game-modes/regular/48000002.png",
+    "Bounty":     "https://cdn.brawlify.com/game-modes/regular/48000003.png",
+    "Knockout":   "https://cdn.brawlify.com/game-modes/regular/48000020.png",
+    "Hot Zone":   "https://cdn.brawlify.com/game-modes/regular/48000017.png"
+  };
+  function decorateModes(){
+    document.querySelectorAll("#modes button").forEach(b=>{
+      const name = b.textContent.trim();
+      if(MODE_ICONS[name] && !b.querySelector(".micon")){
+        const img = MODE_IMG[name] ? `<img src="${MODE_IMG[name]}" alt="" loading="lazy" onerror="this.remove()">` : "";
+        b.innerHTML = `<span class="mlab"><span class="micon">${MODE_ICONS[name]}${img}</span><span>${name}</span></span>`;
+      }
+    });
+  }
+  // перемальовування режимів (зміна мови тощо) — іконки додаються знову
+  const _drawModes = drawModes;
+  drawModes = function(){ _drawModes(); decorateModes(); };
+  decorateModes();
+
+  // нові рядки перекладу; мови без власного перекладу падають на укр (так влаштовано t())
+  TXT.uk.wChange="Змінити"; TXT.en.wChange="Change";
+  TXT.es.wChange="Cambiar"; TXT.pt.wChange="Mudar"; TXT.ru.wChange="Изменить";
+  TXT.tr.wChange="Değiştir"; TXT.ar.wChange="تغيير"; TXT.de.wChange="Ändern";
+
+  // головний екран
+  Object.assign(TXT.uk, {
+    hEyebrow:"RANKED DRAFT TOOL", hTitle:"Перемагай<br>у драфті",
+    hTag:"Розумні піки для Ranked: карта, склади обох команд і бани — все враховано.",
+    hC1:"105 бравлерів", hC2:"6 режимів", hC3:"Працює офлайн",
+    hStart:"Почати драфт", hContinue:"Продовжити драфт",
+    hHowT:"Як це працює",
+    hH1t:"Обери режим і карту", hH1d:"Кожна рекомендація підлаштована під конкретну карту, а не під загальний тірлист.",
+    hH2t:"Вводь піки й бани", hH2d:"Позначай вибори обох команд у порядку 1-2-2-1-1-2 — як у справжньому драфті.",
+    hH3t:"Отримуй найкращий пік", hH3d:"Асистент рахує контри, ролі й тип карти — і пояснює, чому саме цей бравлер.",
+    hQuick:"Або одразу режим", hFaqT:"Часті питання",
+    hF1q:"Це безкоштовно?", hF1a:"Так, повністю. Без реклами й без реєстрації.",
+    hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
+    hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
+    hF4q:"Це офіційний застосунок Supercell?", hF4a:"Ні, це фанатський проєкт, не пов'язаний із Supercell."
+  });
+  Object.assign(TXT.en, {
+    hEyebrow:"RANKED DRAFT TOOL", hTitle:"Win the<br>draft",
+    hTag:"Smart picks for Ranked: map, both team comps and bans — all factored in.",
+    hC1:"105 brawlers", hC2:"6 modes", hC3:"Works offline",
+    hStart:"Start drafting", hContinue:"Continue draft",
+    hHowT:"How it works",
+    hH1t:"Pick mode and map", hH1d:"Every recommendation is tuned to the exact map, not a generic tier list.",
+    hH2t:"Enter picks and bans", hH2d:"Log both teams' choices in the real 1-2-2-1-1-2 draft order.",
+    hH3t:"Get the best pick", hH3d:"The assistant weighs counters, roles and map type — and explains why.",
+    hQuick:"Or jump into a mode", hFaqT:"FAQ",
+    hF1q:"Is it free?", hF1a:"Yes, completely. No ads, no sign-up.",
+    hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
+    hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
+    hF4q:"Is this an official Supercell app?", hF4a:"No, it's a fan project not affiliated with Supercell."
+  });
+
+  const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
+                    "hQuick","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a"];
+  TXT.uk.wNext="Далі"; TXT.uk.wStart="Почати"; TXT.en.wNext="Next"; TXT.en.wStart="Start";
+  TXT.uk.tDraft="Драфт"; TXT.uk.tHow="Як працює"; TXT.uk.tFaq="FAQ";
+  TXT.en.tDraft="Draft"; TXT.en.tHow="How it works"; TXT.en.tFaq="FAQ";
+  let started = false;   // чи вже заходив у драфт цього сеансу
+  function refreshHome(){
+    HOME_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = t(id); });
+    const ti = document.getElementById("hTitle"); if(ti) ti.innerHTML = t("hTitle");
+    const sb = document.getElementById("startbtn"); if(sb) sb.textContent = t(started ? "hContinue" : "hStart");
+    document.getElementById("tabDraft").textContent = t("tDraft");
+    document.getElementById("tabHow").textContent = t("tHow");
+    document.getElementById("tabFaq").textContent = t("tFaq");
+  }
+
+  /* --- вкладки --- */
+  function setTabBtn(name){
+    document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===name));
+  }
+  function hideAllViews(){
+    ["home","wizard","draftview","howview","faqview"].forEach(id=>{ $id(id).style.display="none"; });
+  }
+  function reveal(rootSel){
+    const els = document.querySelectorAll(rootSel + " .howcard, " + rootSel + " .faq");
+    els.forEach((el,i)=>{
+      el.classList.add("rv"); el.classList.remove("vis");
+      el.style.transitionDelay = (i*70)+"ms";
+      requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("vis")));
+    });
+  }
+  function setTab(name){
+    setTabBtn(name);
+    hideAllViews();
+    if(name==="how"){ $id("howview").style.display=""; reveal("#howview"); }
+    else if(name==="faq"){ $id("faqview").style.display=""; reveal("#faqview"); }
+    else { // draft: якщо драфт уже почато — одразу в нього, інакше герой-екран
+      if(started){ $id("draftview").style.display=""; updateChip(); }
+      else { $id("home").style.display=""; refreshHome(); }
+    }
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll("#tabs button").forEach(b=>{ b.onclick=()=>setTab(b.dataset.tab); });
+
+  const $id = s=>document.getElementById(s);
+  const steps=[...document.querySelectorAll(".wstep")];
+  const dots=[...document.querySelectorAll("#wdots i")];
+  let wi=0;
+
+  function wShow(i){
+    const last = blind ? 2 : 3;                 // сліпий драфт не має кроку «перший пік»
+    wi=Math.max(0,Math.min(last,i));
+    steps.forEach((s,k)=>s.classList.toggle("on",k===wi));
+    dots.forEach((d,k)=>{ d.classList.toggle("on",k===wi); d.style.display = (k>last) ? "none" : ""; });
+    $id("wback").style.visibility = wi ? "visible" : "hidden";
+    if(typeof syncNav === "function") syncNav();
+    window.scrollTo(0,0);
+  }
+  function wFinish(){
+    hideAllViews();
+    $id("draftview").style.display="";
+    started = true; setTabBtn("draft");
+    updateChip(); window.scrollTo(0,0);
+  }
+  function wOpen(i){
+    hideAllViews();
+    $id("wizard").style.display="";
+    setTabBtn("draft");
+    wShow(i||0);
+  }
+  function showHome(){
+    hideAllViews();
+    $id("home").style.display="";
+    setTabBtn("draft");
+    refreshHome(); window.scrollTo(0,0);
+  }
+
+  function updateChip(){
+    const rankLbl = blind ? t("rankBlind") : t("rankOpen");
+    $id("setchip").innerHTML =
+      `<b>${mode}</b><span class="sep">·</span>`+
+      `<span>${map[0]}</span>`+
+      `<span class="tag t-${map[1]}">${T().types[map[1]]}</span>`+
+      `<span class="sep">·</span><span>${rankLbl}</span>`+
+      `<button type="button" id="chipbtn">${t("wChange")}</button>`;
+    $id("chipbtn").onclick=()=>wOpen(0);
+  }
+
+  // автоперехід: ранг → режим; режим → карта. Карта НЕ перекидає далі —
+  // її легко зачепити випадково, тож підтвердження окремою кнопкою «Далі».
+  $id("rank").addEventListener("click",e=>{ if(!e.target.closest("button")) return;
+    setTimeout(()=>{ blind ? wShow(1) : wShow(1); },190); });
+  $id("modes").addEventListener("click",e=>{ if(e.target.closest("button")) setTimeout(()=>wShow(2),190); });
+  $id("first").addEventListener("click",e=>{ if(e.target.closest("button")) setTimeout(wFinish,190); });
+  // на кроці карти показуємо великий «Далі», а не миттєвий стрибок
+  $id("maps").addEventListener("click",e=>{ if(e.target.closest("button")) syncNav(); });
+
+  function syncNav(){
+    const last = blind ? 2 : 3;                 // у сліпому драфті «перший пік» не потрібен
+    $id("wskip").textContent = (wi >= last) ? t("wStart") : t("wNext");
+  }
+  $id("wback").onclick=()=>wShow(wi-1);
+  $id("wskip").onclick=()=>{
+    const last = blind ? 2 : 3;
+    if(wi >= last) wFinish(); else wShow(wi+1);
+  };
+
+  // головний екран: кнопка старту (розумна — продовжує драфт, якщо він уже почався)
+  $id("startbtn").onclick=()=>{ started ? wFinish() : wOpen(0); };
+
+  // швидкий старт: одразу обрати режим і перейти до вибору карти
+  function buildQuick(){
+    const g = $id("qsgrid"); if(!g) return;
+    g.innerHTML = "";
+    Object.keys(MAPS).forEach(m=>{
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "qs";
+      const img = MODE_IMG[m] ? `<img src="${MODE_IMG[m]}" alt="" loading="lazy" onerror="this.remove()">` : "";
+      btn.innerHTML = `<span class="micon">${MODE_ICONS[m]||""}${img}</span><span class="qsn">${m}</span>`;
+      btn.onclick = ()=>{
+        mode = m; map = MAPS[m][0];
+        drawModes(); drawMaps(); render();
+        wOpen(1);                       // одразу крок вибору карти
+      };
+      g.appendChild(btn);
+    });
+  }
+  buildQuick();
+  // тап по бренду в шапці повертає на головний екран вкладки «Драфт»
+  const brand = document.getElementById("brand");
+  if(brand){ brand.onclick=showHome; }
+
+  // зміна мови оновлює і зведення, і головний екран
+  $id("langmenu").addEventListener("click",()=>setTimeout(()=>{ updateChip(); refreshHome(); },60));
+
+  refreshHome();
+  wShow(0);
+})();
+
+/* ============ ПОРТРЕТИ БРАВЛЕРІВ — BrawlAPI (фан-проєктний CDN Brawlify) ============ */
+(function(){
+  // наша база ↔ імена в API: Nadia/Najia і Grey/Gray пишуться по-різному
+  const ALIAS = { nadia:"najia", grey:"gray" };
+  const norm = n => { const k = String(n).toLowerCase().replace(/[^a-z0-9]/g,""); return ALIAS[k] || k; };
+  const P = {};
+
+  function addImg(host, url, cls){
+    const img = document.createElement("img");
+    img.src = url; img.alt = ""; img.loading = "lazy"; img.className = "bport" + (cls ? " " + cls : "");
+    host.insertBefore(img, host.firstChild);
+  }
+
+  function decorate(){
+    if(!Object.keys(P).length) return;
+    // рекомендації, альтернативи, швидкі бани — ім'я сидить в атрибуті onclick
+    document.querySelectorAll('[onclick*="take("],[onclick*="doBan("]').forEach(el=>{
+      if(el.querySelector(".bport")) return;
+      const m = (el.getAttribute("onclick") || "").match(/\('([^']+)'/);
+      if(!m) return;
+      const u = P[norm(m[1])]; if(!u) return;
+      addImg(el.querySelector(".name") || el.querySelector(".an") || el, u);
+    });
+    // дошка драфту — за станом picks[]
+    document.querySelectorAll("#board .slot").forEach((el,i)=>{
+      if(!picks[i] || el.querySelector(".bport")) return;
+      const u = P[norm(picks[i])]; if(!u) return;
+      addImg(el, u, "slotport");
+    });
+    decorateList();
+  }
+  function decorateList(){
+    if(!Object.keys(P).length) return;
+    document.querySelectorAll("#blist > button").forEach(btn=>{
+      if(btn.querySelector(".bport")) return;
+      const nm = btn.firstChild && btn.firstChild.nodeType === 3 ? btn.firstChild.textContent.trim() : "";
+      const u = P[norm(nm)]; if(!u) return;
+      addImg(btn, u, "listport");
+    });
+  }
+
+  // перемальовування інтерфейсу → домальовуємо портрети
+  const _render = render;
+  render = function(){ _render(); decorate(); };
+  const bl = document.getElementById("blist");
+  if(bl) new MutationObserver(decorateList).observe(bl, {childList:true});
+
+  fetch("https://api.brawlapi.com/v1/brawlers")
+    .then(r=>r.json())
+    .then(j=>{
+      (j.list || []).forEach(b=>{
+        if(b.released === false) return;
+        P[norm(b.name)] = b.imageUrl3 || b.imageUrl2 || b.imageUrl;
+      });
+      decorate();
+    })
+    .catch(()=>{});   // без мережі — просто без портретів, застосунок працює як раніше
+
+  // --- мініатюри карт у майстрі ---
+  const MAPIMG = {};
+  function decorateMaps(){
+    if(!Object.keys(MAPIMG).length) return;
+    document.querySelectorAll("#maps button").forEach(btn=>{
+      if(btn.querySelector(".mapthumb")) return;
+      const nm = btn.firstChild && btn.firstChild.nodeType === 3 ? btn.firstChild.textContent.trim() : "";
+      const u = MAPIMG[norm(nm)]; if(!u) return;
+      const img = document.createElement("img");
+      img.src = u; img.alt = ""; img.loading = "lazy"; img.className = "mapthumb";
+      img.onerror = ()=>img.remove();
+      btn.insertBefore(img, btn.firstChild);
+    });
+  }
+  const _drawMaps = drawMaps;
+  drawMaps = function(){ _drawMaps(); decorateMaps(); };
+  fetch("https://api.brawlapi.com/v1/maps")
+    .then(r=>r.json())
+    .then(j=>{
+      (j.list || []).forEach(m=>{ if(m.imageUrl) MAPIMG[norm(m.name)] = m.imageUrl; });
+      decorateMaps();
+    })
+    .catch(()=>{});
+})();
+</script>
 <script>
 /* ============ PWA ============ */
 (function(){
