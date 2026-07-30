@@ -1,5 +1,5 @@
 /* Драфт-асистент — service worker */
-const VERSION = 'draft-v12';
+const VERSION = 'draft-v21';
 const SHELL = VERSION + '-shell';
 const RUNTIME = VERSION + '-runtime';
 
@@ -57,8 +57,9 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Шрифти Google: stale-while-revalidate у runtime-кеші
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+  // Шрифти Google + дані й портрети BrawlAPI/Brawlify: stale-while-revalidate у runtime-кеші
+  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com' ||
+      url.hostname === 'api.brawlapi.com' || url.hostname === 'cdn.brawlify.com') {
     event.respondWith(
       caches.open(RUNTIME).then(cache =>
         cache.match(req).then(cached => {
