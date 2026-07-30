@@ -1,5 +1,5 @@
 /* Драфт-асистент — service worker */
-const VERSION = 'draft-v2';
+const VERSION = 'draft-v12';
 const SHELL = VERSION + '-shell';
 const RUNTIME = VERSION + '-runtime';
 
@@ -70,6 +70,13 @@ self.addEventListener('fetch', event => {
         })
       )
     );
+    return;
+  }
+
+  // GoatCounter: аналітика має йти напряму в мережу, ніколи не кешується —
+  // інакше рахуватиме офлайн-запити чи взагалі не рахуватиме нових відвідувань
+  if (url.hostname === 'gc.zgo.at' || url.hostname.endsWith('.goatcounter.com')) {
+    event.respondWith(fetch(req).catch(() => new Response(null, {status: 204})));
     return;
   }
 
