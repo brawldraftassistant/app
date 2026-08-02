@@ -35,7 +35,7 @@ h1{font-family:Oswald,sans-serif; font-weight:700; font-size:26px; letter-spacin
 h2{font-family:Oswald,sans-serif; font-weight:500; font-size:13px; letter-spacing:.14em;
    text-transform:uppercase; color:var(--muted); margin:26px 0 9px}
 .row{display:flex; flex-wrap:wrap; gap:6px}
-.top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
+.appbar{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
 .langbox{position:relative; flex:none}
 .langbtn{display:flex; align-items:center; gap:6px; padding:7px 10px; font-size:13px; font-weight:600; white-space:nowrap}
 .langmenu{position:absolute; top:calc(100% + 6px); right:0; z-index:20; display:none; min-width:168px;
@@ -338,7 +338,7 @@ button.on{
 button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 
 /* ---------- шапка з вкладками ---------- */
-.top{
+.appbar{
   position:sticky; top:0; z-index:50;
   display:flex; align-items:center; gap:10px; flex-wrap:wrap;
   margin-inline:calc(50% - 50vw); padding:10px calc(50vw - 50% + 14px) 0;
@@ -517,7 +517,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 /* ---------- широкий екран: контент не «губиться» ---------- */
 @media (min-width:760px){
   body{ max-width:1120px }
-  .top{ padding-bottom:10px }
+  .appbar{ padding-bottom:10px }
   .tabs{ order:0; flex:1 1 auto; justify-content:center; margin-top:0; padding-bottom:0 }
   .hero{ padding:40px 0 16px }
   .herotitle{ font-size:60px }
@@ -545,54 +545,94 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 /* ---------- анімації: додаються ЗГОРИ, нічого не ховають ---------- */
 @media (prefers-reduced-motion: no-preference){
-  .heroin > *{ animation:popUp .5s cubic-bezier(.2,1.3,.4,1) backwards }
-  .heroin > :nth-child(2){ animation-delay:.07s }
-  .heroin > :nth-child(3){ animation-delay:.14s }
-  .heroin > :nth-child(4){ animation-delay:.21s }
-  .heroin > :nth-child(5){ animation-delay:.28s }
-  @keyframes popUp{ from{opacity:0; transform:translateY(16px) scale(.96)} to{opacity:1; transform:none} }
+  /* пружна поява елементів героя */
+  .heroin > *{ animation:popUp .55s cubic-bezier(.18,1.5,.4,1) backwards }
+  .heroin > :nth-child(2){ animation-delay:.08s }
+  .heroin > :nth-child(3){ animation-delay:.16s }
+  .heroin > :nth-child(4){ animation-delay:.24s }
+  .heroin > :nth-child(5){ animation-delay:.32s }
+  @keyframes popUp{
+    0%{ opacity:0; transform:translateY(22px) scale(.9) }
+    60%{ opacity:1; transform:translateY(-4px) scale(1.02) }
+    100%{ opacity:1; transform:none }
+  }
 
-  .cta{ animation:popUp .5s cubic-bezier(.2,1.3,.4,1) .28s backwards, ctaGlow 2.6s ease-in-out 1s infinite }
+  .eyebrow{ animation:popUp .55s cubic-bezier(.18,1.5,.4,1) backwards, wobble 5s ease-in-out 1s infinite }
+  @keyframes wobble{ 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} }
+
+  .cta{ animation:popUp .55s cubic-bezier(.18,1.5,.4,1) .32s backwards, ctaGlow 2.4s ease-in-out 1s infinite }
   @keyframes ctaGlow{
     0%,100%{ box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35), 0 0 0 rgba(255,210,48,0) }
-    50%    { box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35), 0 0 26px rgba(255,210,48,.55) }
+    50%    { box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35), 0 0 30px rgba(255,210,48,.6) }
+  }
+  .cta:active{ transform:translateY(6px) scale(.97); box-shadow:0 1px 0 #8A5A00 }
+
+  .logodot{ animation:dotSpin 5s cubic-bezier(.5,0,.5,1) infinite }
+  @keyframes dotSpin{ 0%,70%,100%{transform:rotate(0)} 80%{transform:rotate(200deg) scale(1.15)} 90%{transform:rotate(160deg)} }
+
+  /* каскад карток «як працює», FAQ, рекомендацій — з відскоком */
+  .howcard{ animation:cardIn .5s cubic-bezier(.2,1.5,.4,1) backwards }
+  .howcard:nth-child(2){ animation-delay:.1s } .howcard:nth-child(3){ animation-delay:.2s }
+  .faq{ animation:cardIn .45s cubic-bezier(.2,1.5,.4,1) backwards }
+  .faq:nth-child(3){ animation-delay:.08s } .faq:nth-child(4){ animation-delay:.16s } .faq:nth-child(5){ animation-delay:.24s }
+  .rec{ animation:cardIn .5s cubic-bezier(.2,1.5,.4,1) backwards }
+  .rec.n2{ animation-delay:.09s } .rec.n3{ animation-delay:.18s }
+  @keyframes cardIn{
+    0%{ opacity:0; transform:translateY(26px) scale(.94) }
+    65%{ opacity:1; transform:translateY(-5px) scale(1.015) }
+    100%{ opacity:1; transform:none }
   }
 
-  .logodot{ animation:dotSpin 6s ease-in-out infinite }
-  @keyframes dotSpin{ 0%,100%{transform:rotate(0)} 50%{transform:rotate(180deg)} }
+  .statcard{ animation:cardIn .5s cubic-bezier(.2,1.5,.4,1) backwards }
+  .statcard:nth-child(2){ animation-delay:.08s } .statcard:nth-child(3){ animation-delay:.16s } .statcard:nth-child(4){ animation-delay:.24s }
+  .statnum{ animation:numPop .6s cubic-bezier(.2,1.8,.4,1) .3s backwards }
+  @keyframes numPop{ 0%{transform:scale(.3); opacity:0} 70%{transform:scale(1.25)} 100%{transform:scale(1)} }
 
-  .howcard{ animation:popUp .45s cubic-bezier(.2,1.3,.4,1) backwards }
-  .howcard:nth-child(2){ animation-delay:.08s }
-  .howcard:nth-child(3){ animation-delay:.16s }
-  .faq{ animation:popUp .4s cubic-bezier(.2,1.3,.4,1) backwards }
-  .faq:nth-child(3){ animation-delay:.06s }
-  .faq:nth-child(4){ animation-delay:.12s }
-  .faq:nth-child(5){ animation-delay:.18s }
+  /* крок майстра: виїзд збоку з пружним відскоком */
+  .wstep.on{ animation:stepIn .38s cubic-bezier(.2,1.45,.35,1) }
+  @keyframes stepIn{ 0%{opacity:0; transform:translateX(34px) scale(.97)} 65%{opacity:1; transform:translateX(-6px) scale(1.005)} 100%{opacity:1; transform:none} }
+  [dir=rtl] .wstep.on{ animation-name:stepInRtl }
+  @keyframes stepInRtl{ 0%{opacity:0; transform:translateX(-34px)} 65%{transform:translateX(6px)} 100%{transform:none} }
 
-  .rec{ animation:popUp .4s cubic-bezier(.2,1.3,.4,1) backwards }
-  .rec.n2{ animation-delay:.06s } .rec.n3{ animation-delay:.12s }
+  /* плитки режимів у майстрі — каскадна поява */
+  #modes button{ animation:cardIn .42s cubic-bezier(.2,1.5,.4,1) backwards }
+  #modes button:nth-child(2){ animation-delay:.05s } #modes button:nth-child(3){ animation-delay:.1s }
+  #modes button:nth-child(4){ animation-delay:.15s } #modes button:nth-child(5){ animation-delay:.2s } #modes button:nth-child(6){ animation-delay:.25s }
+  #maps button{ animation:cardIn .4s cubic-bezier(.2,1.5,.4,1) backwards }
+  #maps button:nth-child(2){ animation-delay:.05s } #maps button:nth-child(3){ animation-delay:.1s }
+  #maps button:nth-child(4){ animation-delay:.15s } #maps button:nth-child(5){ animation-delay:.2s } #maps button:nth-child(6){ animation-delay:.25s }
 
-  .wstep.on{ animation:slideIn .3s cubic-bezier(.2,1.2,.4,1) }
-  @keyframes slideIn{ from{opacity:0; transform:translateX(22px)} to{opacity:1; transform:none} }
+  /* тактильний відгук: будь-яка кнопка при натисканні трохи втискається */
+  button:active{ transform:translateY(4px) scale(.98) }
+  .tabs button:active, .langbtn:active{ transform:scale(.94) }
 
-  .slot.active{ animation:slotBounce 1.6s ease-in-out infinite }
+  /* вибраний стан: мікро-відскок + пульсуюча галочка на карті */
+  button.on{ animation:pickPop .32s cubic-bezier(.2,1.7,.4,1) }
+  @keyframes pickPop{ 0%{transform:scale(.96)} 55%{transform:scale(1.05)} 100%{transform:scale(1)} }
+  #maps button.on::before{ animation:checkPop .35s cubic-bezier(.2,1.9,.4,1) }
+  @keyframes checkPop{ 0%{transform:translateY(-50%) scale(0) rotate(-40deg)} 60%{transform:translateY(-50%) scale(1.25) rotate(6deg)} 100%{transform:translateY(-50%) scale(1)} }
+
+  .slot.active{ animation:slotBounce 1.5s ease-in-out infinite }
   @keyframes slotBounce{
     0%,100%{ box-shadow:0 5px 0 #8A5A00 }
-    50%    { box-shadow:0 5px 0 #8A5A00, 0 0 20px rgba(255,210,48,.6) }
+    50%    { box-shadow:0 5px 0 #8A5A00, 0 0 22px rgba(255,210,48,.7) }
   }
+  .wdots i.on{ animation:dotPop .3s cubic-bezier(.2,1.8,.4,1) }
+  @keyframes dotPop{ 0%{transform:scale(.6)} 60%{transform:scale(1.5)} 100%{transform:scale(1.3)} }
 
-  .bgfx b{ animation:blobDrift 18s ease-in-out infinite alternate }
-  .bgfx b:nth-child(2){ animation-duration:23s; animation-delay:-6s }
-  .bgfx b:nth-child(3){ animation-duration:27s; animation-delay:-11s }
-  @keyframes blobDrift{ from{transform:translate(0,0) scale(1)} to{transform:translate(38px,-30px) scale(1.12)} }
+  /* живий фон */
+  .bgfx b{ animation:blobDrift 16s ease-in-out infinite alternate }
+  .bgfx b:nth-child(2){ animation-duration:21s; animation-delay:-6s }
+  .bgfx b:nth-child(3){ animation-duration:25s; animation-delay:-11s }
+  @keyframes blobDrift{ from{transform:translate(0,0) scale(1)} to{transform:translate(42px,-34px) scale(1.15)} }
 
   .bgfx i{ animation:floatUp linear infinite }
-  .bgfx i:nth-child(4){ animation-duration:19s; animation-delay:-2s }
-  .bgfx i:nth-child(5){ animation-duration:24s; animation-delay:-9s }
-  .bgfx i:nth-child(6){ animation-duration:21s; animation-delay:-14s }
-  .bgfx i:nth-child(7){ animation-duration:27s; animation-delay:-5s }
-  .bgfx i:nth-child(8){ animation-duration:23s; animation-delay:-17s }
-  .bgfx i:nth-child(9){ animation-duration:30s; animation-delay:-21s }
+  .bgfx i:nth-child(4){ animation-duration:18s; animation-delay:-2s }
+  .bgfx i:nth-child(5){ animation-duration:23s; animation-delay:-9s }
+  .bgfx i:nth-child(6){ animation-duration:20s; animation-delay:-14s }
+  .bgfx i:nth-child(7){ animation-duration:26s; animation-delay:-5s }
+  .bgfx i:nth-child(8){ animation-duration:22s; animation-delay:-17s }
+  .bgfx i:nth-child(9){ animation-duration:29s; animation-delay:-21s }
   @keyframes floatUp{
     from{ transform:translateY(0) rotate(0deg) }
     to  { transform:translateY(-115vh) rotate(420deg) }
@@ -600,33 +640,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 }
 
 
-/* швидкий старт по режимах на головній */
-.quickstart{ margin-top:26px }
-.qslabel{
-  font-family:Rubik,sans-serif; font-weight:900; font-size:12px; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--muted); margin-bottom:12px;
-}
-.qsgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:11px }
-.qs{
-  display:flex; align-items:center; gap:11px; padding:13px 14px; border-radius:18px;
-  background:var(--panel); font-size:14.5px; font-weight:900; text-align:left;
-}
-.qs .micon{ width:30px; height:30px }
-.qs .micon svg{ width:26px; height:26px }
-.qsn{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
-.qs:nth-child(1){ background:linear-gradient(180deg,#4A2CA6,#3A2088) }
-.qs:nth-child(2){ background:linear-gradient(180deg,#7C3AED,#5B21B6) }
-.qs:nth-child(3){ background:linear-gradient(180deg,#C2410C,#9A3412) }
-.qs:nth-child(4){ background:linear-gradient(180deg,#0E7490,#155E75) }
-.qs:nth-child(5){ background:linear-gradient(180deg,#BE185D,#9D174D) }
-.qs:nth-child(6){ background:linear-gradient(180deg,#B45309,#92400E) }
-@media (min-width:760px){ .qsgrid{ grid-template-columns:repeat(3,1fr) } }
-@media (prefers-reduced-motion: no-preference){
-  .qs{ animation:popUp .4s cubic-bezier(.2,1.3,.4,1) backwards }
-  .qs:nth-child(2){ animation-delay:.04s } .qs:nth-child(3){ animation-delay:.08s }
-  .qs:nth-child(4){ animation-delay:.12s } .qs:nth-child(5){ animation-delay:.16s }
-  .qs:nth-child(6){ animation-delay:.2s }
-}
+
 
 
 /* ---------- режими: квадратні плитки 3×2 ---------- */
@@ -687,6 +701,144 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   #modes .micon svg{ width:42px; height:42px }
 }
 
+
+/* ---------- Моя статистика ---------- */
+.statsIntro{ color:var(--muted); font-size:15px; margin:8px 0 18px; font-weight:700 }
+.tagRow{ display:flex; gap:10px; margin-bottom:18px }
+.tagRow input{ flex:1 1 auto; min-width:0; padding:13px 16px; font-size:16px; letter-spacing:.02em }
+.tagRow button{ flex:0 0 auto; padding:13px 20px; font-size:15px }
+.statsLoading{ color:var(--muted); font-weight:800; padding:14px 0 }
+.statsErr{
+  background:#3A1730; border:3px solid var(--edge); border-radius:16px;
+  padding:14px 16px; color:#FFD3E0; font-weight:700; box-shadow:0 4px 0 var(--edge);
+}
+.statsRaw{
+  margin-top:10px; font-family:monospace; font-size:12.5px; font-weight:400;
+  background:rgba(0,0,0,.35); border-radius:10px; padding:10px 12px;
+  white-space:pre-wrap; word-break:break-all; color:#FFB8C8; max-height:220px; overflow:auto;
+}
+.statsCard{
+  background:var(--panel); border:3px solid var(--edge); border-radius:20px;
+  box-shadow:0 6px 0 var(--edge); padding:20px;
+}
+.statsCard .statgrid{ grid-template-columns:repeat(2,1fr); gap:9px }
+.statsCard .statcard{ padding:11px 8px; border-radius:15px; box-shadow:0 4px 0 var(--edge) }
+.statsCard .statnum{ font-size:22px; text-shadow:1.5px 1.5px 0 var(--edge) }
+.statsCard .statlbl{ font-size:10.5px; margin-top:3px }
+@media (min-width:460px){ .statsCard .statgrid{ grid-template-columns:repeat(4,1fr) } }
+.statsName{ font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:22px; margin-bottom:14px }
+.statsTag{ color:var(--muted); font-style:normal; font-size:14px }
+.bwList{ display:flex; flex-direction:column; gap:8px; margin-top:10px }
+.bwRow{
+  display:flex; align-items:center; gap:10px; background:var(--panel2);
+  border:2px solid var(--edge); border-radius:12px; padding:9px 13px; font-weight:800; font-size:14px;
+}
+.statsClub{ color:var(--muted); font-weight:800; font-size:14px; margin-bottom:16px }
+.statsClubNone{ opacity:.6; font-style:italic }
+
+/* різнокольорові картки статистики з іконкою */
+.statsCard .statcard{ position:relative; padding:13px 8px 11px; border-radius:15px; box-shadow:0 4px 0 var(--edge) }
+.scIcon{ font-size:17px; line-height:1; margin-bottom:3px }
+.sc-tro{ background:linear-gradient(180deg,#B8860B,#8A5A00) }
+.sc-best{ background:linear-gradient(180deg,#7C3AED,#5B21B6) }
+.sc-lvl{ background:linear-gradient(180deg,#0E7490,#155E75) }
+.sc-brw{ background:linear-gradient(180deg,#BE185D,#9D174D) }
+.sc-3v3{ background:linear-gradient(180deg,#DC2626,#991B1B) }
+.sc-solo{ background:linear-gradient(180deg,#EA580C,#9A3412) }
+.sc-duo{ background:linear-gradient(180deg,#2563EB,#1E40AF) }
+.sc-cup{ background:linear-gradient(180deg,#059669,#065F46) }
+.statsCard .statnum{ color:#fff; text-shadow:1.5px 1.5px 0 var(--edge) }
+
+/* смуга вінрейту */
+.wrBar{
+  position:relative; height:34px; border-radius:999px; overflow:hidden;
+  background:#3A1730; border:3px solid var(--edge); box-shadow:0 4px 0 var(--edge); margin-bottom:10px;
+}
+.wrFill{ position:absolute; inset:0 auto 0 0; background:linear-gradient(90deg,#059669,#2BE0B7); border-radius:999px 0 0 999px }
+.wrText{ position:absolute; inset:0; display:grid; place-items:center; font-weight:900; font-size:14px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.6) }
+.wrLegend{ display:flex; gap:12px; flex-wrap:wrap; font-weight:800; font-size:13px; margin-bottom:4px }
+.wrWin{ color:var(--mint) } .wrLose{ color:var(--enemy) } .wrDraw{ color:var(--muted) }
+.wrNote{ margin-top:8px; font-size:12px; font-weight:700; color:var(--muted); line-height:1.45 }
+
+/* топи: бійці / карти / режими */
+.topsGrid{ display:grid; gap:14px; margin-top:16px }
+@media (min-width:560px){ .topsGrid{ grid-template-columns:repeat(3,1fr) } }
+.topsCol{ background:var(--panel2); border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge); padding:12px 12px 8px }
+.topsTitle{ font-family:Rubik,sans-serif; font-weight:900; font-size:13px; margin-bottom:10px }
+.topRow{ display:flex; align-items:center; gap:9px; padding:6px 0; border-top:1px solid rgba(255,255,255,.08) }
+.topRow:first-of-type{ border-top:none }
+.topPort{ width:30px; height:30px; border-radius:9px; border:2px solid var(--edge); flex:0 0 auto; object-fit:cover }
+.topIcon{ width:30px; text-align:center; flex:0 0 auto; font-size:16px }
+.topName{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:800; font-size:13px }
+.topWr{ font-weight:900; color:var(--signal); font-size:13px; white-space:nowrap }
+.topCnt{ color:var(--muted); font-weight:700; font-size:11px }
+
+.battleList{ display:flex; flex-direction:column; gap:8px }
+.battleRow{
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+  background:var(--panel2); border:2px solid var(--edge); border-left-width:5px; border-radius:12px;
+  padding:9px 13px; font-weight:800; font-size:13px;
+}
+.battleRow.bWin{ border-left-color:var(--mint) }
+.battleRow.bLose{ border-left-color:var(--enemy) }
+.battleRow.bDraw{ border-left-color:var(--signal) }
+.bMode{ flex:1 1 auto; min-width:90px }
+.bMap{ color:var(--muted); font-weight:700; font-size:12px; flex:1 1 auto; min-width:90px }
+.bRes{ font-size:12px }
+.bWin .bRes{ color:var(--mint) }
+.bLose .bRes{ color:var(--enemy) }
+.bTrophy{ color:var(--signal) }
+.bTime{ color:var(--muted); font-weight:700; font-size:11.5px; width:100%; text-align:right }
+@media (min-width:480px){ .bTime{ width:auto; margin-inline-start:auto } }
+.statspanel{ margin-top:26px }
+.qslabel{
+  font-family:Rubik,sans-serif; font-weight:900; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:14px;
+}
+.statgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px }
+.statcard{
+  background:var(--panel); border:3px solid var(--edge); border-radius:20px;
+  box-shadow:0 5px 0 var(--edge); padding:16px 14px; text-align:center;
+}
+.statcard:nth-child(1){ background:linear-gradient(180deg,#4A2CA6,#3A2088) }
+.statcard:nth-child(2){ background:linear-gradient(180deg,#7C3AED,#5B21B6) }
+.statcard:nth-child(3){ background:linear-gradient(180deg,#0E7490,#155E75) }
+.statcard:nth-child(4){ background:linear-gradient(180deg,#BE185D,#9D174D) }
+.statnum{
+  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:34px;
+  line-height:1; color:var(--signal); text-shadow:2px 2px 0 var(--edge);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.statlbl{ margin-top:6px; font-size:12.5px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.04em }
+@media (min-width:760px){ .statgrid{ grid-template-columns:repeat(2,1fr) } }
+@media (prefers-reduced-motion: no-preference){
+  .statcard{ animation:popUp .45s cubic-bezier(.2,1.4,.4,1) backwards }
+  .statcard:nth-child(2){ animation-delay:.06s }
+  .statcard:nth-child(3){ animation-delay:.12s }
+  .statcard:nth-child(4){ animation-delay:.18s }
+}
+
+
+/* ---------- іконки рангу і першого піка в майстрі ---------- */
+.rankbtn, .firstbtn{ display:flex; align-items:center; gap:12px; text-align:left; padding:14px 16px }
+.rankico{ font-size:26px; line-height:1; flex:0 0 auto }
+.firstemoji{ font-size:28px; line-height:1; flex:0 0 auto }
+
+/* ---------- шрифти зверху драфту: карта і ранг мають відрізнятись ---------- */
+.setchip b{ color:var(--signal) }                          /* режим — жовтий (лишається) */
+.setchip .chipMap{ color:#fff; font-weight:900 }           /* назва карти — білий жирний */
+.setchip .chipRank{ color:var(--mint); font-weight:800 }   /* ранг — бірюзовий, інший від карти */
+
+/* ---------- цифри у «Як працює» — усі одного кольору ---------- */
+.howcard:nth-child(1) .hnum,
+.howcard:nth-child(2) .hnum,
+.howcard:nth-child(3) .hnum{ background:var(--grad); color:#3A1500 }
+
+/* ---------- домашній блок статистики Brawl Stars ---------- */
+.homeStats{ margin-top:26px }
+.homeStats h2{ font-size:16px; margin-bottom:6px }
+.homeStats .statsIntro{ margin:0 0 14px }
+
 </style>
 <script data-goatcounter="https://xailyx.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -694,7 +846,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <body>
 <div class="bgfx" aria-hidden="true"><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-<header class="top" id="topbar">
+<header class="appbar" id="topbar">
   <div class="brand" id="brand"><span class="logodot"></span><h1 id="t-title">Draft Assistant</h1></div>
   <nav class="tabs" id="tabs">
     <button type="button" data-tab="draft" class="on" id="tabDraft">Драфт</button>
@@ -723,9 +875,14 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <button id="startbtn" class="cta" type="button">Почати драфт</button>
     </div>
   </div>
-  <div class="quickstart">
-    <div class="qslabel" id="hQuick">Або одразу режим</div>
-    <div class="qsgrid" id="qsgrid"></div>
+  <div class="homeStats">
+    <h2 id="hStatsHeadT2">Статистика Brawl Stars</h2>
+    <p class="statsIntro" id="hStatsIntro2">Введи свій тег гравця — покажемо трофеї, вінрейт і найкращих бійців.</p>
+    <div class="tagRow">
+      <input type="text" id="tagInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
+      <button type="button" id="tagLookup">Показати</button>
+    </div>
+    <div id="statsBox"></div>
   </div>
 
 
@@ -750,6 +907,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     <details class="faq"><summary id="hF4q">Це офіційний застосунок Supercell?</summary><p id="hF4a">Ні, це фанатський проєкт, не пов'язаний із Supercell.</p></details>
   </section>
 </div>
+<div id="statsview" style="display:none"></div>
 
 <div id="wizard" style="display:none">
   <div class="wsteps">
@@ -1831,9 +1989,11 @@ $("langbtn").onclick=e=>{ e.stopPropagation(); $("langmenu").classList.toggle("s
 document.addEventListener("click",()=>$("langmenu").classList.remove("show"));
 function drawRank(){
   $("rank").innerHTML="";
-  [[false,t("rankOpen")],[true,t("rankBlind")]].forEach(([v,label])=>{
+  // ранги позначаємо емодзі-медалями (гарантовано працюють офлайн, без залежності від CDN)
+  [[false,t("rankOpen"),"👑"],[true,t("rankBlind"),"🥉"]].forEach(([v,label,ic])=>{
     const btn=document.createElement("button");
-    btn.textContent=label; if(blind===v) btn.className="on";
+    btn.className="rankbtn" + (blind===v ? " on" : "");
+    btn.innerHTML=`<span class="rankico">${ic}</span><span>${label}</span>`;
     btn.onclick=()=>{
       blind=v;
       if(blind){ picks=[null,null,null,null,null,null]; bans=[]; }
@@ -1850,9 +2010,11 @@ function applyBlind(){
 }
 function drawFirst(){
   $("first").innerHTML="";
-  [[true,t("optOurs")],[false,t("optTheirs")]].forEach(([v,label])=>{
+  // великі емодзі-стікери: лайк (наш перший пік) / дизлайк (їхній) — надійно, без залежності від CDN
+  [[true,t("optOurs"),"👍"],[false,t("optTheirs"),"👎"]].forEach(([v,label,emoji])=>{
     const btn=document.createElement("button");
-    btn.textContent=label; if(weFirst===v) btn.className="on";
+    btn.className="firstbtn" + (weFirst===v ? " on" : "");
+    btn.innerHTML=`<span class="firstemoji">${emoji}</span><span>${label}</span>`;
     btn.onclick=()=>{ weFirst=v; setSides(); picks=[null,null,null,null,null,null]; drawFirst(); render(); };
     $("first").appendChild(btn);
   });
@@ -1903,7 +2065,7 @@ function drawQuickBans(){
     + `<button class="addban" onclick="openPicker('ban')">${t("banAdd")}</button>`;
 }
 
-function doBan(n){ bans.push(n); render(); }
+function doBan(n){ bans.push(n); if(window.trackBans) window.trackBans(1); render(); }
 
 function drawBoard(){
   const ns=nextSlot();
@@ -2118,7 +2280,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH1t:"Обери режим і карту", hH1d:"Кожна рекомендація підлаштована під конкретну карту, а не під загальний тірлист.",
     hH2t:"Вводь піки й бани", hH2d:"Позначай вибори обох команд у порядку 1-2-2-1-1-2 — як у справжньому драфті.",
     hH3t:"Отримуй найкращий пік", hH3d:"Асистент рахує контри, ролі й тип карти — і пояснює, чому саме цей бравлер.",
-    hQuick:"Або одразу режим", hFaqT:"Часті питання",
+    hStatsT:"Моя статистика", stDraftsL:"драфтів", stModeL:"улюблений режим", stStreakL:"днів поспіль", stBansL:"банів пораховано", hFaqT:"Часті питання",
     hF1q:"Це безкоштовно?", hF1a:"Так, повністю. Без реклами й без реєстрації.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
@@ -2133,7 +2295,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH1t:"Pick mode and map", hH1d:"Every recommendation is tuned to the exact map, not a generic tier list.",
     hH2t:"Enter picks and bans", hH2d:"Log both teams' choices in the real 1-2-2-1-1-2 draft order.",
     hH3t:"Get the best pick", hH3d:"The assistant weighs counters, roles and map type — and explains why.",
-    hQuick:"Or jump into a mode", hFaqT:"FAQ",
+    hStatsT:"Your stats", stDraftsL:"drafts", stModeL:"favorite mode", stStreakL:"day streak", stBansL:"bans scored", hFaqT:"FAQ",
     hF1q:"Is it free?", hF1a:"Yes, completely. No ads, no sign-up.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
@@ -2141,10 +2303,10 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   });
 
   const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
-                    "hQuick","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a"];
+                    "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a"];
   TXT.uk.wNext="Далі"; TXT.uk.wStart="Почати"; TXT.en.wNext="Next"; TXT.en.wStart="Start";
-  TXT.uk.tDraft="Драфт"; TXT.uk.tHow="Як працює"; TXT.uk.tFaq="FAQ";
-  TXT.en.tDraft="Draft"; TXT.en.tHow="How it works"; TXT.en.tFaq="FAQ";
+  TXT.uk.tDraft="Драфт"; TXT.uk.tHow="Як працює"; TXT.uk.tFaq="FAQ"; TXT.uk.tStats="Моя статистика";
+  TXT.en.tDraft="Draft"; TXT.en.tHow="How it works"; TXT.en.tFaq="FAQ"; TXT.en.tStats="My Stats";
   let started = false;   // чи вже заходив у драфт цього сеансу
   function refreshHome(){
     HOME_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = t(id); });
@@ -2160,7 +2322,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===name));
   }
   function hideAllViews(){
-    ["home","wizard","draftview","howview","faqview"].forEach(id=>{ $id(id).style.display="none"; });
+    ["home","wizard","draftview","howview","faqview","statsview"].forEach(id=>{ $id(id).style.display="none"; });
   }
   function reveal(rootSel){
     const els = document.querySelectorAll(rootSel + " .howcard, " + rootSel + " .faq");
@@ -2183,6 +2345,253 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   }
   document.querySelectorAll("#tabs button").forEach(b=>{ b.onclick=()=>setTab(b.dataset.tab); });
 
+  // ---- Моя статистика: запит до власного Cloudflare Worker ----
+  const WORKER_URL = "https://draft-assistant-api.xailyx.workers.dev";
+  function esc(s){ return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+  async function lookupTag(){
+    const raw = ($id("tagInput").value || "").trim();
+    const box = $id("statsBox");
+    if(!raw){ box.innerHTML = `<div class="statsErr">Введи тег гравця.</div>`; return; }
+    const tag = raw.replace(/^#/, "").toUpperCase();
+
+    box.innerHTML = `<div class="statsLoading">Завантажуємо статистику…</div>`;
+    $id("tagLookup").disabled = true;
+
+    let res, text;
+    try{
+      res = await fetch(`${WORKER_URL}/?tag=${encodeURIComponent(tag)}`);
+      text = await res.text();
+    } catch(netErr){
+      // мережева помилка (немає інтернету, Worker недоступний тощо) — показуємо як є
+      box.innerHTML = `<div class="statsErr"><b>Не вдалося з'єднатися.</b><br>${esc(netErr.message || netErr)}</div>`;
+      $id("tagLookup").disabled = false;
+      return;
+    }
+
+    let data = null;
+    try{ data = JSON.parse(text); } catch(e){ /* відповідь не JSON — покажемо сирий текст нижче */ }
+
+    if(!res.ok){
+      // ГОЛОВНЕ: завжди показуємо точний текст/код помилки на сторінці, нічого не ховаємо
+      const reason = (data && (data.reason || data.message || data.error)) || null;
+      box.innerHTML = `<div class="statsErr">
+        <b>Помилка ${res.status}</b>${reason ? " — " + esc(reason) : ""}
+        <div class="statsRaw">${esc(text || "(порожня відповідь)")}</div>
+      </div>`;
+      $id("tagLookup").disabled = false;
+      return;
+    }
+
+    if(!data){
+      box.innerHTML = `<div class="statsErr"><b>Незрозуміла відповідь сервера.</b><div class="statsRaw">${esc(text)}</div></div>`;
+      $id("tagLookup").disabled = false;
+      return;
+    }
+
+    // основний профіль уже є — малюємо одразу, а бойовий лог довантажуємо окремо
+    // (щоб один невдалий запит не блокував решту статистики)
+    renderStatsCard(data, null);
+    $id("tagLookup").disabled = false;
+
+    try{
+      const bres = await fetch(`${WORKER_URL}/battlelog?tag=${encodeURIComponent(tag)}`);
+      const btext = await bres.text();
+      const bdata = bres.ok ? JSON.parse(btext) : null;
+      const fresh = bdata && bdata.items ? bdata.items : [];
+      // накопичуємо історію в браузері: дописуємо нові бої до збережених по цьому тегу
+      const merged = mergeBattleHistory(tag, fresh);
+      renderStatsCard(data, merged);
+    } catch(e){ /* без бойового логу — просто не показуємо цей блок, профіль лишається */ }
+  }
+
+  // ---- накопичення історії боїв у браузері (без сервера) ----
+  function battleKey(it){
+    // унікальний ключ бою: час + учасники (щоб не дублювати ті самі бої між заходами)
+    let id = it.battleTime || "";
+    const teams = it.battle && (it.battle.teams || (it.battle.players ? [it.battle.players] : []));
+    if(teams) teams.forEach(t=>t.forEach(pl=>{ if(pl.tag) id += pl.tag; }));
+    return id + (it.event ? (it.event.mode||"") + (it.event.map||"") : "");
+  }
+  function mergeBattleHistory(tag, fresh){
+    const KEY = "bsHist:" + tag;
+    let stored = [];
+    try{ stored = JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ stored = []; }
+    const seen = new Set(stored.map(battleKey));
+    // додаємо тільки ті свіжі бої, яких ще немає
+    fresh.forEach(it=>{ const k = battleKey(it); if(!seen.has(k)){ seen.add(k); stored.push(it); } });
+    // сортуємо за часом (новіші першими) і тримаємо розумну межу, щоб не роздути сховище
+    stored.sort((a,b)=> String(b.battleTime||"").localeCompare(String(a.battleTime||"")));
+    if(stored.length > 500) stored = stored.slice(0, 500);
+    try{ localStorage.setItem(KEY, JSON.stringify(stored)); } catch(e){ /* сховище повне — ігноруємо */ }
+    return stored;
+  }
+
+  function fmtBattleTime(s){
+    // формат Supercell: "20260802T114350.000Z" → людський вигляд
+    if(!s) return "";
+    const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/.exec(s);
+    if(!m) return s;
+    const d = new Date(Date.UTC(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +m[6]));
+    const diffMin = Math.max(1, Math.round((Date.now() - d.getTime())/60000));
+    if(diffMin < 60) return `${diffMin} хв тому`;
+    const diffH = Math.round(diffMin/60);
+    if(diffH < 24) return `${diffH} год тому`;
+    return `${Math.round(diffH/24)} дн тому`;
+  }
+
+  // людські назви режимів (API дає camelCase)
+  const MODE_LABEL = {
+    gemGrab:"Gem Grab", brawlBall:"Brawl Ball", heist:"Heist", bounty:"Bounty",
+    knockout:"Knockout", hotZone:"Hot Zone", siege:"Siege", duels:"Duels",
+    soloShowdown:"Solo Showdown", duoShowdown:"Duo Showdown", wipeout:"Wipeout",
+    payload:"Payload", basketBrawl:"Basket Brawl", volleyBrawl:"Volley Brawl",
+    bigGame:"Big Game", roboRumble:"Robo Rumble", brawlBall5v5:"Brawl Ball 5v5",
+    wipeout5v5:"Wipeout 5v5", trophyThieves:"Trophy Thieves", trioShowdown:"Trio Showdown"
+  };
+  const modeLabel = m => MODE_LABEL[m] || (m ? m.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()) : "—");
+
+  function battleOutcome(it){
+    const b = it.battle || {};
+    if(b.result) return b.result;                // victory / defeat / draw
+    if(typeof b.rank === "number") return b.rank <= (b.mode && b.mode.includes("duo") ? 2 : 4) ? "victory" : "defeat";
+    return "";
+  }
+
+  function renderStatsCard(d, battles){
+    const box = $id("statsBox");
+
+    const club = d.club && d.club.name
+      ? `<div class="statsClub">🏰 ${esc(d.club.name)}</div>`
+      : `<div class="statsClub statsClubNone">Без клубу</div>`;
+
+    // ---- вінрейт і топи з останніх боїв ----
+    let winrateHtml = "", topsHtml = "", battlesHtml = "";
+    if(battles === null){
+      winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма (останні бої)</div><div class="statsLoading">Завантажуємо…</div>`;
+    } else if(Array.isArray(battles) && battles.length){
+      // ЛИШЕ Ranked: у API сучасний ранкед — це type 'soloRanked'/'teamRanked'.
+      // Тип 'ranked' (без Solo/Team) — це звичайні трофейні бої, їх виключаємо.
+      const isRanked = it => {
+        const ty = (it.battle && it.battle.type) || "";
+        return ty === "soloRanked" || ty === "teamRanked";
+      };
+      const ranked = battles.filter(isRanked);
+      if(!ranked.length){
+        winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма в Ranked</div>`+
+          `<div class="statsErr">Серед останніх боїв немає ранкед-матчів. Зіграй кілька ранкед-ігор — і статистика зʼявиться.</div>`;
+        box.innerHTML = `
+          <div class="statsCard">
+            <div class="statsName">${esc(d.name || "")} <span class="statsTag">#${esc((d.tag||"").replace(/^#/,""))}</span></div>
+            ${club}
+            <div class="statgrid">
+              <div class="statcard sc-tro"><div class="scIcon">🏆</div><div class="statnum">${d.trophies ?? "—"}</div><div class="statlbl">трофеїв</div></div>
+              <div class="statcard sc-best"><div class="scIcon">👑</div><div class="statnum">${d.highestTrophies ?? "—"}</div><div class="statlbl">рекорд трофеїв</div></div>
+              <div class="statcard sc-lvl"><div class="scIcon">⭐</div><div class="statnum">${d.expLevel ?? "—"}</div><div class="statlbl">рівень акаунта</div></div>
+              <div class="statcard sc-brw"><div class="scIcon">🥊</div><div class="statnum">${(d.brawlers||[]).length}</div><div class="statlbl">бійців</div></div>
+              <div class="statcard sc-3v3"><div class="scIcon">⚔️</div><div class="statnum">${d["3vs3Victories"] ?? "—"}</div><div class="statlbl">перемог 3х3</div></div>
+              <div class="statcard sc-solo"><div class="scIcon">🎯</div><div class="statnum">${d.soloVictories ?? "—"}</div><div class="statlbl">перемог соло</div></div>
+              <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">перемог дуо</div></div>
+              <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? "Так" : "Ні"}</div><div class="statlbl">кваліфікація чемпіонату</div></div>
+            </div>
+            ${winrateHtml}
+          </div>`;
+        return;
+      }
+      const src = ranked;
+      let wins=0, losses=0, draws=0;
+      const bw={}, mp={}, md={};
+      src.forEach(it=>{
+        const o = battleOutcome(it);
+        if(o==="victory") wins++; else if(o==="defeat") losses++; else draws++;
+        const map = it.event && it.event.map; const mode = it.event && it.event.mode;
+        if(mode){ md[mode]=md[mode]||{w:0,t:0}; md[mode].t++; if(o==="victory") md[mode].w++; }
+        if(map){ mp[map]=mp[map]||{w:0,t:0}; mp[map].t++; if(o==="victory") mp[map].w++; }
+        const teams = it.battle && (it.battle.teams || (it.battle.players ? [it.battle.players] : []));
+        if(teams){
+          teams.forEach(team=>team.forEach(pl=>{
+            if(pl.tag && d.tag && pl.tag.replace(/^#/,"")===d.tag.replace(/^#/,"") && pl.brawler){
+              const nm = pl.brawler.name; bw[nm]=bw[nm]||{w:0,t:0}; bw[nm].t++; if(o==="victory") bw[nm].w++;
+            }
+          }));
+        }
+      });
+      const total = wins+losses+draws;
+      const wr = total ? Math.round(wins/(wins+losses||1)*100) : 0;
+
+      winrateHtml = `
+        <div class="qslabel" style="margin-top:20px">Вінрейт у Ranked</div>
+        <div class="wrBar"><span class="wrFill" style="width:${wr}%"></span><span class="wrText">${wr}% перемог</span></div>
+        <div class="wrLegend">
+          <span class="wrWin">✅ ${wins} перемог</span>
+          <span class="wrLose">❌ ${losses} поразок</span>
+          ${draws?`<span class="wrDraw">➖ ${draws} нічиїх</span>`:""}
+        </div>
+        <div class="wrNote">Зібрано ${total} ранкед-матчів. Історія накопичується у твоєму браузері — заходь частіше, щоб зібрати більше.</div>`;
+
+      const topList = (obj, icon, portrait) => {
+        const arr = Object.entries(obj).map(([k,v])=>({k, w:v.w, t:v.t, wr: v.t?Math.round(v.w/v.t*100):0}))
+          .sort((a,b)=>b.t-a.t || b.wr-a.wr).slice(0,3);
+        if(!arr.length) return `<div class="statsErr">Немає даних.</div>`;
+        return arr.map(x=>{
+          const port = portrait && window.brawlerPortrait ? window.brawlerPortrait(x.k) : null;
+          const face = port
+            ? `<img class="topPort" src="${port}" alt="" loading="lazy">`
+            : `<span class="topIcon">${icon}</span>`;
+          const label = portrait ? esc(x.k) : (icon==="🎮" ? esc(modeLabel(x.k)) : esc(x.k));
+          return `<div class="topRow">${face}<span class="topName">${label}</span><span class="topWr">${x.wr}% <span class="topCnt">(${x.w}/${x.t})</span></span></div>`;
+        }).join("");
+      };
+
+      topsHtml = `
+        <div class="topsGrid">
+          <div class="topsCol"><div class="topsTitle">🥊 Найкращі бійці</div>${topList(bw, "🥊", true)}</div>
+          <div class="topsCol"><div class="topsTitle">🗺️ Найкращі карти</div>${topList(mp, "🗺️", false)}</div>
+          <div class="topsCol"><div class="topsTitle">🎮 Найкращі режими</div>${topList(md, "🎮", false)}</div>
+        </div>`;
+
+      const rows = src.slice(0,10).map(it=>{
+        const o = battleOutcome(it);
+        const trophyChange = it.battle && typeof it.battle.trophyChange === "number" ? it.battle.trophyChange : null;
+        const cls = o==="victory" ? "bWin" : o==="defeat" ? "bLose" : "bDraw";
+        const label = o==="victory" ? "Перемога" : o==="defeat" ? "Поразка" : (it.battle && it.battle.rank ? `Місце ${it.battle.rank}` : "Нічия");
+        return `<div class="battleRow ${cls}">
+          <span class="bMode">${esc(modeLabel(it.event && it.event.mode))}</span>
+          <span class="bMap">${esc((it.event && it.event.map) || "")}</span>
+          <span class="bRes">${label}</span>
+          ${trophyChange!==null ? `<span class="bTrophy">${trophyChange>0?"+":""}${trophyChange}🏆</span>` : ""}
+          <span class="bTime">${fmtBattleTime(it.battleTime)}</span>
+        </div>`;
+      }).join("");
+      battlesHtml = `<div class="qslabel" style="margin-top:20px">Останні ранкед-матчі</div><div class="battleList">${rows}</div>`;
+    } else if(Array.isArray(battles)){
+      winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма (останні бої)</div><div class="statsErr">Немає даних про останні бої.</div>`;
+    }
+
+    box.innerHTML = `
+      <div class="statsCard">
+        <div class="statsName">${esc(d.name || "")} <span class="statsTag">#${esc((d.tag||"").replace(/^#/,""))}</span></div>
+        ${club}
+        <div class="statgrid">
+          <div class="statcard sc-tro"><div class="scIcon">🏆</div><div class="statnum">${d.trophies ?? "—"}</div><div class="statlbl">трофеїв</div></div>
+          <div class="statcard sc-best"><div class="scIcon">👑</div><div class="statnum">${d.highestTrophies ?? "—"}</div><div class="statlbl">рекорд трофеїв</div></div>
+          <div class="statcard sc-lvl"><div class="scIcon">⭐</div><div class="statnum">${d.expLevel ?? "—"}</div><div class="statlbl">рівень акаунта</div></div>
+          <div class="statcard sc-brw"><div class="scIcon">🥊</div><div class="statnum">${(d.brawlers||[]).length}</div><div class="statlbl">бійців</div></div>
+          <div class="statcard sc-3v3"><div class="scIcon">⚔️</div><div class="statnum">${d["3vs3Victories"] ?? "—"}</div><div class="statlbl">перемог 3х3</div></div>
+          <div class="statcard sc-solo"><div class="scIcon">🎯</div><div class="statnum">${d.soloVictories ?? "—"}</div><div class="statlbl">перемог соло</div></div>
+          <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">перемог дуо</div></div>
+          <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? "Так" : "Ні"}</div><div class="statlbl">кваліфікація чемпіонату</div></div>
+        </div>
+        ${winrateHtml}
+        ${topsHtml}
+        ${battlesHtml}
+      </div>`;
+  }
+
+  document.getElementById("tagLookup").onclick = lookupTag;
+  document.getElementById("tagInput").addEventListener("keydown", e=>{ if(e.key==="Enter") lookupTag(); });
+
+
   const $id = s=>document.getElementById(s);
   const steps=[...document.querySelectorAll(".wstep")];
   const dots=[...document.querySelectorAll("#wdots i")];
@@ -2200,6 +2609,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   function wFinish(){
     hideAllViews();
     $id("draftview").style.display="";
+    if(!started && typeof window.trackDraft === "function") window.trackDraft(mode);
     started = true; setTabBtn("draft");
     updateChip(); window.scrollTo(0,0);
   }
@@ -2218,23 +2628,23 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
   function updateChip(){
     const rankLbl = blind ? t("rankBlind") : t("rankOpen");
+    const rankIco = blind ? "🥉" : "👑";
     $id("setchip").innerHTML =
       `<b>${mode}</b><span class="sep">·</span>`+
-      `<span>${map[0]}</span>`+
+      `<span class="chipMap">${map[0]}</span>`+
       `<span class="tag t-${map[1]}">${T().types[map[1]]}</span>`+
-      `<span class="sep">·</span><span>${rankLbl}</span>`+
+      `<span class="sep">·</span>`+
+      `<span class="chipRank">${rankIco} ${rankLbl}</span>`+
       `<button type="button" id="chipbtn">${t("wChange")}</button>`;
     $id("chipbtn").onclick=()=>wOpen(0);
   }
 
-  // автоперехід: ранг → режим; режим → карта. Карта НЕ перекидає далі —
-  // її легко зачепити випадково, тож підтвердження окремою кнопкою «Далі».
-  $id("rank").addEventListener("click",e=>{ if(!e.target.closest("button")) return;
-    setTimeout(()=>{ blind ? wShow(1) : wShow(1); },190); });
-  $id("modes").addEventListener("click",e=>{ if(e.target.closest("button")) setTimeout(()=>wShow(2),190); });
-  $id("first").addEventListener("click",e=>{ if(e.target.closest("button")) setTimeout(wFinish,190); });
-  // на кроці карти показуємо великий «Далі», а не миттєвий стрибок
-  $id("maps").addEventListener("click",e=>{ if(e.target.closest("button")) syncNav(); });
+  // Жоден крок більше не перекидає сам — вибір лише позначається, далі тиснеш Next.
+  // Це стосується рангу, режиму, карти й першого піка однаково.
+  $id("rank").addEventListener("click", e=>{ if(e.target.closest("button")) syncNav(); });
+  $id("modes").addEventListener("click", e=>{ if(e.target.closest("button")) syncNav(); });
+  $id("maps").addEventListener("click", e=>{ if(e.target.closest("button")) syncNav(); });
+  $id("first").addEventListener("click", e=>{ if(e.target.closest("button")) syncNav(); });
 
   function syncNav(){
     const last = blind ? 2 : 3;                 // у сліпому драфті «перший пік» не потрібен
@@ -2249,24 +2659,44 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   // головний екран: кнопка старту (розумна — продовжує драфт, якщо він уже почався)
   $id("startbtn").onclick=()=>{ started ? wFinish() : wOpen(0); };
 
-  // швидкий старт: одразу обрати режим і перейти до вибору карти
-  function buildQuick(){
-    const g = $id("qsgrid"); if(!g) return;
-    g.innerHTML = "";
-    Object.keys(MAPS).forEach(m=>{
-      const btn = document.createElement("button");
-      btn.type = "button"; btn.className = "qs";
-      const img = MODE_IMG[m] ? `<img src="${MODE_IMG[m]}" alt="" loading="lazy" onerror="this.remove()">` : "";
-      btn.innerHTML = `<span class="micon">${MODE_ICONS[m]||""}${img}</span><span class="qsn">${m}</span>`;
-      btn.onclick = ()=>{
-        mode = m; map = MAPS[m][0];
-        drawModes(); drawMaps(); render();
-        wOpen(1);                       // одразу крок вибору карти
-      };
-      g.appendChild(btn);
-    });
+  // ---- персональна статистика (зберігається локально на пристрої) ----
+  const SKEY = "draftStats";
+  function loadStats(){
+    try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch(e){ return {}; }
   }
-  buildQuick();
+  function saveStats(s){ try { localStorage.setItem(SKEY, JSON.stringify(s)); } catch(e){} }
+  function todayStr(){ return new Date().toISOString().slice(0,10); }
+  // виклик при кожному завершенні майстра (початок нового драфту)
+  window.trackDraft = function(modeName){
+    const s = loadStats();
+    s.drafts = (s.drafts||0) + 1;
+    s.modes = s.modes || {};
+    if(modeName){ s.modes[modeName] = (s.modes[modeName]||0) + 1; }
+    // серія днів поспіль
+    const t = todayStr();
+    if(s.lastDay !== t){
+      const y = new Date(Date.now()-864e5).toISOString().slice(0,10);
+      s.streak = (s.lastDay === y) ? (s.streak||0)+1 : 1;
+      s.lastDay = t;
+    }
+    if(!s.streak) s.streak = 1;
+    saveStats(s);
+  };
+  window.trackBans = function(n){
+    if(!n) return; const s = loadStats(); s.bans = (s.bans||0) + n; saveStats(s);
+  };
+  function renderStats(){
+    const s = loadStats();
+    const setN = (id,v)=>{ const el=$id(id); if(el) el.textContent = v; };
+    setN("stDrafts", s.drafts||0);
+    setN("stStreak", s.streak||0);
+    setN("stBans", s.bans||0);
+    let fav = "—";
+    if(s.modes){ let best=0; for(const m in s.modes){ if(s.modes[m]>best){ best=s.modes[m]; fav=m; } } }
+    setN("stMode", fav);
+  }
+  window.renderStats = renderStats;
+  renderStats();
   // тап по бренду в шапці повертає на головний екран вкладки «Драфт»
   const brand = document.getElementById("brand");
   if(brand){ brand.onclick=showHome; }
@@ -2284,6 +2714,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   const ALIAS = { nadia:"najia", grey:"gray" };
   const norm = n => { const k = String(n).toLowerCase().replace(/[^a-z0-9]/g,""); return ALIAS[k] || k; };
   const P = {};
+  // дозволяємо іншим модулям (напр. статистиці) брати портрет за іменем бійця
+  window.brawlerPortrait = name => P[norm(name)] || null;
 
   function addImg(host, url, cls){
     const img = document.createElement("img");
