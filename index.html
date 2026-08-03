@@ -705,6 +705,16 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 /* ---------- Моя статистика ---------- */
 .statsIntro{ color:var(--muted); font-size:15px; margin:8px 0 18px; font-weight:700 }
 .tagRow{ display:flex; gap:10px; margin-bottom:18px }
+.onlyToggle{
+  display:flex; align-items:center; gap:11px; margin:18px 0 4px; font-size:14.5px;
+  font-weight:900; color:#3A1500; cursor:pointer; user-select:none;
+  background:var(--grad); border:3px solid var(--edge); border-radius:16px;
+  padding:12px 16px; box-shadow:0 4px 0 #8A5A00; width:fit-content;
+}
+.onlyToggle input{
+  width:24px; height:24px; accent-color:#3A1500; cursor:pointer; flex:0 0 auto;
+}
+.onlyToggle span{ line-height:1.3 }
 .tagRow input{ flex:1 1 auto; min-width:0; padding:13px 16px; font-size:16px; letter-spacing:.02em }
 .tagRow button{ flex:0 0 auto; padding:13px 20px; font-size:15px }
 .statsLoading{ color:var(--muted); font-weight:800; padding:14px 0 }
@@ -768,6 +778,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .topRow{ display:flex; align-items:center; gap:9px; padding:6px 0; border-top:1px solid rgba(255,255,255,.08) }
 .topRow:first-of-type{ border-top:none }
 .topPort{ width:30px; height:30px; border-radius:9px; border:2px solid var(--edge); flex:0 0 auto; object-fit:cover }
+.topMapImg{ width:26px; height:34px; border-radius:7px }
 .topIcon{ width:30px; text-align:center; flex:0 0 auto; font-size:16px }
 .topName{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:800; font-size:13px }
 .topWr{ font-weight:900; color:var(--signal); font-size:13px; white-space:nowrap }
@@ -821,8 +832,9 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 /* ---------- іконки рангу і першого піка в майстрі ---------- */
 .rankbtn, .firstbtn{ display:flex; align-items:center; gap:12px; text-align:left; padding:14px 16px }
-.rankico{ font-size:26px; line-height:1; flex:0 0 auto }
+.rankico{ width:34px; height:34px; object-fit:contain; flex:0 0 auto; filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)) }
 .firstemoji{ font-size:28px; line-height:1; flex:0 0 auto }
+.chipRank img{ width:18px; height:18px; object-fit:contain; vertical-align:-3px; margin-inline-end:4px }
 
 /* ---------- шрифти зверху драфту: карта і ранг мають відрізнятись ---------- */
 .setchip b{ color:var(--signal) }                          /* режим — жовтий (лишається) */
@@ -1989,11 +2001,16 @@ $("langbtn").onclick=e=>{ e.stopPropagation(); $("langmenu").classList.toggle("s
 document.addEventListener("click",()=>$("langmenu").classList.remove("show"));
 function drawRank(){
   $("rank").innerHTML="";
-  // ранги позначаємо емодзі-медалями (гарантовано працюють офлайн, без залежності від CDN)
-  [[false,t("rankOpen"),"👑"],[true,t("rankBlind"),"🥉"]].forEach(([v,label,ic])=>{
+  // справжні іконки ліг Brawl Stars з офіційного CDN: Мітик і вище / Даймонд і нижче
+  const RANKICON = {
+    open:  "https://cdn.brawlify.com/ranked/regular/Mythic.png",
+    blind: "https://cdn.brawlify.com/ranked/regular/Diamond.png"
+  };
+  [[false,t("rankOpen"),"open"],[true,t("rankBlind"),"blind"]].forEach(([v,label,key])=>{
     const btn=document.createElement("button");
     btn.className="rankbtn" + (blind===v ? " on" : "");
-    btn.innerHTML=`<span class="rankico">${ic}</span><span>${label}</span>`;
+    // якщо картинка не завантажиться — просто зникає, лишається текст (без несправжніх іконок)
+    btn.innerHTML=`<img class="rankico" src="${RANKICON[key]}" alt="" loading="lazy" onerror="this.remove()"><span>${label}</span>`;
     btn.onclick=()=>{
       blind=v;
       if(blind){ picks=[null,null,null,null,null,null]; bans=[]; }
@@ -2241,23 +2258,25 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     "Knockout":   '<svg viewBox="0 0 24 24" fill="#E8E4F5"><path d="M12 3a8 8 0 00-8 8c0 2.7 1.4 5 3.5 6.4V20c0 .8.7 1.5 1.5 1.5h6c.8 0 1.5-.7 1.5-1.5v-2.6C18.6 16 20 13.7 20 11a8 8 0 00-8-8z"/><circle cx="9.1" cy="11.2" r="1.9" fill="#0B0A12"/><circle cx="14.9" cy="11.2" r="1.9" fill="#0B0A12"/><path d="M10.5 15.4h3l-1.5 2.3-1.5-2.3z" fill="#0B0A12"/></svg>',
     "Hot Zone":   '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FF6B4A" stroke-width="2" stroke-dasharray="3.4 3"/><path d="M12 6.6c1.8 2 3.7 3.8 3.7 6a3.7 3.7 0 11-7.4 0c0-.9.35-1.8.95-2.8.5 1 .9 1.45 1.5 1.75-.3-1.65 0-3.3 1.25-4.95z" fill="#FF6B4A"/></svg>'
   };
-  // офіційні іконки режимів з CDN Brawlify (ID стабільні); SVG нижче — запасний
-  // варіант: якщо картинка не завантажилась, вона зникає і видно намальовану іконку
-  const MODE_IMG = {
-    "Brawl Ball": "https://cdn.brawlify.com/game-modes/regular/48000005.png",
-    "Gem Grab":   "https://cdn.brawlify.com/game-modes/regular/48000000.png",
-    "Heist":      "https://cdn.brawlify.com/game-modes/regular/48000002.png",
-    "Bounty":     "https://cdn.brawlify.com/game-modes/regular/48000003.png",
-    "Knockout":   "https://cdn.brawlify.com/game-modes/regular/48000020.png",
-    "Hot Zone":   "https://cdn.brawlify.com/game-modes/regular/48000017.png"
-  };
+  // повний і точний список офіційних іконок режимів — тягнемо з BrawlAPI
+  // (замість вручну підібраних кількох ID, тепер усі 60+ режимів одразу)
+  const MODE_IMG = {};
+  window.MODE_IMG = MODE_IMG;
+  fetch("https://api.brawlapi.com/v1/gamemodes")
+    .then(r=>r.json())
+    .then(j=>{
+      (j.list || []).forEach(m=>{ MODE_IMG[m.name] = m.imageUrl; });
+      decorateModes();
+      if(typeof refreshHome === "function") refreshHome();
+    })
+    .catch(()=>{});
   function decorateModes(){
     document.querySelectorAll("#modes button").forEach(b=>{
       const name = b.textContent.trim();
-      if(MODE_ICONS[name] && !b.querySelector(".micon")){
-        const img = MODE_IMG[name] ? `<img src="${MODE_IMG[name]}" alt="" loading="lazy" onerror="this.remove()">` : "";
-        b.innerHTML = `<span class="mlab"><span class="micon">${MODE_ICONS[name]}${img}</span><span>${name}</span></span>`;
-      }
+      if(!MODE_ICONS[name]) return;
+      if(b.querySelector(".micon img")) return;   // картинка вже підключена — нічого не робити
+      const img = MODE_IMG[name] ? `<img src="${MODE_IMG[name]}" alt="" loading="lazy" onerror="this.remove()">` : "";
+      b.innerHTML = `<span class="mlab"><span class="micon">${MODE_ICONS[name]}${img}</span><span>${name}</span></span>`;
     });
   }
   // перемальовування режимів (зміна мови тощо) — іконки додаються знову
@@ -2349,6 +2368,29 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   const WORKER_URL = "https://draft-assistant-api.xailyx.workers.dev";
   function esc(s){ return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 
+  // перемикач «тільки командний Ranked» — за замовчуванням увімкнено, вибір запам'ятовується
+  let onlyTeamRanked = true;
+  try{ const saved = localStorage.getItem("onlyTeamRanked"); if(saved !== null) onlyTeamRanked = saved === "1"; } catch(e){}
+  let lastPlayerData = null, lastMergedBattles = null;   // кеш останнього запиту — щоб перемикач не робив новий запит
+
+  // галочка тепер малюється лише всередині картки статистики (після успішного пошуку),
+  // тому html-рядок і повторне підключення обробника — окремі функції, викликаються при кожному рендері
+  function toggleHtml(){
+    return `<label class="onlyToggle">
+      <input type="checkbox" id="onlyTeamRanked" ${onlyTeamRanked ? "checked" : ""}>
+      <span>Ranked</span>
+    </label>`;
+  }
+  function wireToggle(){
+    const cb = document.getElementById("onlyTeamRanked");
+    if(!cb) return;
+    cb.onchange = ()=>{
+      onlyTeamRanked = cb.checked;
+      try{ localStorage.setItem("onlyTeamRanked", onlyTeamRanked ? "1" : "0"); } catch(e){}
+      if(lastPlayerData) renderStatsCard(lastPlayerData, lastMergedBattles);
+    };
+  }
+
   async function lookupTag(){
     const raw = ($id("tagInput").value || "").trim();
     const box = $id("statsBox");
@@ -2391,6 +2433,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
     // основний профіль уже є — малюємо одразу, а бойовий лог довантажуємо окремо
     // (щоб один невдалий запит не блокував решту статистики)
+    lastPlayerData = data; lastMergedBattles = null;
     renderStatsCard(data, null);
     $id("tagLookup").disabled = false;
 
@@ -2401,6 +2444,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       const fresh = bdata && bdata.items ? bdata.items : [];
       // накопичуємо історію в браузері: дописуємо нові бої до збережених по цьому тегу
       const merged = mergeBattleHistory(tag, fresh);
+      lastMergedBattles = merged;
       renderStatsCard(data, merged);
     } catch(e){ /* без бойового логу — просто не показуємо цей блок, профіль лишається */ }
   }
@@ -2453,8 +2497,13 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
   function battleOutcome(it){
     const b = it.battle || {};
-    if(b.result) return b.result;                // victory / defeat / draw
-    if(typeof b.rank === "number") return b.rank <= (b.mode && b.mode.includes("duo") ? 2 : 4) ? "victory" : "defeat";
+    if(b.result) return b.result;                              // командні режими: чітке victory/defeat
+    if(typeof b.trophyChange === "number"){                     // Showdown-ранкед: рахуємо за зміною трофеїв
+      if(b.trophyChange > 0) return "victory";
+      if(b.trophyChange < 0) return "defeat";
+      return "draw";
+    }
+    if(typeof b.rank === "number") return b.rank <= 2 ? "victory" : "defeat";
     return "";
   }
 
@@ -2470,16 +2519,18 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     if(battles === null){
       winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма (останні бої)</div><div class="statsLoading">Завантажуємо…</div>`;
     } else if(Array.isArray(battles) && battles.length){
-      // ЛИШЕ Ranked: у API сучасний ранкед — це type 'soloRanked'/'teamRanked'.
-      // Тип 'ranked' (без Solo/Team) — це звичайні трофейні бої, їх виключаємо.
-      const isRanked = it => {
+      // Справжній Ranked (колишня Power League) — це ЛИШЕ типи 'soloRanked'/'teamRanked',
+      // завжди випадковий 3х3-режим із драфтом. Showdown API позначає типом 'ranked' (без Solo/Team),
+      // але це не той Ranked, що з піками й банами — тому в підрахунок він не потрапляє.
+      const isTrueRanked = it => {
         const ty = (it.battle && it.battle.type) || "";
         return ty === "soloRanked" || ty === "teamRanked";
       };
-      const ranked = battles.filter(isRanked);
+      const ranked = onlyTeamRanked ? battles.filter(isTrueRanked) : battles.slice();
+      const sectionTitle = onlyTeamRanked ? "Форма в Ranked" : "Форма (усі останні бої, без фільтра Ranked)";
       if(!ranked.length){
-        winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма в Ranked</div>`+
-          `<div class="statsErr">Серед останніх боїв немає ранкед-матчів. Зіграй кілька ранкед-ігор — і статистика зʼявиться.</div>`;
+        winrateHtml = `<div class="qslabel" style="margin-top:20px">${sectionTitle}</div>`+
+          `<div class="statsErr">Серед останніх боїв немає справжніх Ranked-матчів (3х3 з драфтом). Showdown до Ranked не належить. Зіграй кілька матчів у Ranked — і статистика зʼявиться.</div>`;
         box.innerHTML = `
           <div class="statsCard">
             <div class="statsName">${esc(d.name || "")} <span class="statsTag">#${esc((d.tag||"").replace(/^#/,""))}</span></div>
@@ -2494,8 +2545,10 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
               <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">перемог дуо</div></div>
               <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? "Так" : "Ні"}</div><div class="statlbl">кваліфікація чемпіонату</div></div>
             </div>
+            ${toggleHtml()}
             ${winrateHtml}
           </div>`;
+        wireToggle();
         return;
       }
       const src = ranked;
@@ -2520,34 +2573,38 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       const wr = total ? Math.round(wins/(wins+losses||1)*100) : 0;
 
       winrateHtml = `
-        <div class="qslabel" style="margin-top:20px">Вінрейт у Ranked</div>
+        <div class="qslabel" style="margin-top:20px">${onlyTeamRanked ? "Вінрейт у Ranked" : "Вінрейт (усі останні бої)"}</div>
         <div class="wrBar"><span class="wrFill" style="width:${wr}%"></span><span class="wrText">${wr}% перемог</span></div>
         <div class="wrLegend">
           <span class="wrWin">✅ ${wins} перемог</span>
           <span class="wrLose">❌ ${losses} поразок</span>
           ${draws?`<span class="wrDraw">➖ ${draws} нічиїх</span>`:""}
         </div>
-        <div class="wrNote">Зібрано ${total} ранкед-матчів. Історія накопичується у твоєму браузері — заходь частіше, щоб зібрати більше.</div>`;
+        <div class="wrNote">${onlyTeamRanked
+          ? `Зібрано ${total} Ranked-матчів (3х3 з драфтом, без Showdown).`
+          : `Зібрано ${total} останніх боїв (усі режими, без фільтра Ranked).`} Історія накопичується у твоєму браузері — заходь частіше, щоб зібрати більше.</div>`;
 
-      const topList = (obj, icon, portrait) => {
+      const topList = (obj, kind, portrait) => {
         const arr = Object.entries(obj).map(([k,v])=>({k, w:v.w, t:v.t, wr: v.t?Math.round(v.w/v.t*100):0}))
           .sort((a,b)=>b.t-a.t || b.wr-a.wr).slice(0,3);
         if(!arr.length) return `<div class="statsErr">Немає даних.</div>`;
         return arr.map(x=>{
-          const port = portrait && window.brawlerPortrait ? window.brawlerPortrait(x.k) : null;
-          const face = port
-            ? `<img class="topPort" src="${port}" alt="" loading="lazy">`
-            : `<span class="topIcon">${icon}</span>`;
-          const label = portrait ? esc(x.k) : (icon==="🎮" ? esc(modeLabel(x.k)) : esc(x.k));
-          return `<div class="topRow">${face}<span class="topName">${label}</span><span class="topWr">${x.wr}% <span class="topCnt">(${x.w}/${x.t})</span></span></div>`;
+          const label = portrait ? x.k : (kind==="mode" ? modeLabel(x.k) : x.k);
+          let src = null;
+          if(portrait && window.brawlerPortrait) src = window.brawlerPortrait(x.k);
+          else if(kind==="mode" && window.MODE_IMG) src = window.MODE_IMG[label];
+          else if(kind==="map" && window.mapThumbnail) src = window.mapThumbnail(x.k);
+          // лише справжні ассети з гри; якщо картинки немає — просто без іконки, без емодзі-заміни
+          const face = src ? `<img class="topPort ${kind==='map' ? 'topMapImg' : ''}" src="${src}" alt="" loading="lazy" onerror="this.remove()">` : "";
+          return `<div class="topRow">${face}<span class="topName">${esc(label)}</span><span class="topWr">${x.wr}% <span class="topCnt">(${x.w}/${x.t})</span></span></div>`;
         }).join("");
       };
 
       topsHtml = `
         <div class="topsGrid">
-          <div class="topsCol"><div class="topsTitle">🥊 Найкращі бійці</div>${topList(bw, "🥊", true)}</div>
-          <div class="topsCol"><div class="topsTitle">🗺️ Найкращі карти</div>${topList(mp, "🗺️", false)}</div>
-          <div class="topsCol"><div class="topsTitle">🎮 Найкращі режими</div>${topList(md, "🎮", false)}</div>
+          <div class="topsCol"><div class="topsTitle">Найкращі бійці</div>${topList(bw, "brawler", true)}</div>
+          <div class="topsCol"><div class="topsTitle">Найкращі карти</div>${topList(mp, "map", false)}</div>
+          <div class="topsCol"><div class="topsTitle">Найкращі режими</div>${topList(md, "mode", false)}</div>
         </div>`;
 
       const rows = src.slice(0,10).map(it=>{
@@ -2563,7 +2620,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
           <span class="bTime">${fmtBattleTime(it.battleTime)}</span>
         </div>`;
       }).join("");
-      battlesHtml = `<div class="qslabel" style="margin-top:20px">Останні ранкед-матчі</div><div class="battleList">${rows}</div>`;
+      battlesHtml = `<div class="qslabel" style="margin-top:20px">${onlyTeamRanked ? "Останні Ranked-матчі" : "Останні бої"}</div><div class="battleList">${rows}</div>`;
     } else if(Array.isArray(battles)){
       winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма (останні бої)</div><div class="statsErr">Немає даних про останні бої.</div>`;
     }
@@ -2582,10 +2639,12 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
           <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">перемог дуо</div></div>
           <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? "Так" : "Ні"}</div><div class="statlbl">кваліфікація чемпіонату</div></div>
         </div>
+        ${Array.isArray(battles) ? toggleHtml() : ""}
         ${winrateHtml}
         ${topsHtml}
         ${battlesHtml}
       </div>`;
+    wireToggle();
   }
 
   document.getElementById("tagLookup").onclick = lookupTag;
@@ -2628,13 +2687,15 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
   function updateChip(){
     const rankLbl = blind ? t("rankBlind") : t("rankOpen");
-    const rankIco = blind ? "🥉" : "👑";
+    const rankIco = blind
+      ? "https://cdn.brawlify.com/ranked/regular/Diamond.png"
+      : "https://cdn.brawlify.com/ranked/regular/Mythic.png";
     $id("setchip").innerHTML =
       `<b>${mode}</b><span class="sep">·</span>`+
       `<span class="chipMap">${map[0]}</span>`+
       `<span class="tag t-${map[1]}">${T().types[map[1]]}</span>`+
       `<span class="sep">·</span>`+
-      `<span class="chipRank">${rankIco} ${rankLbl}</span>`+
+      `<span class="chipRank"><img src="${rankIco}" alt="" loading="lazy" onerror="this.remove()">${rankLbl}</span>`+
       `<button type="button" id="chipbtn">${t("wChange")}</button>`;
     $id("chipbtn").onclick=()=>wOpen(0);
   }
@@ -2770,6 +2831,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
   // --- мініатюри карт у майстрі ---
   const MAPIMG = {};
+  window.mapThumbnail = name => MAPIMG[norm(name)] || null;
   function decorateMaps(){
     if(!Object.keys(MAPIMG).length) return;
     document.querySelectorAll("#maps button").forEach(btn=>{
