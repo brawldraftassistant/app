@@ -851,6 +851,83 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .homeStats h2{ font-size:16px; margin-bottom:6px }
 .homeStats .statsIntro{ margin:0 0 14px }
 
+/* ---------- велика позначка чийого зараз ходу ---------- */
+.turnLabel{
+  font-family:Rubik,sans-serif; font-weight:900; font-style:italic;
+  font-size:24px; line-height:1.1; text-transform:uppercase; margin-bottom:4px;
+  display:inline-block;
+}
+.turnLabel.ours{
+  color:var(--ally); text-shadow:2px 2px 0 var(--edge), 0 0 22px rgba(56,182,255,.55);
+}
+.turnLabel.foe{
+  color:var(--enemy); text-shadow:2px 2px 0 var(--edge), 0 0 22px rgba(255,77,109,.55);
+}
+@media (prefers-reduced-motion: no-preference){
+  .turnLabel.ours{ animation:turnPulseUs 1.7s ease-in-out infinite }
+  .turnLabel.foe{ animation:turnPulseFoe 1.7s ease-in-out infinite }
+  @keyframes turnPulseUs{
+    0%,100%{ text-shadow:2px 2px 0 var(--edge), 0 0 14px rgba(56,182,255,.4) }
+    50%    { text-shadow:2px 2px 0 var(--edge), 0 0 30px rgba(56,182,255,.85) }
+  }
+  @keyframes turnPulseFoe{
+    0%,100%{ text-shadow:2px 2px 0 var(--edge), 0 0 14px rgba(255,77,109,.4) }
+    50%    { text-shadow:2px 2px 0 var(--edge), 0 0 30px rgba(255,77,109,.85) }
+  }
+}
+@media (min-width:760px){ .turnLabel{ font-size:30px } }
+
+.waitEnemy{
+  text-align:center; padding:34px 18px; font-size:16px; font-weight:800; color:var(--muted);
+  background:var(--panel); border:3px dashed var(--edge); border-radius:20px;
+}
+
+/* ---------- підписка Ranked+ ---------- */
+.subBtn{
+  flex:0 0 auto; padding:9px 14px; font-size:13px; border-radius:999px;
+  background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00; white-space:nowrap;
+}
+.subBtn.active{ background:linear-gradient(180deg,#059669,#065F46); color:#fff; box-shadow:0 4px 0 #044A38 }
+
+.subOverlay{
+  position:fixed; inset:0; z-index:200; background:rgba(10,5,25,.72);
+  display:flex; align-items:center; justify-content:center; padding:18px;
+}
+.subCard{
+  position:relative; width:100%; max-width:380px; background:#3A2088; border:4px solid var(--edge);
+  border-radius:24px; box-shadow:0 12px 0 var(--edge), 0 30px 60px rgba(0,0,0,.5);
+  padding:28px 24px 24px; text-align:center;
+}
+.subClose{
+  position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:10px;
+  background:var(--panel2); color:#fff; font-size:15px; box-shadow:0 3px 0 var(--edge);
+}
+.subLockIcon{ font-size:42px; margin-bottom:6px }
+.subCard h2{
+  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:26px;
+  color:var(--signal); text-shadow:2px 2px 0 var(--edge); margin-bottom:10px;
+}
+.subCard p{ color:var(--muted); font-size:14px; line-height:1.55; margin-bottom:20px; font-weight:700 }
+.subCard input{
+  width:100%; padding:13px 16px; font-size:15px; margin-bottom:12px;
+  background:#2E1670; border:3px solid var(--edge); border-radius:14px; color:#fff; font-weight:700;
+}
+.subPay{
+  width:100%; padding:15px; font-size:16px; border-radius:999px; margin-bottom:10px;
+  background:var(--grad); color:#3A1500; box-shadow:0 5px 0 #8A5A00;
+}
+.subCheck{
+  width:100%; padding:11px; font-size:13px; border-radius:999px;
+  background:none; box-shadow:none; color:var(--muted); text-decoration:underline; font-weight:700;
+}
+.subMsg{ margin-top:12px; font-size:13px; font-weight:800; min-height:18px }
+.subMsg.err{ color:#FFB8C8 }
+.subMsg.ok{ color:var(--mint) }
+
+/* ---------- заблоковані рекомендації для непідписаних ---------- */
+.recLocked{ text-align:center; padding:26px 18px; cursor:pointer }
+.recLocked .roles{ font-size:15px; font-weight:900; color:#fff; margin-bottom:10px }
+.recLocked .lockHint{ color:var(--signal); font-weight:900; font-size:13px }
 </style>
 <script data-goatcounter="https://xailyx.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -869,7 +946,20 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     <button class="langbtn" id="langbtn"><span class="flag">🇬🇧</span><span class="code">EN</span><span style="opacity:.5">▾</span></button>
     <div class="langmenu" id="langmenu"><button><span class="flag">🇺🇦</span><span class="code">UA</span><span>Українська</span></button><button class="on"><span class="flag">🇬🇧</span><span class="code">EN</span><span>English</span></button><button><span class="flag">🇪🇸</span><span class="code">ES</span><span>Español</span></button><button><span class="flag">🇧🇷</span><span class="code">PT</span><span>Português</span></button><button><span class="flag">🇷🇺</span><span class="code">RU</span><span>Русский</span></button><button><span class="flag">🇹🇷</span><span class="code">TR</span><span>Türkçe</span></button><button><span class="flag">🇸🇦</span><span class="code">AR</span><span>العربية</span></button><button><span class="flag">🇩🇪</span><span class="code">DE</span><span>Deutsch</span></button></div>
   </div>
+  <button type="button" class="subBtn" id="subBtn">🔓 Unlock</button>
 </header>
+<div id="subModal" class="subOverlay" style="display:none">
+  <div class="subCard">
+    <button type="button" class="subClose" id="subClose">✕</button>
+    <div class="subLockIcon" id="subLockIcon">🔓</div>
+    <h2 id="subTitle">Ranked+</h2>
+    <p id="subDesc">Free plan shows only the role (Tank, Assassin…). Subscribe to see the exact brawler pick — $5/month.</p>
+    <input type="email" id="subEmail" placeholder="you@email.com" autocomplete="email">
+    <button type="button" class="subPay" id="subPayBtn">Subscribe — $5/mo</button>
+    <button type="button" class="subCheck" id="subCheckBtn">Already subscribed? Check status</button>
+    <div id="subMsg" class="subMsg"></div>
+  </div>
+</div>
 <div class="sub" id="t-sub" style="display:none">Ranked · 1-2-2-1-1-2 pick order · knowledge base, July 2026</div>
 
 <div id="home">
@@ -1231,7 +1321,7 @@ uk:{title:"Драфт-асистент",sub:"Ranked · порядок піків
  banAdd:"+ Забанити",banTitle:"Кого банимо",pickOur:"Наш пік {n}",pickFoe:"Пік ворога {n}",
  search:"Пошук за іменем…",close:"Закрити ✕",done:"Драфт заповнено. Натисни ✕ на слоті, щоб очистити його.",
  tap:"поставити ↵",alts:"Якщо цих немає — інші {job}",gap:"Склад поки не має відповіді на: {x}",
- ourPick:"Наш пік {n}",foePick:"Пік ворога {n}",foeHint:"— що вони, найімовірніше, візьмуть",
+ ourPick:"Наш пік {n}",foePick:"Пік ворога {n}",foeHint:"— що вони, найімовірніше, візьмуть", waitEnemy:"Хід суперника — очікуємо їхній пік",
  ally:"наш",foe:"ворог",remove:"Прибрати пік",
  foot:"Рахунок будується на рольових контрах, тірі, типі карти, ролі для цього піка й банах. Ніяких запитів до ШІ — усе локально й безкоштовно.",
  notesUk:"Примітки до бравлерів — мовою оригіналу (українською).",
@@ -1265,7 +1355,7 @@ en:{title:"Draft Assistant",sub:"Ranked · 1-2-2-1-1-2 pick order · knowledge b
  banAdd:"+ Ban",banTitle:"Ban who",pickOur:"Our pick {n}",pickFoe:"Enemy pick {n}",
  search:"Search by name…",close:"Close ✕",done:"Draft is full. Tap ✕ on a slot to clear it.",
  tap:"place ↵",alts:"If you don't own these — other {job}",gap:"Comp has no answer yet to: {x}",
- ourPick:"Our pick {n}",foePick:"Enemy pick {n}",foeHint:"— what they'll most likely take",
+ ourPick:"Our pick {n}",foePick:"Enemy pick {n}",foeHint:"— what they'll most likely take", waitEnemy:"Enemy's turn — waiting for their pick",
  ally:"ours",foe:"enemy",remove:"Remove pick",
  foot:"Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — all local and free.",
  notesUk:"Brawler notes are in the original language (Ukrainian).",
@@ -1298,7 +1388,7 @@ es:{title:"Asistente de Draft",sub:"Ranked · orden 1-2-2-1-1-2 · base de conoc
  banAdd:"+ Banear",banTitle:"A quién banear",pickOur:"Nuestro pick {n}",pickFoe:"Pick del rival {n}",
  search:"Buscar por nombre…",close:"Cerrar ✕",done:"Draft completo. Toca ✕ en una casilla para vaciarla.",
  tap:"colocar ↵",alts:"Si no los tienes — otros {job}",gap:"La comp aún no responde a: {x}",
- ourPick:"Nuestro pick {n}",foePick:"Pick del rival {n}",foeHint:"— lo que probablemente tomarán",
+ ourPick:"Nuestro pick {n}",foePick:"Pick del rival {n}",foeHint:"— lo que probablemente tomarán", waitEnemy:"Turno del rival — esperando su elección",
  ally:"nuestro",foe:"rival",remove:"Quitar pick",
  foot:"La puntuación usa counters de rol, tier, tipo de mapa, el rol que pide este pick y los baneos. Sin IA — todo local y gratis.",
  notesUk:"Las notas de los brawlers están en el idioma original (ucraniano).",
@@ -1331,7 +1421,7 @@ pt:{title:"Assistente de Draft",sub:"Ranqueada · ordem 1-2-2-1-1-2 · base de c
  banAdd:"+ Banir",banTitle:"Quem banir",pickOur:"Nosso pick {n}",pickFoe:"Pick do inimigo {n}",
  search:"Buscar por nome…",close:"Fechar ✕",done:"Draft completo. Toque no ✕ para limpar um slot.",
  tap:"colocar ↵",alts:"Se você não tem esses — outros {job}",gap:"A comp ainda não responde a: {x}",
- ourPick:"Nosso pick {n}",foePick:"Pick do inimigo {n}",foeHint:"— o que eles provavelmente vão pegar",
+ ourPick:"Nosso pick {n}",foePick:"Pick do inimigo {n}",foeHint:"— o que eles provavelmente vão pegar", waitEnemy:"Vez do inimigo — aguardando a escolha",
  ally:"nosso",foe:"inimigo",remove:"Remover pick",
  foot:"A pontuação usa counters de função, tier, tipo de mapa, a função que este pick pede e os bans. Sem IA — tudo local e grátis.",
  notesUk:"As notas dos brawlers estão no idioma original (ucraniano).",
@@ -1364,7 +1454,7 @@ ru:{title:"Драфт-ассистент",sub:"Ranked · порядок пико
  banAdd:"+ Забанить",banTitle:"Кого баним",pickOur:"Наш пик {n}",pickFoe:"Пик врага {n}",
  search:"Поиск по имени…",close:"Закрыть ✕",done:"Драфт заполнен. Нажми ✕ на слоте, чтобы очистить.",
  tap:"поставить ↵",alts:"Если этих нет — другие {job}",gap:"У состава пока нет ответа на: {x}",
- ourPick:"Наш пик {n}",foePick:"Пик врага {n}",foeHint:"— что они скорее всего возьмут",
+ ourPick:"Наш пик {n}",foePick:"Пик врага {n}",foeHint:"— что они скорее всего возьмут", waitEnemy:"Ход соперника — ждём их пик",
  ally:"наш",foe:"враг",remove:"Убрать пик",
  foot:"Счёт строится на ролевых контрах, тире, типе карты, роли для этого пика и банах. Без запросов к ИИ — всё локально и бесплатно.",
  notesUk:"Заметки о бравлерах — на языке оригинала (украинском).",
@@ -1398,7 +1488,7 @@ tr:{title:"Draft Asistanı",sub:"Ranked · 1-2-2-1-1-2 seçim sırası · bilgi 
  banAdd:"+ Yasakla",banTitle:"Kimi yasaklayalım",pickOur:"Bizim seçim {n}",pickFoe:"Rakip seçim {n}",
  search:"İsimle ara…",close:"Kapat ✕",done:"Draft doldu. Temizlemek için ✕ işaretine dokun.",
  tap:"yerleştir ↵",alts:"Bunlar yoksa — diğer {job}",gap:"Kadronun henüz cevabı yok: {x}",
- ourPick:"Bizim seçim {n}",foePick:"Rakip seçim {n}",foeHint:"— büyük ihtimalle ne alacaklar",
+ ourPick:"Bizim seçim {n}",foePick:"Rakip seçim {n}",foeHint:"— büyük ihtimalle ne alacaklar", waitEnemy:"Rakibin sırası — seçimini bekliyoruz",
  ally:"bizim",foe:"rakip",remove:"Seçimi kaldır",
  foot:"Puanlama rol counter'ları, tier, harita tipi, bu seçimin istediği rol ve yasaklara dayanır. Yapay zekâ çağrısı yok — hepsi yerel ve ücretsiz.",
  notesUk:"Brawler notları orijinal dilde (Ukraynaca).",
@@ -1431,7 +1521,7 @@ ar:{title:"مساعد الاختيار",sub:"المصنّف · ترتيب الا
  banAdd:"+ حظر",banTitle:"من نحظر",pickOur:"اختيارنا {n}",pickFoe:"اختيار الخصم {n}",
  search:"ابحث بالاسم…",close:"إغلاق ✕",done:"اكتمل الاختيار. اضغط ✕ على الخانة لمسحها.",
  tap:"ضع ↵",alts:"إن لم تكن تملكها — {job} أخرى",gap:"لا يوجد رد في التشكيلة على: {x}",
- ourPick:"اختيارنا {n}",foePick:"اختيار الخصم {n}",foeHint:"— ما سيأخذونه على الأرجح",
+ ourPick:"اختيارنا {n}",foePick:"اختيار الخصم {n}",foeHint:"— ما سيأخذونه على الأرجح", waitEnemy:"دور الخصم — بانتظار اختياره",
  ally:"لنا",foe:"الخصم",remove:"إزالة الاختيار",
  foot:"يعتمد التقييم على مضادات الأدوار والمستوى ونوع الخريطة والدور المطلوب لهذا الاختيار والحظر. بلا ذكاء اصطناعي — محلي ومجاني.",
  notesUk:"ملاحظات الشخصيات بلغتها الأصلية (الأوكرانية).",
@@ -1464,7 +1554,7 @@ de:{title:"Draft-Assistent",sub:"Ranked · Pick-Reihenfolge 1-2-2-1-1-2 · Wisse
  banAdd:"+ Bannen",banTitle:"Wen bannen",pickOur:"Unser Pick {n}",pickFoe:"Gegner-Pick {n}",
  search:"Nach Namen suchen…",close:"Schließen ✕",done:"Draft ist voll. Tippe auf ✕, um einen Slot zu leeren.",
  tap:"setzen ↵",alts:"Falls du die nicht hast — andere {job}",gap:"Die Comp hat noch keine Antwort auf: {x}",
- ourPick:"Unser Pick {n}",foePick:"Gegner-Pick {n}",foeHint:"— was sie höchstwahrscheinlich nehmen",
+ ourPick:"Unser Pick {n}",foePick:"Gegner-Pick {n}",foeHint:"— was sie höchstwahrscheinlich nehmen", waitEnemy:"Gegner ist am Zug — wir warten auf die Wahl",
  ally:"unser",foe:"Gegner",remove:"Pick entfernen",
  foot:"Die Wertung nutzt Rollen-Konter, Tier, Kartentyp, die für diesen Pick nötige Rolle und Bans. Keine KI-Aufrufe — alles lokal und kostenlos.",
  notesUk:"Brawler-Notizen sind in der Originalsprache (Ukrainisch).",
@@ -2146,12 +2236,26 @@ function showRecs(){
   let html="";
   if(!blind){
     const who = ourTurn
-      ? `<b style="color:var(--ally)">${t("ourPick",{n:pickNo})}</b>`
-      : `<b style="color:var(--enemy)">${t("foePick",{n:pickNo})}</b> ${t("foeHint")}`;
-    html = `<div class="sub" style="margin-bottom:10px">${who} · ${t("h"+pickNo)}</div>`;
+      ? `<div class="turnLabel ours">${t("ourPick",{n:pickNo})}</div>`
+      : `<div class="turnLabel foe">${t("foePick",{n:pickNo})}</div>`;
+    html = who + `<div class="sub" style="margin-bottom:10px">${t("h"+pickNo)}</div>`;
+  }
+  if(!ourTurn && !blind){
+    // рекомендацій на хід суперника більше немає — тільки очікування,
+    // сам пік ворога так само логується через слот на дошці драфту вище
+    html += `<div class="waitEnemy">⏳ ${t("waitEnemy")}</div>`;
+    $("out").innerHTML = html;
+    return;
   }
   if(gaps.length && !blind) html+=`<div class="gapline">${t("gap",{x:gaps.map(ROLE).join(", ")})}</div>`;
   if(blind){
+    if(!window.subscriptionActive){
+      $("out").innerHTML = `<div class="rec recLocked" onclick="openSubModal()">
+        <div class="roles">🔒 Ranked+ shows the full pre-pick shortlist for every role</div>
+        <div class="lockHint">Tap to unlock — $5/mo</div>
+      </div>`;
+      return;
+    }
     const roles = teamRoles();
     const mini = b => `<span class="ct${b.t==="S"?" s":""}">${b.t}</span>` + (b.buffie?`<span class="cz">⚡</span>`:``);
     let h = `<div class="rolegrid">`;
@@ -2171,8 +2275,18 @@ function showRecs(){
     return;
   }
   const shown = list;
+  if(!window.subscriptionActive){
+    shown.forEach((r,i)=>{
+      html+=`<div class="rec recLocked n${Math.min(i+1,3)}" onclick="openSubModal()">
+        <div class="roles">${r.b.roles.map(ROLE).join(" · ")}</div>
+        <div class="lockHint">🔒 Subscribe to see the exact pick — $5/mo</div>
+      </div>`;
+    });
+    $("out").innerHTML=html;
+    return;
+  }
   shown.forEach((r,i)=>{
-    html+=`<div class="rec n${Math.min(i+1,3)}${(ourTurn||blind)?"":" foe"}" onclick="take('${r.b.n}')">
+    html+=`<div class="rec n${Math.min(i+1,3)}" onclick="take('${r.b.n}')">
       <span class="tap">${t("tap")}</span>
       <div class="rechead"><span class="name">${r.b.n} ${badges(r.b)}</span><span class="score">${r.s.toFixed(0)}</span></div>
       <div class="roles">${r.b.roles.map(ROLE).join(" · ")}</div>
@@ -2366,6 +2480,111 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
   // ---- Моя статистика: запит до власного Cloudflare Worker ----
   const WORKER_URL = "https://draft-assistant-api.xailyx.workers.dev";
+
+  // ---- Підписка Ranked+ ($5/міс): email + статус кешуються локально ----
+  let subEmail = "";
+  window.subscriptionActive = false;
+  try{ subEmail = localStorage.getItem("subEmail") || ""; } catch(e){}
+  try{ window.subscriptionActive = localStorage.getItem("subActive") === "1"; } catch(e){}
+
+  function refreshSubBtn(){
+    const btn = document.getElementById("subBtn");
+    if(!btn) return;
+    btn.textContent = subscriptionActive ? "✅ Ranked+" : "🔓 Unlock";
+    btn.classList.toggle("active", subscriptionActive);
+  }
+  refreshSubBtn();
+
+  async function checkSubscription(email, silent){
+    if(!email) return false;
+    try{
+      const res = await fetch(`${WORKER_URL}/check-subscription?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      subscriptionActive = !!data.active;
+      subEmail = email;
+      try{
+        localStorage.setItem("subEmail", email);
+        localStorage.setItem("subActive", subscriptionActive ? "1" : "0");
+      } catch(e){}
+      refreshSubBtn();
+      if(typeof render === "function") render();
+      return subscriptionActive;
+    } catch(e){
+      if(!silent){ const m = document.getElementById("subMsg"); if(m){ m.textContent = "Could not reach the server."; m.className = "subMsg err"; } }
+      return false;
+    }
+  }
+
+  function openSubModal(){
+    const modal = document.getElementById("subModal");
+    const emailInput = document.getElementById("subEmail");
+    if(emailInput && subEmail) emailInput.value = subEmail;
+    const icon = document.getElementById("subLockIcon");
+    const title = document.getElementById("subTitle");
+    const desc = document.getElementById("subDesc");
+    if(subscriptionActive){
+      icon.textContent = "✅"; title.textContent = "Ranked+ active";
+      desc.textContent = "Thanks for subscribing! You're seeing full brawler picks.";
+    } else {
+      icon.textContent = "🔓"; title.textContent = "Ranked+";
+      desc.textContent = "Free plan shows only the role (Tank, Assassin…). Subscribe to see the exact brawler pick — $5/month.";
+    }
+    modal.style.display = "flex";
+  }
+  function closeSubModal(){ document.getElementById("subModal").style.display = "none"; }
+  window.openSubModal = openSubModal;
+
+  document.getElementById("subBtn").onclick = openSubModal;
+  document.getElementById("subClose").onclick = closeSubModal;
+  document.getElementById("subModal").addEventListener("click", e=>{ if(e.target.id === "subModal") closeSubModal(); });
+
+  document.getElementById("subPayBtn").onclick = async ()=>{
+    const email = (document.getElementById("subEmail").value || "").trim().toLowerCase();
+    const msg = document.getElementById("subMsg");
+    if(!email || !email.includes("@")){ msg.textContent = "Enter a valid email."; msg.className = "subMsg err"; return; }
+    msg.textContent = "Opening secure checkout…"; msg.className = "subMsg";
+    try{
+      const res = await fetch(`${WORKER_URL}/create-checkout-session`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if(data.url){ try{ localStorage.setItem("subEmail", email); } catch(e){} window.location.href = data.url; }
+      else { msg.textContent = "Could not start checkout."; msg.className = "subMsg err"; }
+    } catch(e){ msg.textContent = "Network error — try again."; msg.className = "subMsg err"; }
+  };
+
+  document.getElementById("subCheckBtn").onclick = async ()=>{
+    const email = (document.getElementById("subEmail").value || "").trim().toLowerCase();
+    const msg = document.getElementById("subMsg");
+    if(!email || !email.includes("@")){ msg.textContent = "Enter a valid email."; msg.className = "subMsg err"; return; }
+    msg.textContent = "Checking…"; msg.className = "subMsg";
+    const active = await checkSubscription(email);
+    msg.textContent = active ? "✅ Subscription active — enjoy!" : "No active subscription found for this email.";
+    msg.className = active ? "subMsg ok" : "subMsg err";
+    if(active) setTimeout(closeSubModal, 1200);
+  };
+
+  // після повернення з оплати Stripe (?sub=success) перевіряємо статус кілька разів —
+  // вебхуку іноді треба секунду-дві, щоб база встигла оновитись
+  (function handleReturnFromCheckout(){
+    const params = new URLSearchParams(window.location.search);
+    const sub = params.get("sub");
+    if(sub !== "success" && sub !== "cancel") return;
+    history.replaceState(null, "", window.location.pathname);
+    if(sub === "cancel") return;
+    if(!subEmail) return;
+    let tries = 0;
+    const poll = async ()=>{
+      tries++;
+      const ok = await checkSubscription(subEmail, true);
+      if(ok || tries >= 6) return;
+      setTimeout(poll, 1500);
+    };
+    poll();
+  })();
+
+
   function esc(s){ return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 
   // перемикач «тільки командний Ranked» — за замовчуванням увімкнено, вибір запам'ятовується
