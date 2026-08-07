@@ -1026,6 +1026,20 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   text-shadow:0 0 14px rgba(255,210,48,.5);
 }
 .subCopy{ width:100%; padding:10px; font-size:13px; border-radius:999px; background:var(--panel2); color:#fff; box-shadow:0 3px 0 var(--edge) }
+.subCancelLink{
+  width:100%; margin-top:10px; padding:8px; font-size:12.5px; font-weight:700;
+  background:none; box-shadow:none; color:#FFB8C8; text-decoration:underline;
+}
+.subCancelBox{
+  margin-top:10px; text-align:left; background:rgba(255,77,109,.12);
+  border:2px solid rgba(255,77,109,.4); border-radius:14px; padding:14px;
+}
+.subCancelBox p{ margin:0 0 12px; font-size:12.5px; color:#EAE2FF; font-weight:700; line-height:1.5 }
+.subCancelConfirm{
+  width:100%; padding:11px; font-size:13px; border-radius:999px; margin-bottom:8px;
+  background:linear-gradient(180deg,#DC2626,#991B1B); color:#fff; box-shadow:0 3px 0 #6B1414;
+}
+.subCancelBack{ width:100%; padding:9px; font-size:12.5px; background:none; box-shadow:none; color:var(--muted) }
 .subSep{ display:flex; align-items:center; gap:10px; margin:16px 0 12px; color:var(--muted); font-size:12px; font-weight:800 }
 .subSep::before, .subSep::after{ content:""; flex:1 1 auto; height:2px; background:var(--edge) }
 
@@ -1076,6 +1090,12 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <div class="subCodeLbl">Your access code — save it!</div>
       <div class="subCodeVal" id="subCodeVal">—</div>
       <button type="button" class="subCopy" id="subCopyBtn">📋 Copy code</button>
+      <button type="button" class="subCancelLink" id="subCancelLink">Cancel subscription</button>
+      <div id="subCancelBox" class="subCancelBox" style="display:none">
+        <p>You'll keep full access until the end of the period you already paid for. No refund, no further charges after that.</p>
+        <button type="button" class="subCancelConfirm" id="subCancelConfirmBtn">Yes, cancel renewal</button>
+        <button type="button" class="subCancelBack" id="subCancelBackBtn">Never mind</button>
+      </div>
     </div>
 
     <button type="button" class="subPay" id="subPayBtn">Subscribe — $5/mo</button>
@@ -2679,6 +2699,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       codeBox.style.display = "block";
       payBtn.style.display = "none"; sep.style.display = "none";
       codeInput.style.display = "none"; checkBtn.style.display = "none";
+      document.getElementById("subCancelLink").style.display = "";
+      document.getElementById("subCancelBox").style.display = "none";
     } else {
       icon.textContent = "🔓"; title.textContent = "Ranked+";
       desc.textContent = "Free plan shows only the role (Tank, Assassin…). Subscribe to see the exact brawler pick — $5/month.";
@@ -2727,6 +2749,45 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       const msg = document.getElementById("subMsg");
       msg.textContent = "Copied!"; msg.className = "subMsg ok";
     });
+  };
+
+  // «Скасувати підписку» — питаємо підтвердження, ЩОБ не скасувати випадковим тапом,
+  // і одразу пояснюємо: доступ лишається до кінця вже оплаченого періоду, гроші не списуються далі.
+  document.getElementById("subCancelLink").onclick = ()=>{
+    document.getElementById("subCancelBox").style.display = "block";
+    document.getElementById("subCancelLink").style.display = "none";
+  };
+  document.getElementById("subCancelBackBtn").onclick = ()=>{
+    document.getElementById("subCancelBox").style.display = "none";
+    document.getElementById("subCancelLink").style.display = "";
+  };
+  document.getElementById("subCancelConfirmBtn").onclick = async ()=>{
+    const btn = document.getElementById("subCancelConfirmBtn");
+    const msg = document.getElementById("subMsg");
+    btn.disabled = true; btn.textContent = "Cancelling…";
+    try{
+      const res = await fetch(`${WORKER_URL}/cancel-subscription`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: subCode }),
+      });
+      const data = await res.json();
+      if(data.ok){
+        const until = data.accessUntil ? new Date(data.accessUntil * 1000).toLocaleDateString() : null;
+        msg.textContent = until
+          ? `Renewal cancelled. You'll keep access until ${until}.`
+          : "Renewal cancelled. You'll keep access until the current period ends.";
+        msg.className = "subMsg ok";
+        document.getElementById("subCancelBox").style.display = "none";
+      } else {
+        msg.textContent = data.error || "Could not cancel — try again.";
+        msg.className = "subMsg err";
+        btn.disabled = false; btn.textContent = "Yes, cancel renewal";
+      }
+    } catch(e){
+      msg.textContent = "Network error — try again.";
+      msg.className = "subMsg err";
+      btn.disabled = false; btn.textContent = "Yes, cancel renewal";
+    }
   };
 
   // після повернення з оплати Stripe (?sub=success) перевіряємо статус кілька разів —
