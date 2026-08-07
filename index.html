@@ -307,6 +307,15 @@ body{
 .bgfx i:nth-child(8){ left:80%; bottom:-40px; background:var(--grape) }
 .bgfx i:nth-child(9){ left:92%; bottom:-40px; background:var(--sun); border-radius:50% }
 
+/* коли відкрите модальне вікно з backdrop-filter, «заморожуємо» рухомий фон.
+   Інакше браузер щокадру перераховує розмиття (blur) великих рухомих плям НА ДЕСКТОПІ
+   через все велике вікно — саме це «просаджувало» FPS. На телефоні вікно маленьке,
+   тому там непомітно. Пауза робить фон статичним → розмиття рахується один раз. */
+html.modal-open .bgfx b,
+html.modal-open .bgfx i,
+html.modal-open .subBtnWrap .spark,
+html.modal-open .subBtn{ animation-play-state:paused !important; }
+
 h1{
   font-family:Rubik,system-ui,sans-serif; font-weight:900; font-style:italic;
   font-size:17px; letter-spacing:.01em; text-transform:uppercase; color:#fff;
@@ -2710,8 +2719,12 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       codeInput.value = "";
     }
     modal.style.display = "flex";
+    document.documentElement.classList.add("modal-open");
   }
-  function closeSubModal(){ document.getElementById("subModal").style.display = "none"; }
+  function closeSubModal(){
+    document.getElementById("subModal").style.display = "none";
+    document.documentElement.classList.remove("modal-open");
+  }
   window.openSubModal = openSubModal;
 
   document.getElementById("subBtn").onclick = openSubModal;
