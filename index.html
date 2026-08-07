@@ -101,7 +101,7 @@ button.on{background:var(--signal); color:#12161F; border-color:var(--signal); f
   border-radius:var(--radius); padding:16px}
 
 /* picker */
-.overlay{position:fixed; inset:0; background:rgba(6,9,16,.82); display:none; z-index:9;
+.overlay{position:fixed; inset:0; background:rgba(6,9,16,.82); display:none; z-index:60;
   padding:18px 14px; overflow-y:auto}
 .overlay.show{display:block}
 .pickpanel{max-width:740px; margin:0 auto; background:var(--panel); border:1px solid var(--line);
@@ -1158,7 +1158,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div id="faqview" style="display:none">
   <section class="faqsec">
     <h2 id="hFaqT">Часті питання</h2>
-    <details class="faq"><summary id="hF1q">Це безкоштовно?</summary><p id="hF1a">Так, повністю. Без реклами й без реєстрації.</p></details>
+    <details class="faq"><summary id="hF1q">Це безкоштовно?</summary><p id="hF1a">Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.</p></details>
     <details class="faq"><summary id="hF2q">Чи працює без інтернету?</summary><p id="hF2a">Так — після першого відкриття застосунок повністю працює офлайн.</p></details>
     <details class="faq"><summary id="hF3q">Звідки дані про бравлерів?</summary><p id="hF3a">База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.</p></details>
     <details class="faq"><summary id="hF4q">Це офіційний застосунок Supercell?</summary><p id="hF4a">Ні, це фанатський проєкт, не пов'язаний із Supercell.</p></details>
@@ -1233,7 +1233,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
         <div class="ar">assassin · 16</div>
       </div></div></div>
 
-<div class="note" id="t-foot">Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — all local and free. Brawler notes are in the original language (Ukrainian).</div>
+<div class="note" id="t-foot">Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — runs locally on your device. Brawler notes are in the original language (Ukrainian).</div>
 <div class="note" style="opacity:.6; font-size:11.5px; margin-top:6px">Unofficial fan project — not affiliated with, endorsed, or supported by Supercell. Brawler artwork © Supercell, used under Supercell's Fan Content Policy (supercell.com/fan-content-policy).</div>
 
 
@@ -1478,7 +1478,7 @@ uk:{title:"Драфт-асистент",sub:"Ranked · порядок піків
  tap:"поставити ↵",alts:"Якщо цих немає — інші {job}",gap:"Склад поки не має відповіді на: {x}",
  ourPick:"Наш пік {n}",foePick:"Пік ворога {n}",foeHint:"— що вони, найімовірніше, візьмуть", waitEnemy:"Хід суперника — очікуємо їхній пік",
  ally:"наш",foe:"ворог",remove:"Прибрати пік",
- foot:"Рахунок будується на рольових контрах, тірі, типі карти, ролі для цього піка й банах. Ніяких запитів до ШІ — усе локально й безкоштовно.",
+ foot:"Рахунок будується на рольових контрах, тірі, типі карти, ролі для цього піка й банах. Ніяких запитів до ШІ — все рахується локально на пристрої.",
  notesUk:"Примітки до бравлерів — мовою оригіналу (українською).",
  buffieWhy:"Є бафі — беруть саме з ними, без бафі просідає",
  h1:"перший пік драфту — найсильніша безпечна мета, суперник ще нічого не показав",
@@ -1512,7 +1512,7 @@ en:{title:"Draft Assistant",sub:"Ranked · 1-2-2-1-1-2 pick order · knowledge b
  tap:"place ↵",alts:"If you don't own these — other {job}",gap:"Comp has no answer yet to: {x}",
  ourPick:"Our pick {n}",foePick:"Enemy pick {n}",foeHint:"— what they'll most likely take", waitEnemy:"Enemy's turn — waiting for their pick",
  ally:"ours",foe:"enemy",remove:"Remove pick",
- foot:"Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — all local and free.",
+ foot:"Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — runs locally on your device.",
  notesUk:"Brawler notes are in the original language (Ukrainian).",
  buffieWhy:"Has Buffies — taken with them; without them he drops off",
  h1:"first pick of the draft — strongest safe meta, enemy has shown nothing yet",
@@ -1611,7 +1611,7 @@ ru:{title:"Драфт-ассистент",sub:"Ranked · порядок пико
  tap:"поставить ↵",alts:"Если этих нет — другие {job}",gap:"У состава пока нет ответа на: {x}",
  ourPick:"Наш пик {n}",foePick:"Пик врага {n}",foeHint:"— что они скорее всего возьмут", waitEnemy:"Ход соперника — ждём их пик",
  ally:"наш",foe:"враг",remove:"Убрать пик",
- foot:"Счёт строится на ролевых контрах, тире, типе карты, роли для этого пика и банах. Без запросов к ИИ — всё локально и бесплатно.",
+ foot:"Счёт строится на ролевых контрах, тире, типе карты, роли для этого пика и банах. Без запросов к ИИ — всё считается локально на устройстве.",
  notesUk:"Заметки о бравлерах — на языке оригинала (украинском).",
  buffieWhy:"Есть баффи — берут именно с ними, без них проседает",
  h1:"первый пик драфта — сильнейшая безопасная мета, соперник ещё ничего не показал",
@@ -2486,6 +2486,7 @@ function openPicker(tg){
   $("picktitle").textContent = tg==="ban" ? t("banTitle")
     : (OURS.includes(tg) ? t("pickOur",{n:tg+1}) : t("pickFoe",{n:tg+1}));
   $("search").value=""; roleFilter=null; drawChips(); drawList(""); $("overlay").classList.add("show");
+  document.documentElement.classList.add("modal-open");
 }
 let roleFilter=null;
 function drawChips(){
@@ -2518,16 +2519,16 @@ function drawList(q){
      btn.innerHTML=`${b.n}${b.buffie?' <span class="buffie"><span class="z">⚡</span>'+t("needBuffie")+'</span>':''}<span class="r">${b.roles.map(ROLE).join(", ")}</span>`;
      btn.onclick=()=>{
        if(target==="ban"){ bans.push(b.n); }
-       else { picks[target]=b.n; $("overlay").classList.remove("show"); target=null; }
+       else { picks[target]=b.n; $("overlay").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; }
        drawList($("search").value); render();
      };
      $("blist").appendChild(btn);
    });
 }
 $("search").oninput=e=>drawList(e.target.value);
-$("closepick").onclick=()=>{ $("overlay").classList.remove("show"); target=null; };
+$("closepick").onclick=()=>{ $("overlay").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; };
 $("reset").onclick=()=>{ picks=[null,null,null,null,null,null]; bans=[]; render(); };
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ $("overlay").classList.remove("show"); $("langmenu").classList.remove("show"); target=null; } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ $("overlay").classList.remove("show"); $("langmenu").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; } });
 
 setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); drawModes(); drawMaps(); render();
 </script>
@@ -2588,7 +2589,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH2t:"Вводь піки й бани", hH2d:"Позначай вибори обох команд у порядку 1-2-2-1-1-2 — як у справжньому драфті.",
     hH3t:"Отримуй найкращий пік", hH3d:"Асистент рахує контри, ролі й тип карти — і пояснює, чому саме цей бравлер.",
     hStatsT:"Моя статистика", stDraftsL:"драфтів", stModeL:"улюблений режим", stStreakL:"днів поспіль", stBansL:"банів пораховано", hFaqT:"Часті питання",
-    hF1q:"Це безкоштовно?", hF1a:"Так, повністю. Без реклами й без реєстрації.",
+    hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
     hF4q:"Це офіційний застосунок Supercell?", hF4a:"Ні, це фанатський проєкт, не пов'язаний із Supercell."
@@ -2603,7 +2604,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH2t:"Enter picks and bans", hH2d:"Log both teams' choices in the real 1-2-2-1-1-2 draft order.",
     hH3t:"Get the best pick", hH3d:"The assistant weighs counters, roles and map type — and explains why.",
     hStatsT:"Your stats", stDraftsL:"drafts", stModeL:"favorite mode", stStreakL:"day streak", stBansL:"bans scored", hFaqT:"FAQ",
-    hF1q:"Is it free?", hF1a:"Yes, completely. No ads, no sign-up.",
+    hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
     hF4q:"Is this an official Supercell app?", hF4a:"No, it's a fan project not affiliated with Supercell."
