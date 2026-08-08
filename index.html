@@ -1259,6 +1259,83 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 /* ============ БАЗА ЗНАНЬ ============ */
 /* ролі: antitank, assassin, control, tank, support, sniper, thrower, dmg, gemcarry */
 
+/* Переклади поля note (експертна примітка до бравлера). Оригінал у B[].note — завжди
+   українською. Тут — переклади для інших мов. noteFor() нижче обирає: рідна мова →
+   переклад мовою інтерфейсу → якщо перекладу нема, англійська (краще за випадкову
+   українську) → якщо й англійської нема, оригінал. Це саме те, що не давало текстам
+   показуватись мовою інтерфейсу — .note виводився напряму, а не через t(). */
+const NOTE_TR = {
+"Surge":{en:"practically no direct counter; fixed damage at any range, not burst",ru:"практически нет прямой контры; фиксированный урон на любой дистанции, не берст"},
+"Brock":{en:"situational on closed maps — sometimes picked, but rare",ru:"на закрытых ситуативен — пикается, но редко"},
+"Max":{en:"the strongest support; doesn't work in Heist",ru:"сильнейший саппорт; в Heist не играется"},
+"8-Bit":{en:"slow, so antitanks counter him a bit; his main counter is a thrower — but that only shows on the last pick",ru:"медленный, поэтому антитанки немного его контрят; главная контра — метатель — но его видно только на последнем пике"},
+"Starr Nova":{en:"recent nerfs — check if still accurate",ru:"свежие нёрфы — проверить актуальность"},
+"Damian":{en:"breaks role logic through raw power",ru:"ломает ролевую логику голой силой"},
+"Mortis":{en:"skill-based — only strong with good execution",ru:"скилловый — силён только при хорошем исполнении"},
+"Crow":{en:"poison blocks the tank's self-heal",ru:"яд блокирует самолечение танка"},
+"Colette":{en:"damage is % of HP — doesn't counter assassins, despite the antitank role",ru:"урон в % от HP — не контрит убийц, несмотря на роль антитанка"},
+"Kaze":{en:"skill-based — level 1-3 with good play",ru:"скилловый — при хорошей игре уровень 1-3"},
+"Angelo":{en:"has an escape gadget — harder to counter than other snipers",ru:"есть эскейп-гаджет — сложнее законтрить, чем других снайперов"},
+"Meeple":{en:"ult shoots through walls",ru:"ульта стреляет сквозь стены"},
+"Shade":{en:"banned specifically on closed maps, where he's strong",ru:"банят именно на закрытых картах, где он силён"},
+"Penny":{en:"situational — good against clustered enemies, strong in Heist",ru:"ситуативна — против скоплений, сильна в Heist"},
+"Gene":{en:"ult pulls the target — can flip the game",ru:"ульта вытягивает цель — может перевернуть игру"},
+"Mina":{en:"skill-based character",ru:"скилловый персонаж"},
+"Sirius":{en:"clones enemies — can copy a beefy tank",ru:"клонирует врагов — может скопировать жирного танка"},
+"Grey":{en:"only good in Heist with hypercharge — two portals give a fast route to the safe",ru:"в Heist только с гиперзарядом — два портала дают быстрый выход к сейфу"},
+"Griff":{en:"currently top meta — strong point-blank burst; the buff is a nice bonus, but he's strong on his own too",ru:"сейчас в топе меты — мощный берст в упор; баффер приятный бонус, но и сам силён"},
+"Kit":{en:"mostly a support; only an assassin on closed maps. Enables the Darryl+Kit setup",ru:"в основном саппорт; как убийца — только на закрытых. Даёт работать сетапу Darryl+Kit"},
+"Otis":{en:"fixed ranged damage, not burst",ru:"фиксированный урон на дистанции, не берст"},
+"Lou":{en:"top tier after the buff; especially strong in Hot Zone on open maps",ru:"после баффа сейчас топовый; особенно силён в Hot Zone на открытых картах"},
+"Alli":{en:"the more bushes on the map, the stronger; also countered by high-burst brawlers (Shelly, Griff)",ru:"чем больше кустов на карте, тем сильнее; также контрят бойцы с большим берст-уроном (Shelly, Griff)"},
+"Belle":{en:"a sniper for Knockout/Bounty; countered by assassins, but not picked on open maps",ru:"снайпер под Knockout/Bounty; убийцы контрят, но на открытые карты её не берут"},
+"Gus":{en:"ult knocks back — a decent pick specifically against assassins",ru:"ульта отталкивает — неплохой пик именно против убийц"},
+"Moe":{en:"might counter assassins too — unconfirmed",ru:"возможно контрит и убийц — не подтверждено"},
+"Fang":{en:"sometimes plays on open maps too via his ult; counters throwers worse than other assassins; decent against clustered picks in Hot Zone, but there are better options",ru:"иногда играет и на открытых через ульту; метателей контрит хуже других убийц; неплох против скученных пиков в Hot Zone, но есть варианты лучше"},
+"Nani":{en:"very long range — outranges other snipers; burst damage up close — deals the most damage point-blank despite low HP; but often worse than Pierce or Nadia",ru:"очень большая дальность — перестреливает других снайперов; берст-урон вблизи — наибольший урон именно в упор, несмотря на малый HP; но часто хуже Pierce или Nadia"},
+"Poco":{en:"usually picked alongside a tank or two tanks",ru:"пикается обычно в паре с танком или двумя танками"},
+"Lola":{en:"only works as an antitank on open and mid maps",ru:"как антитанк работает только на открытых и средних картах"},
+"Mandy":{en:"long range outranges snipers, but there are better picks",ru:"большая дальность перестреливает снайперов, но есть пики лучше"},
+"Emz":{en:"harder for assassins to counter than other controllers",ru:"убийцам законтрить её сложнее, чем других контролеров"},
+"Finx":{en:"aka Sphinx; harder for assassins to counter — he has more damage",ru:"он же Сфинкс; убийцам законтрить сложнее — у него больше урона"},
+"Bea":{en:"skill-based character, rarely picked; only countered by assassins, and only with smart play",ru:"скилловый персонаж, редко пикается; контрят только убийцы и только при разумной игре"},
+"Amber":{en:"only counters tanks on open maps — the endless flame keeps them from closing in",ru:"танков контрит только на открытых картах — бесконечное пламя не даёт подойти"},
+"Bo":{en:"fine damage against tanks, but easy to dodge his ult",ru:"по урону против танков нормально, но от ульты легко увернуться"},
+"Rico":{en:"also counters assassins, but not as easily anymore — and they're his main counter too",ru:"убийц тоже контрит, но уже не так легко — и они же его главная контра"},
+"Willow":{en:"situational, closed maps only — but plays well there; can be picked even not-last, best in Brawl Ball on closed maps",ru:"ситуативна, только закрытые карты — но там играет хорошо; можно пикать и не последним пиком, лучше всего в Brawl Ball на закрытых"},
+"Darryl":{en:"mostly played in Knockout and paired with a healer; countered by strong burst antitanks",ru:"играется в основном в Knockout и в паре с хилером; контрят мощные антитанки с берст-уроном"},
+"Janet":{en:"counters short-range attackers; harder for assassins because of her escape gadget",ru:"контрит тех, у кого малый радиус атаки; убийцам сложнее из-за эскейп-гаджета"},
+"Sandy":{en:"counters assassins decently with her gadget",ru:"убийц неплохо контрит гаджетом"},
+"Shelly":{en:"mostly closed maps; splash damage and very high point-blank burst",ru:"в основном закрытые карты; сплэш и очень большой берст-урон вблизи"},
+"Frank":{en:"the most HP in the game",ru:"больше всего здоровья в игре"},
+"Melodie":{en:"as a damage dealer rank 3-6, as an assassin 9-12 — almost never picked as an assassin; occasionally in Brawl Ball if skilled",ru:"как дамагер ранг 3-6, как убийца 9-12 — убийцей её почти никогда не берут; иногда в Brawl Ball, если скилловый"},
+"Pearl":{en:"counters assassins with her ult; mostly mid maps",ru:"убийц контрит ультой; в основном средние карты"},
+"Gale":{en:"mostly mid maps; a bit harder for assassins to counter, snipers only on open maps",ru:"в основном средние карты; убийцам законтрить его немного сложно, снайперы — только на открытых"},
+"R-T":{en:"counters anyone who needs to get up close; picked on open and mid maps",ru:"контрит всех, кому нужно подойти вплотную; пикается на открытые и средние карты"},
+"Clancy":{en:"stronger now than before; hard counters both tanks and assassins — dangerous against Damian/Edgar-style comps",ru:"сейчас сильнее, чем раньше; жёстко контрит и танков, и убийц — опасен против составов в стиле Damian/Edgar"},
+"Buster":{en:"usually picked alongside a support",ru:"пикается в основном с саппортом"},
+"Juju":{en:"mostly played in Knockout on bushy maps",ru:"играется в основном в Knockout на кустовых картах"},
+"Eve":{en:"technically control, but plays and gets picked like a sniper, on the same maps",ru:"формально контроль, но играет и пикается как снайпер, на тех же картах"},
+"Doug":{en:"mostly played as a support; only counters controllers on closed maps; so low in the meta he's barely played",ru:"играется в основном как саппорт; контролеров контрит только на закрытых; настолько низко в мете, что почти не играется"},
+"Berry":{en:"mostly played as a support",ru:"играется в основном как саппорт"},
+"Mico":{en:"afraid of point-blank burst damage (Shelly, Griff, etc.); mostly picked in Heist",ru:"боится берст-урона вблизи (Shelly, Griff и подобные); берётся в основном в Heist"},
+"Dynamike":{en:"not on bushy maps",ru:"не на кустовых картах"},
+"Ollie":{en:"jumps over walls, so he's also a threat to throwers",ru:"прыгает через стены, поэтому опасен и для метателей"},
+"Squeak":{en:"only countered by tanks on closed and mid maps",ru:"танки контрят его только на закрытых и средних картах"},
+"Chuck":{en:"played almost only in Heist for safe damage — his ban rate is noticeably higher there too",ru:"играется почти только в Heist ради урона по сейфу; там и вероятность бана заметно выше"},
+"Mr. P":{en:"only counters close-range antitanks — can't reach ranged ones; countered by tanks except on open maps",ru:"контрит только ближних антитанков — до дальних не достаёт; танки контрят его, кроме открытых карт"},
+"Rosa":{en:"stronger on bushy maps; throwers counter her specifically on closed maps",ru:"сильнее на кустовых картах; метатели контрят её именно на закрытых"},
+"Pam":{en:"plays as a gem carry in Gem Grab",ru:"в Gem Grab играет как gem carry"}
+};
+function noteFor(b){
+  if(!b || !b.note) return "";
+  if(lang==="uk") return b.note;
+  const tr = NOTE_TR[b.n];
+  if(tr && tr[lang]) return tr[lang];
+  if(tr && tr.en) return tr.en;
+  return b.note;
+}
+
 const B = [
 // S-TIER — rank 1 = найсильніший у своїй ролі
 {n:"Surge",     t:"S", rr:1, roles:["antitank"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control"],            ban:3, note:"практично немає прямої контри; фіксований урон на будь-якій дистанції, не burst", buffie:true, tri:"dps"},
@@ -1398,6 +1475,12 @@ function triBeats(a, b){
   if(!a.tri || !b.tri) return false;
   if(TRI_NEXT[a.tri] !== b.tri) return false;
   if(a.tri==="highhp" && TRI_EXCEPT_HIGHHP.includes(b.n)) return false;
+  // Явно продиктована слабкість (losesTo) переважує загальний трикутник HP/DPS —
+  // інакше загальне правило суперечить конкретному опису бійця. Приклад: Colette —
+  // "dps" за трикутником, тому формально мала б бити highhp-бійців (напр. Leon),
+  // але її власний опис прямо каже, що вона програє вбивцям (losesTo:["assassin"]).
+  // Конкретний виняток має перемагати загальне правило.
+  if(a.losesTo && b.roles.some(r=>a.losesTo.includes(r))) return false;
   return true;
 }
 
@@ -1546,7 +1629,7 @@ es:{title:"Asistente de Draft",sub:"Ranked · orden 1-2-2-1-1-2 · base de conoc
  ourPick:"Nuestro pick {n}",foePick:"Pick del rival {n}",foeHint:"— lo que probablemente tomarán", waitEnemy:"Turno del rival — esperando su elección",
  ally:"nuestro",foe:"rival",remove:"Quitar pick",
  foot:"La puntuación usa counters de rol, tier, tipo de mapa, el rol que pide este pick y los baneos. Sin IA — todo local y gratis.",
- notesUk:"Las notas de los brawlers están en el idioma original (ucraniano).",
+ notesUk:"Algunas notas de brawlers aparecen en inglés mientras se traducen.",
  buffieWhy:"Tiene Buffies — se elige con ellas; sin ellas baja mucho",
  h1:"primer pick del draft — la mejor meta segura, el rival aún no muestra nada",
  h2:"el rival se abrió — meta fuerte y primera reacción",
@@ -1579,7 +1662,7 @@ pt:{title:"Assistente de Draft",sub:"Ranqueada · ordem 1-2-2-1-1-2 · base de c
  ourPick:"Nosso pick {n}",foePick:"Pick do inimigo {n}",foeHint:"— o que eles provavelmente vão pegar", waitEnemy:"Vez do inimigo — aguardando a escolha",
  ally:"nosso",foe:"inimigo",remove:"Remover pick",
  foot:"A pontuação usa counters de função, tier, tipo de mapa, a função que este pick pede e os bans. Sem IA — tudo local e grátis.",
- notesUk:"As notas dos brawlers estão no idioma original (ucraniano).",
+ notesUk:"Algumas notas dos brawlers aparecem em inglês enquanto são traduzidas.",
  buffieWhy:"Tem Buffies — pega-se com elas; sem elas cai muito",
  h1:"primeiro pick do draft — a meta mais forte e segura, o rival não mostrou nada",
  h2:"o rival abriu — meta forte mais a primeira reação",
@@ -1646,7 +1729,7 @@ tr:{title:"Draft Asistanı",sub:"Ranked · 1-2-2-1-1-2 seçim sırası · bilgi 
  ourPick:"Bizim seçim {n}",foePick:"Rakip seçim {n}",foeHint:"— büyük ihtimalle ne alacaklar", waitEnemy:"Rakibin sırası — seçimini bekliyoruz",
  ally:"bizim",foe:"rakip",remove:"Seçimi kaldır",
  foot:"Puanlama rol counter'ları, tier, harita tipi, bu seçimin istediği rol ve yasaklara dayanır. Yapay zekâ çağrısı yok — hepsi yerel ve ücretsiz.",
- notesUk:"Brawler notları orijinal dilde (Ukraynaca).",
+ notesUk:"Bazı brawler notları çevrilene kadar İngilizce gösterilir.",
  buffieWhy:"Buffies var — onlarla alınır, onlarsız zayıflar",
  h1:"draftın ilk seçimi — en güçlü güvenli meta, rakip henüz bir şey göstermedi",
  h2:"rakip açıldı — güçlü meta artı ilk tepki",
@@ -1679,7 +1762,7 @@ ar:{title:"مساعد الاختيار",sub:"المصنّف · ترتيب الا
  ourPick:"اختيارنا {n}",foePick:"اختيار الخصم {n}",foeHint:"— ما سيأخذونه على الأرجح", waitEnemy:"دور الخصم — بانتظار اختياره",
  ally:"لنا",foe:"الخصم",remove:"إزالة الاختيار",
  foot:"يعتمد التقييم على مضادات الأدوار والمستوى ونوع الخريطة والدور المطلوب لهذا الاختيار والحظر. بلا ذكاء اصطناعي — محلي ومجاني.",
- notesUk:"ملاحظات الشخصيات بلغتها الأصلية (الأوكرانية).",
+ notesUk:"تظهر بعض ملاحظات الشخصيات بالإنجليزية ريثما تتم ترجمتها.",
  buffieWhy:"لديه Buffies — يُختار معها، وبدونها يضعف",
  h1:"أول اختيار — أقوى ميتا آمنة، الخصم لم يُظهر شيئًا بعد",
  h2:"الخصم انكشف — ميتا قوية مع أول رد",
@@ -1712,7 +1795,7 @@ de:{title:"Draft-Assistent",sub:"Ranked · Pick-Reihenfolge 1-2-2-1-1-2 · Wisse
  ourPick:"Unser Pick {n}",foePick:"Gegner-Pick {n}",foeHint:"— was sie höchstwahrscheinlich nehmen", waitEnemy:"Gegner ist am Zug — wir warten auf die Wahl",
  ally:"unser",foe:"Gegner",remove:"Pick entfernen",
  foot:"Die Wertung nutzt Rollen-Konter, Tier, Kartentyp, die für diesen Pick nötige Rolle und Bans. Keine KI-Aufrufe — alles lokal und kostenlos.",
- notesUk:"Brawler-Notizen sind in der Originalsprache (Ukrainisch).",
+ notesUk:"Manche Brawler-Notizen werden bis zur Übersetzung auf Englisch angezeigt.",
  buffieWhy:"Hat Buffies — wird damit gepickt, ohne sie fällt er ab",
  h1:"erster Pick des Drafts — stärkste sichere Meta, der Gegner hat noch nichts gezeigt",
  h2:"der Gegner hat sich geöffnet — starke Meta plus erste Reaktion",
@@ -2241,7 +2324,7 @@ function applyLang(){
   $("closepick").textContent = t("close");
   $("search").placeholder  = t("search");
   if($("chips").children.length) drawChips();
-  $("t-foot").textContent  = t("foot") + (lang==="uk" ? "" : " " + t("notesUk"));
+  $("t-foot").textContent  = t("foot") + (["uk","en","ru"].includes(lang) ? "" : " " + t("notesUk"));
 }
 function drawLangs(){
   const cur = LANGS.find(l=>l[0]===lang) || LANGS[0];
@@ -2465,7 +2548,7 @@ function showRecs(){
       <div class="rechead"><span class="name">${r.b.n} ${badges(r.b)}</span><span class="score">${r.s.toFixed(0)}</span></div>
       <div class="roles">${r.b.roles.map(ROLE).join(" · ")}</div>
       ${r.why.map(w=>`<div class="why${w[1]?" neg":""}">${w[0]}</div>`).join("")}
-      ${r.b.note?`<div class="why" style="color:var(--muted)"><span style="opacity:0">+</span>${r.b.note}</div>`:""}
+      ${r.b.note?`<div class="why" style="color:var(--muted)"><span style="opacity:0">+</span>${noteFor(r.b)}</div>`:""}
     </div>`;
   });
   if(alts.length && !blind){
