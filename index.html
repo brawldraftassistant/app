@@ -2006,14 +2006,25 @@ function banOrder(){
 // Приклади реальних бійців для ролі — щоб непідписані люди бачили, ХТО такий "antitank",
 // а не тільки незрозумілий термін. Не розкриває сам рекомендований пік, лише кілька
 // впізнаваних прикладів цієї ролі з портретами.
+// ВАЖЛИВО: беремо по черзі з КОЖНОЇ ролі (round-robin), а не спочатку повністю
+// вичерпуємо першу роль. Інакше при двох ролях (напр. antitank+dmg чи antitank+control)
+// перша роль (в базі 27-30 бійців) сама займала всі 10 слотів, і другу роль
+// не було видно взагалі — саме це і виглядало як "завжди однакові іконки".
 function roleExampleIcons(roles){
   if(!window.brawlerPortrait) return "";
+  const pools = roles.map(role=>B.filter(b=>b.roles.includes(role)).map(b=>b.n));
   const seen = new Set(); const names = [];
-  roles.forEach(role=>{
-    B.filter(b=>b.roles.includes(role)).forEach(b=>{
-      if(!seen.has(b.n)){ seen.add(b.n); names.push(b.n); }
-    });
-  });
+  let i = 0, progressed = true;
+  while(progressed && names.length < 10){
+    progressed = false;
+    for(const pool of pools){
+      if(names.length >= 10) break;
+      const n = pool[i];
+      if(n && !seen.has(n)){ seen.add(n); names.push(n); progressed = true; }
+      else if(n) progressed = true; // ще є що перебирати в цій ролі, навіть якщо дублікат
+    }
+    i++;
+  }
   const withPort = names.map(n=>({n, src: window.brawlerPortrait(n)})).filter(x=>x.src).slice(0,10);
   if(!withPort.length) return "";
   return withPort.map(x=>`<img class="roleExIco" src="${x.src}" alt="" loading="lazy" title="${x.n}">`).join("");
