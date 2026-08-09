@@ -2543,13 +2543,16 @@ function showRecs(){
   }
   const shown = list;
   if(!window.subscriptionActive){
-    shown.forEach((r,i)=>{
-      html+=`<div class="rec recLocked n${Math.min(i+1,3)}" onclick="openSubModal()">
-        <div class="roles">${r.b.roles.map(ROLE).join(" · ")}</div>
-        <div class="roleEx">${roleExampleIcons(r.b.roles)}</div>
-        <div class="lockHint">🔒 Subscribe to see the exact pick — $5/mo</div>
-      </div>`;
-    });
+    // Одна чітка рекомендація, ОДНІЄЇ ролі — не 3 картки з мішаниною ролей топ-бійців
+    // (напр. antitank+control, tank+control, antitank), яка виглядала хаотично й незрозуміло.
+    // "job" — це роль, яку реально просить цей пік (з шаблону складу), а не довільний
+    // список ролей конкретного бійця з топу.
+    const primaryRole = (job && job[0]) || (shown[0] ? shown[0].b.roles[0] : null);
+    html += `<div class="rec recLocked n1" onclick="openSubModal()">
+      <div class="roles">${primaryRole ? ROLE(primaryRole) : ""}</div>
+      <div class="roleEx">${primaryRole ? roleExampleIcons([primaryRole]) : ""}</div>
+      <div class="lockHint">🔒 Subscribe to see the exact pick — $5/mo</div>
+    </div>`;
     $("out").innerHTML=html;
     return;
   }
