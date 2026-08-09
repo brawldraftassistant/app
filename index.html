@@ -218,6 +218,14 @@ h2::before{content:""; width:3px; height:13px; border-radius:2px; background:var
 .pbar i{display:block; height:100%; background:var(--signal)}
 .pcol.them .pbar i{background:var(--enemy)}
 .psc{font-family:Oswald,sans-serif; font-size:13px; min-width:22px; text-align:right}
+.pwhy{margin:-3px 0 8px 0}
+.pwhy .why{font-size:11px; padding-left:14px; margin:1px 0}
+.pwhy .why::before{left:1px}
+.draftOverall{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--signal);
+  border-radius:8px; padding:10px 12px; margin:12px 0; font-size:13px}
+.dOverallRow{margin:3px 0}
+.dOverallRow b{color:var(--signal)}
+.draftOverall.dLocked{border-left-color:var(--muted); cursor:pointer; color:var(--signal); font-weight:700; text-align:center}
 .rolegrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px}
 .rrow{display:flex; align-items:center; gap:5px; background:var(--panel2);
   border:1px solid var(--line); border-radius:7px; padding:6px 7px; font-size:12px; margin-bottom:4px}
@@ -238,7 +246,7 @@ h2::before{content:""; width:3px; height:13px; border-radius:2px; background:var
   .rolename{font-size:10px} .rrow{font-size:11px; padding:5px 6px; gap:4px}
   .rrow.dim{font-size:10px}
 }
-@media (prefers-reduced-motion:no-preference){ .slot.active{animation:pulse 2s ease-in-out infinite} }
+@media (prefers-reduced-motion:no-preference), (prefers-reduced-motion:reduce){ .slot.active{animation:pulse 2s ease-in-out infinite} }
 @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(255,197,49,.13)}50%{box-shadow:0 0 0 5px rgba(255,197,49,.05)}}
 
 /* ---- PWA shell ---- */
@@ -257,7 +265,10 @@ body{padding-top:calc(16px + env(safe-area-inset-top)); padding-bottom:calc(60px
   z-index:70; display:none; background:var(--signal); color:#12161F; font-size:11px; font-weight:700;
   letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:99px}
 #netbadge.show{display:block}
-@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+/* Раніше тут був глобальний рубильник, що вимикав УСІ анімації сайту, коли система/браузер
+   просить "зменшити рух" (prefers-reduced-motion: reduce). За бажанням розробника декоративні
+   анімації тепер завжди грають, незалежно від цього системного налаштування — див. нижче,
+   де кожен блок анімацій тепер спрацьовує в обох випадках (no-preference і reduce). */
 
 
 
@@ -550,10 +561,18 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 @media (min-width:1024px){
   .herotitle{ font-size:68px }
   #modes button, #maps button{ font-size:18.5px }
+  /* На маленькому екрані ці плями майже на весь екран — дуже помітно.
+     На великому та сама фіксована ширина в px — це лише невеликий кут,
+     та ще й майже того самого кольору, що й фон — тому губиться.
+     Збільшуємо, щоб ефект був так само живий, як на телефоні. */
+  .bgfx b:nth-child(1){ width:560px; height:560px; left:-140px; top:-100px }
+  .bgfx b:nth-child(2){ width:480px; height:480px; right:-140px; top:18% }
+  .bgfx b:nth-child(3){ width:520px; height:520px; left:14%; bottom:-150px }
+  .bgfx i{ width:16px; height:16px }
 }
 
-/* ---------- анімації: додаються ЗГОРИ, нічого не ховають ---------- */
-@media (prefers-reduced-motion: no-preference){
+/* ---------- анімації: додаються ЗГОРИ, нічого не ховають (грають завжди, незалежно від prefers-reduced-motion) ---------- */
+@media (prefers-reduced-motion: no-preference), (prefers-reduced-motion: reduce){
   /* вікно підписки: поява з відскоком, живий рух фону */
   .subOverlay{ animation:overlayIn .25s ease }
   @keyframes overlayIn{ from{opacity:0} to{opacity:1} }
@@ -589,7 +608,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   .subCard::before{ animation:subSparkle 4s linear infinite }
   @keyframes subSparkle{ 0%{opacity:.35} 50%{opacity:.65} 100%{opacity:.35} }
 }
-@media (prefers-reduced-motion: no-preference){
+@media (prefers-reduced-motion: no-preference), (prefers-reduced-motion: reduce){
   /* пружна поява елементів героя */
   .heroin > *{ animation:popUp .55s cubic-bezier(.18,1.5,.4,1) backwards }
   .heroin > :nth-child(2){ animation-delay:.08s }
@@ -867,7 +886,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 }
 .statlbl{ margin-top:6px; font-size:12.5px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.04em }
 @media (min-width:760px){ .statgrid{ grid-template-columns:repeat(2,1fr) } }
-@media (prefers-reduced-motion: no-preference){
+@media (prefers-reduced-motion: no-preference), (prefers-reduced-motion: reduce){
   .statcard{ animation:popUp .45s cubic-bezier(.2,1.4,.4,1) backwards }
   .statcard:nth-child(2){ animation-delay:.06s }
   .statcard:nth-child(3){ animation-delay:.12s }
@@ -908,7 +927,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .turnLabel.foe{
   color:var(--enemy); text-shadow:2px 2px 0 var(--edge), 0 0 22px rgba(255,77,109,.55);
 }
-@media (prefers-reduced-motion: no-preference){
+@media (prefers-reduced-motion: no-preference), (prefers-reduced-motion: reduce){
   .turnLabel.ours{ animation:turnPulseUs 1.7s ease-in-out infinite }
   .turnLabel.foe{ animation:turnPulseFoe 1.7s ease-in-out infinite }
   @keyframes turnPulseUs{
@@ -948,7 +967,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .spark.s1{ top:-3px; left:14%; }
 .spark.s2{ top:50%; right:-4px; background:#FF3D8B; box-shadow:0 0 6px 1px rgba(255,61,139,.8); }
 .spark.s3{ bottom:-3px; left:55%; background:#38B6FF; box-shadow:0 0 6px 1px rgba(56,182,255,.8); }
-@media (prefers-reduced-motion: no-preference){
+@media (prefers-reduced-motion: no-preference), (prefers-reduced-motion: reduce){
   .subBtn{ animation:subBtnGlow 2.6s ease-in-out infinite }
   @keyframes subBtnGlow{
     0%,100%{ box-shadow:0 4px 0 #6B1E8C, 0 0 0 rgba(168,85,247,0) }
@@ -1267,12 +1286,12 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 const NOTE_TR = {
 "Surge":{en:"practically no direct counter; fixed damage at any range, not burst",ru:"практически нет прямой контры; фиксированный урон на любой дистанции, не берст"},
 "Brock":{en:"situational on closed maps — sometimes picked, but rare",ru:"на закрытых ситуативен — пикается, но редко"},
-"Max":{en:"the strongest support; doesn't work in Heist",ru:"сильнейший саппорт; в Heist не играется"},
+"Max":{en:"the strongest support; high mobility lets her run from assassins — counters them; doesn't work in Heist",ru:"сильнейший саппорт; высокая скорость позволяет убегать от убийц — контрит их; в Heist не играется"},
 "8-Bit":{en:"slow, so antitanks counter him a bit; his main counter is a thrower — but that only shows on the last pick",ru:"медленный, поэтому антитанки немного его контрят; главная контра — метатель — но его видно только на последнем пике"},
 "Starr Nova":{en:"recent nerfs — check if still accurate",ru:"свежие нёрфы — проверить актуальность"},
 "Damian":{en:"breaks role logic through raw power",ru:"ломает ролевую логику голой силой"},
 "Mortis":{en:"skill-based — only strong with good execution",ru:"скилловый — силён только при хорошем исполнении"},
-"Crow":{en:"poison blocks the tank's self-heal",ru:"яд блокирует самолечение танка"},
+"Crow":{en:"damage is weak at range but fine up close; not burst due to low HP — poison blocks the tank's self-heal",ru:"урон слабый издалека, но нормальный вблизи; не берст из-за малого HP — яд блокирует самолечение танка"},
 "Colette":{en:"damage is % of HP — doesn't counter assassins, despite the antitank role",ru:"урон в % от HP — не контрит убийц, несмотря на роль антитанка"},
 "Kaze":{en:"skill-based — level 1-3 with good play",ru:"скилловый — при хорошей игре уровень 1-3"},
 "Angelo":{en:"has an escape gadget — harder to counter than other snipers",ru:"есть эскейп-гаджет — сложнее законтрить, чем других снайперов"},
@@ -1301,7 +1320,7 @@ const NOTE_TR = {
 "Bea":{en:"skill-based character, rarely picked; only countered by assassins, and only with smart play",ru:"скилловый персонаж, редко пикается; контрят только убийцы и только при разумной игре"},
 "Amber":{en:"only counters tanks on open maps — the endless flame keeps them from closing in",ru:"танков контрит только на открытых картах — бесконечное пламя не даёт подойти"},
 "Bo":{en:"fine damage against tanks, but easy to dodge his ult",ru:"по урону против танков нормально, но от ульты легко увернуться"},
-"Rico":{en:"also counters assassins, but not as easily anymore — and they're his main counter too",ru:"убийц тоже контрит, но уже не так легко — и они же его главная контра"},
+"Rico":{en:"shots ricochet off walls — strong on closed maps; also counters assassins, but not as easily anymore — and they're his main counter too",ru:"выстрелы рикошетят от стен — силён на закрытых картах; убийц тоже контрит, но уже не так легко — и они же его главная контра"},
 "Willow":{en:"situational, closed maps only — but plays well there; can be picked even not-last, best in Brawl Ball on closed maps",ru:"ситуативна, только закрытые карты — но там играет хорошо; можно пикать и не последним пиком, лучше всего в Brawl Ball на закрытых"},
 "Darryl":{en:"mostly played in Knockout and paired with a healer; countered by strong burst antitanks",ru:"играется в основном в Knockout и в паре с хилером; контрят мощные антитанки с берст-уроном"},
 "Janet":{en:"counters short-range attackers; harder for assassins because of her escape gadget",ru:"контрит тех, у кого малый радиус атаки; убийцам сложнее из-за эскейп-гаджета"},
@@ -1325,7 +1344,9 @@ const NOTE_TR = {
 "Chuck":{en:"played almost only in Heist for safe damage — his ban rate is noticeably higher there too",ru:"играется почти только в Heist ради урона по сейфу; там и вероятность бана заметно выше"},
 "Mr. P":{en:"only counters close-range antitanks — can't reach ranged ones; countered by tanks except on open maps",ru:"контрит только ближних антитанков — до дальних не достаёт; танки контрят его, кроме открытых карт"},
 "Rosa":{en:"stronger on bushy maps; throwers counter her specifically on closed maps",ru:"сильнее на кустовых картах; метатели контрят её именно на закрытых"},
-"Pam":{en:"plays as a gem carry in Gem Grab",ru:"в Gem Grab играет как gem carry"}
+"Pam":{en:"plays as a gem carry in Gem Grab",ru:"в Gem Grab играет как gem carry"},
+"Lumi":{en:"high damage that doesn't fall off with distance",ru:"большой урон, который не падает с дистанцией"},
+"Nita":{en:"strong via her bear plus damage that doesn't fall off with distance",ru:"сильна благодаря медведю и урону, который не падает с дистанцией"}
 };
 function noteFor(b){
   if(!b || !b.note) return "";
@@ -1338,9 +1359,9 @@ function noteFor(b){
 
 const B = [
 // S-TIER — rank 1 = найсильніший у своїй ролі
-{n:"Surge",     t:"S", rr:1, roles:["antitank"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control"],            ban:3, note:"практично немає прямої контри; фіксований урон на будь-якій дистанції, не burst", buffie:true, tri:"dps"},
+{n:"Surge",     t:"S", rr:1, roles:["antitank"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control"],            ban:3, anyRange:true, note:"практично немає прямої контри; фіксований урон на будь-якій дистанції, не burst", buffie:true, tri:"dps"},
 {n:"Brock",     t:"S", rr:2, roles:["control"],             maps:["mid","open"],          beats:["assassin","control"],       losesTo:["tank"],               ban:3, note:"на закритих ситуативний — пікається, але рідко", buffie:true, tri:"lowhp"},
-{n:"Max",       t:"S", rr:1, roles:["support","control"],   maps:["mid","open"],          beats:["thrower"],                  losesTo:["control"],            weakAs:"control", ban:2.5,badModes:["Heist"], note:"найсильніший саппорт; у Heist не грається", buffie:true, tri:"lowhp"},
+{n:"Max",       t:"S", rr:1, roles:["support","control"],   maps:["mid","open"],          beats:["thrower","assassin"],                  losesTo:["control"],            weakAs:"control", ban:2.5,badModes:["Heist"], note:"найсильніший саппорт; висока швидкість дозволяє тікати від вбивць — контрить їх; у Heist не грається", buffie:true, tri:"lowhp"},
 {n:"8-Bit",     t:"S", rr:2, roles:["control","antitank","gemcarry"],  maps:["open","mid"],          beats:["assassin","tank"],          losesTo:["thrower"], softLosesTo:["antitank"], ban:2.5,note:"повільний, тому антитанки трохи його контрять; головна контра — метатель — а того видно лише на ласт піку", buffie:true, tri:"dps"},
 {n:"Meg",       t:"S", rr:2, roles:["control","tank"],      maps:["mid"],                 beats:[],                            losesTo:["antitank","thrower"], ban:2, buffie:true, tri:"highhp"},
 {n:"Starr Nova",t:"S", rr:2, roles:["assassin"],  maps:["mid","closed"],        beats:["thrower","control"],                   losesTo:["tank","antitank"],    ban:3, note:"свіжі нерфи — перевірити актуальність", tri:"highhp"},
@@ -1348,10 +1369,10 @@ const B = [
 {n:"Damian",    t:"S", rr:2, roles:["tank"],     maps:["mid","closed"],        beats:["thrower","control"],        losesTo:["tank","antitank"],    ban:3, note:"ламає рольову логіку голою силою", tri:"highhp"},
 {n:"Mortis",    t:"S", rr:2, roles:["assassin"],            maps:["mid","closed"],        beats:["thrower","control","assassin"],        losesTo:["tank","antitank"],    ban:3, note:"скіловий — сильний лише при хорошому виконанні", buffie:true, tri:"highhp"},
 {n:"Edgar",     t:"S", rr:2, roles:["assassin"],            maps:["mid","closed"],        beats:["thrower","control"],                   losesTo:["tank","antitank"],    ban:3, buffie:true, tri:"highhp"},
-{n:"Crow",      t:"S", rr:2, roles:["antitank","control"],  maps:["mid","closed"],        beats:["tank","assassin"],          losesTo:["sniper","control"],   ban:3, note:"отрута блокує самолікування танка", buffie:true, tri:"dps"},
+{n:"Crow",      t:"S", rr:2, roles:["antitank","control"],  maps:["mid","closed"],        beats:["tank","assassin"],          losesTo:["sniper","control"],   ban:3, anyRange:true, note:"урон слабкий здалеку, але нормальний зблизька; не burst через малий HP — отрута блокує самолікування танка", buffie:true, tri:"dps"},
 {n:"Leon",      t:"S", rr:2, roles:["assassin"],            maps:["mid","closed"],        beats:["control","thrower"],                   losesTo:["tank","antitank"],    ban:2.5, buffie:true, tri:"highhp"},
 {n:"Colette",   t:"S", rr:2, roles:["dmg","antitank"],      maps:["open","mid"],          beats:["tank"],                                losesTo:["assassin","control"], weakAs:"antitank", ban:2, heist:true, noAntiAssassin:true, note:"урон у % від HP — не контрить вбивць, попри роль антитанка", buffie:true, tri:"dps"},
-{n:"Lumi",      t:"S", rr:2, roles:["antitank","control"],  maps:["mid","closed"],        beats:["tank"],                     losesTo:["control","thrower"], softLosesTo:["assassin"],  ban:2, tri:"dps"},
+{n:"Lumi",      t:"S", rr:2, roles:["antitank","control"],  maps:["mid","closed"],        beats:["tank"],                     losesTo:["control","thrower"], softLosesTo:["assassin"],  ban:2, anyRange:true, note:"великий урон, що не падає з дистанцією", tri:"dps"},
 {n:"Nori",      t:"S", rr:2, roles:["assassin"],            maps:["mid","open","closed"], beats:["control","thrower","assassin"],        losesTo:["tank","antitank"],    ban:2.5, tri:"dps"},
 // A-TIER
 {n:"Kenji",     t:"A", rr:4, roles:["assassin"],            maps:["mid","closed"],        beats:["control","thrower"],                   losesTo:["tank","antitank"],    ban:2, tri:"highhp"},
@@ -1367,7 +1388,7 @@ const B = [
 {n:"Mina",      t:"A", rr:4, roles:["assassin"],            maps:["closed","mid"], beats:["thrower","control"],                   losesTo:["tank"],               ban:1.5,note:"скіловий персонаж", tri:"highhp"},
 {n:"Sirius",    t:"A", rr:2, roles:["thrower","antitank"],             maps:["closed","mid"],        beats:["assassin","tank","antitank","control"],          losesTo:["control"],            burst:true, ban:1.5,note:"клонує ворогів — може скопіювати жирного танка", tri:"dps"},
 {n:"Grey",      t:"A", rr:2, roles:["support"],             maps:["closed","mid","open"], beats:["thrower"],                             losesTo:["tank","assassin"],    ban:1, goodModes:["Knockout","Bounty","Gem Grab"], badModes:["Heist"], note:"у Heist тільки з гіперзарядом — два портали дають швидкий вихід до сейфу", tri:"lowhp"},
-{n:"Nita",      t:"A", rr:2, roles:["antitank"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control","antitank"], ban:1.5, buffie:true, tri:"dps"},
+{n:"Nita",      t:"A", rr:2, roles:["antitank"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control","antitank"], ban:1.5, anyRange:true, note:"сильна через ведмедя й урон, що не падає з дистанцією", buffie:true, tri:"dps"},
 {n:"Raffs",     t:"A", rr:2, roles:["support"],             maps:["mid","closed"],        beats:[],                                      losesTo:["assassin"],           ban:1, tri:"lowhp"},
 {n:"Charlie",   t:"A", rr:4, roles:["control"],             maps:["mid","open"],          beats:[],                            losesTo:["tank","assassin"],    ban:1, tri:"dps"},
 {n:"Griff",     t:"S", rr:2, roles:["antitank","dmg"],            maps:["closed","mid"],        beats:["tank","assassin"],                     losesTo:["control","thrower"],  burst:true, ban:2, buffie:true, note:"зараз у топі мети — потужний burst упритул; бафер приємний бонус, але й сам сильний", tri:"dps"},
@@ -1400,7 +1421,7 @@ const B = [
 {n:"Bea",       t:"B", rr:4, roles:["sniper","antitank"],   maps:["mid","open","closed"], beats:["tank","assassin"], softLosesTo:["assassin"], weakAs:"antitank", ban:1, note:"скіловий персонаж, рідко пікається; контрять тільки вбивці й тільки при розумній грі", tri:"lowhp"},
 {n:"Amber",     t:"B", rr:7, roles:["control"],             maps:["open","mid"],          beats:["tank"],                     losesTo:["assassin"],           ban:1, note:"танків контрить тільки на відкритих картах — безкінечне полум'я не дає підійти", tri:"lowhp"},
 {n:"Bo",        t:"B", rr:7, roles:["control"],             maps:["mid","open"],          beats:["tank"],                     losesTo:["assassin"],           ban:1, buffie:true, goodModes:["Hot Zone"], note:"по урону проти танків нормально, але від ульти легко ухилитись", tri:"lowhp"},
-{n:"Rico",      t:"B", rr:4, roles:["antitank","control"],  maps:["closed","mid"],        beats:["tank"], softLosesTo:["assassin"],       ban:2, buffie:true, note:"вбивць теж контрить, але вже не так легко — і вони ж його головна контра", tri:"lowhp"},
+{n:"Rico",      t:"B", rr:4, roles:["antitank","control"],  maps:["closed","mid"],        beats:["tank"], softLosesTo:["assassin"],       ban:2, anyRange:true, buffie:true, note:"постріли рикошетять від стін — сильний на закритих картах; вбивць теж контрить, але вже не так легко — і вони ж його головна контра", tri:"lowhp"},
 // C-TIER (3 зірки) — продиктовано
 {n:"Willow",    t:"C", rr:7, roles:["thrower","antitank"],  maps:["closed"],              beats:["tank","assassin","antitank","control"],                     softLosesTo:["assassin"],       weakAs:"antitank", ban:1, earlyOk:true, goodModes:["Brawl Ball"], note:"ситуативна, тільки закриті карти — але там грає добре; можна пікати й не останнім піком, найкраще в Brawl Ball на закритих", tri:"lowhp"},
 {n:"Darryl",    t:"C", rr:7, roles:["assassin","tank"],     maps:["closed","mid"],        beats:["control","thrower"],                   losesTo:["antitank"],           weakAs:"tank", ban:1, goodModes:["Knockout"], note:"грається переважно в Knockout і в парі з хілером; контрять потужні антитанки з burst-уроном", tri:"highhp"},
@@ -1553,7 +1574,7 @@ const RTL=["ar"];
 
 const TXT={
 uk:{title:"Драфт-асистент",sub:"Ranked · порядок піків 1-2-2-1-1-2 · база знань, липень 2026",
- hLang:"Мова",hFirst:"Перший пік",hMode:"Режим",hMap:"Карта",hRank:"Ранг",rankBlind:"До міфіка",rankOpen:"Після міфіка",rBuffie:"Потрібні бафі — без них слабший",rDouble:"Його контрять одразу двоє — не варто",rTripleControl:"У ворога всі три — контроль, асасін проти них дуже сильний",rTriangle:"Б'є {n} за трикутником DPS/HP",rTriangleBy:"{n} б'є нас за трикутником DPS/HP",rWallbreaker:"У ворога є руйнівник стін — стіни більше не сховають",rStyleBurstClosed:"Бурст упритул сильний на закритій карті",rStyleFixedClosed:"Фіксований дальній урон гірше проявляється на закритій карті",rStyleFixedMid:"Фіксований дальній урон сильний на середній карті",rStyleBurstMid:"Бурст упритул гірше проявляється на середній карті",rNoTank:"На цій карті танки не грають",rBushy:"Кущова карта — вбивці підкрадаються краще",rWater:"Ходить по воді — вільно маневрує на цій карті",blindTitle:"Найкращі піки на цю карту й режим",tapBan:"Тисни на бійця, щоб забанити",needBuffie:"NEED BUFFIE",altsShort:"Альтернативи",winTitle:"Шанси на перемогу",pickTitle2:"Оцінка піків",usShort:"Ми",themShort:"Ворог",qBans:"Найімовірніші",qbMeta:"Немає першого піка — баним найсильнішу мету, щоб її не забрали",qbPlan:"Є перший пік — візьмемо {r}, тому баним тих, хто його контрить",hBanRec:"Кого банити",bwMeta:"Топ мети — заберуть, якщо не забанити",bwCounter:"Контрить {n} — наш перший пік",bwOften:"Часта ціль для бану",altBans:"Альтернативні бани",allRoles:"усі",hBans:"Бани",hBansOpt:"(необов'язково)",
+ hLang:"Мова",hFirst:"Перший пік",hMode:"Режим",hMap:"Карта",hRank:"Ранг",rankBlind:"До міфіка",rankOpen:"Після міфіка",rBuffie:"Потрібні бафі — без них слабший",rDouble:"Його контрять одразу двоє — не варто",rTripleControl:"У ворога всі три — контроль, асасін проти них дуже сильний",rTriangle:"Б'є {n} за трикутником DPS/HP",rTriangleBy:"{n} б'є нас за трикутником DPS/HP",rWallbreaker:"У ворога є руйнівник стін — стіни більше не сховають",rWallbreakerTank:"У ворога є руйнівник стін — кущі зламані, підхід відкритий",rWallbreakerRisk:"У суперника лишились піки — може взяти руйнівника стін і зламати кущі",rStyleBurstClosed:"Бурст упритул сильний на закритій карті",rStyleFixedClosed:"Фіксований дальній урон гірше проявляється на закритій карті",rStyleFixedMid:"Фіксований дальній урон сильний на середній карті",rStyleBurstMid:"Бурст упритул гірше проявляється на середній карті",rNoTank:"На цій карті танки не грають",rBushy:"Кущова карта — вбивці підкрадаються краще",rWater:"Ходить по воді — вільно маневрує на цій карті",blindTitle:"Найкращі піки на цю карту й режим",tapBan:"Тисни на бійця, щоб забанити",needBuffie:"NEED BUFFIE",altsShort:"Альтернативи",winTitle:"Шанси на перемогу",pickTitle2:"Оцінка піків",draftBestPick:"Найсильніший пік:",draftWorstPick:"Найслабший пік:",draftExplainTeaser:"Ranked+ пояснює кожен пік — чому він хороший чи поганий",usShort:"Ми",themShort:"Ворог",qBans:"Найімовірніші",qbMeta:"Немає першого піка — баним найсильнішу мету, щоб її не забрали",qbPlan:"Є перший пік — візьмемо {r}, тому баним тих, хто його контрить",hBanRec:"Кого банити",bwMeta:"Топ мети — заберуть, якщо не забанити",bwCounter:"Контрить {n} — наш перший пік",bwOften:"Часта ціль для бану",altBans:"Альтернативні бани",allRoles:"усі",hBans:"Бани",hBansOpt:"(необов'язково)",
  hDraft:"Драфт",hRec:"Рекомендація",optOurs:"Наш",optTheirs:"Ворога",
  legendUs:"Ми — піки {x}",legendThem:"Ворог — піки {x}",clear:"Очистити драфт",
  banAdd:"+ Забанити",banTitle:"Кого банимо",pickOur:"Наш пік {n}",pickFoe:"Пік ворога {n}",
@@ -1587,7 +1608,7 @@ uk:{title:"Драфт-асистент",sub:"Ranked · порядок піків
  loc:{closed:"закритій",mid:"середній",open:"відкритій"},acc:{closed:"закриту",mid:"середню",open:"відкриту"}},
 
 en:{title:"Draft Assistant",sub:"Ranked · 1-2-2-1-1-2 pick order · knowledge base, July 2026",
- hLang:"Language",hFirst:"First pick",hMode:"Mode",hMap:"Map",hRank:"Rank",rankBlind:"Below Mythic",rankOpen:"Mythic and above",rBuffie:"Needs Buffies — weaker without them",rDouble:"Two of their picks counter him — not worth it",rTripleControl:"Enemy is all control — assassins are very strong here",rTriangle:"Beats {n} via the DPS/HP triangle",rTriangleBy:"{n} beats us via the DPS/HP triangle",rWallbreaker:"Enemy has a wall-breaker — walls won't hide you anymore",rStyleBurstClosed:"Point-blank burst is strong on closed maps",rStyleFixedClosed:"Fixed ranged damage underperforms on closed maps",rStyleFixedMid:"Fixed ranged damage is strong on mid maps",rStyleBurstMid:"Point-blank burst underperforms on mid maps",rNoTank:"Tanks don't work on this map",rBushy:"Bushy map — assassins sneak up better",rWater:"Walks on water — moves freely on this map",blindTitle:"Best picks for this map and mode",tapBan:"Tap a brawler to ban",needBuffie:"NEED BUFFIE",altsShort:"Alternatives",winTitle:"Win chance",pickTitle2:"Pick ratings",usShort:"Us",themShort:"Enemy",qBans:"Most likely",qbMeta:"No first pick — ban the strongest meta so they can't take it",qbPlan:"You have first pick — you'll take {r}, so ban what counters it",hBanRec:"Who to ban",bwMeta:"Top of the meta — they'll take it if you don't ban",bwCounter:"Counters {n} — our first pick",bwOften:"Frequent ban target",altBans:"Alternative bans",allRoles:"all",hBans:"Bans",hBansOpt:"(optional)",
+ hLang:"Language",hFirst:"First pick",hMode:"Mode",hMap:"Map",hRank:"Rank",rankBlind:"Below Mythic",rankOpen:"Mythic and above",rBuffie:"Needs Buffies — weaker without them",rDouble:"Two of their picks counter him — not worth it",rTripleControl:"Enemy is all control — assassins are very strong here",rTriangle:"Beats {n} via the DPS/HP triangle",rTriangleBy:"{n} beats us via the DPS/HP triangle",rWallbreaker:"Enemy has a wall-breaker — walls won't hide you anymore",rWallbreakerTank:"Enemy has a wall-breaker — bushes are gone, your approach is exposed",rWallbreakerRisk:"Enemy still has picks left — they could bring a wall-breaker and clear the bushes",rStyleBurstClosed:"Point-blank burst is strong on closed maps",rStyleFixedClosed:"Fixed ranged damage underperforms on closed maps",rStyleFixedMid:"Fixed ranged damage is strong on mid maps",rStyleBurstMid:"Point-blank burst underperforms on mid maps",rNoTank:"Tanks don't work on this map",rBushy:"Bushy map — assassins sneak up better",rWater:"Walks on water — moves freely on this map",blindTitle:"Best picks for this map and mode",tapBan:"Tap a brawler to ban",needBuffie:"NEED BUFFIE",altsShort:"Alternatives",winTitle:"Win chance",pickTitle2:"Pick ratings",draftBestPick:"Strongest pick:",draftWorstPick:"Weakest pick:",draftExplainTeaser:"Ranked+ explains every pick — why it's good or bad",usShort:"Us",themShort:"Enemy",qBans:"Most likely",qbMeta:"No first pick — ban the strongest meta so they can't take it",qbPlan:"You have first pick — you'll take {r}, so ban what counters it",hBanRec:"Who to ban",bwMeta:"Top of the meta — they'll take it if you don't ban",bwCounter:"Counters {n} — our first pick",bwOften:"Frequent ban target",altBans:"Alternative bans",allRoles:"all",hBans:"Bans",hBansOpt:"(optional)",
  hDraft:"Draft",hRec:"Recommendation",optOurs:"Ours",optTheirs:"Theirs",
  legendUs:"Us — picks {x}",legendThem:"Enemy — picks {x}",clear:"Clear draft",
  banAdd:"+ Ban",banTitle:"Ban who",pickOur:"Our pick {n}",pickFoe:"Enemy pick {n}",
@@ -2053,47 +2074,84 @@ function bestForRole(role, n){
 const roleLabel = r => (Array.isArray(r) ? r : [r]).map(ROLE).join(" / ");
 
 /* Оцінка бійця у вже зібраному драфті: сила × карта × режим × контри проти всього складу суперника.
-   Слотових поправок (заглядання наперед, дірки) тут немає — драфт уже закінчено. */
-function scoreFinal(b, slot, oppNames){
+   Слотових поправок (заглядання наперед, дірки) тут немає — драфт уже закінчено.
+   Повертає {score, why} — той самий рахунок, що й раніше, плюс людські причини для кожного
+   множника (використовується в екрані оцінки завершеного драфту для підписників). */
+function scoreFinalDetailed(b, slot, oppNames){
   const foes = oppNames.filter(Boolean).map(byName);
   const cfg = (WANT[mode]||WANT["Brawl Ball"])[slot];
-  let m = 1;
-  if(b.badModes && b.badModes.includes(mode)) m *= 0.15;
-  else if(b.goodModes && b.goodModes.includes(mode)) m *= 1.25;
+  let m = 1, why=[];
+  if(b.t==="S") why.push([t("rS"),0]);
+  else if(b.t!=="A") why.push([t("rB",{x:b.t}),1]);
+  if(b.badModes && b.badModes.includes(mode)){ m *= 0.15; why.push([t("rBadMode",{m:mode}),1]); }
+  else if(b.goodModes && b.goodModes.includes(mode)){ m *= 1.25; why.push([t("rGoodMode",{m:mode}),0]); }
   m *= mapFit(b) ? 1.3 : 0.7;
+  why.push(mapFit(b) ? [t("rMapGood",{t:T().loc[map[1]]}),0] : [t("rMapBad",{t:T().acc[map[1]]}),1]);
+  const mf = map[2] || {};
   // Стиль бою проти типу карти: бурст (упритул) сильний на закритій, фіксований
   // дальній урон (antitank/dmg без burst) сильний на середній. Не залежить від суперника —
   // це просто про те, чи взагалі пасує стиль бою цій карті.
-  const isFixedDealer = (b.roles.includes("antitank") || b.roles.includes("dmg")) && !b.burst;
-  if(map[1]==="closed"){ if(b.burst) m *= 1.15; else if(isFixedDealer) m *= 0.87; }
-  else if(map[1]==="mid"){ if(isFixedDealer) m *= 1.15; else if(b.burst) m *= 0.87; }
-  if((cfg.r||[]).length && b.roles.some(r=>cfg.r.includes(r))) m *= 1.25;
-  const mf = map[2] || {};
-  if(mf.noTank && b.roles.includes("tank")) m *= 0.4;
-  if(mf.good && mf.good.includes(b.n)) m *= 1.6;
-  if(mf.bad  && mf.bad.includes(b.n))  m *= 0.45;
+  // Перевіряємо тільки ГОЛОВНУ роль (roles[0]) — інакше бійці, де antitank/dmg лише
+  // другорядна роль (напр. Willow — thrower за суттю, Mico — assassin за суттю),
+  // помилково штрафувались за стиль бою, яким вони насправді не грають.
+  const isFixedDealer = (b.roles[0]==="antitank" || b.roles[0]==="dmg") && !b.burst;
+  // anyRange — виняток для бійців, чий урон явно не падає з дистанцією (напр. Surge, Lumi,
+  // Nita), або в яких інша своя причина бути сильними впритул (Crow — низький HP, не burst,
+  // але добрий урон зблизька; Rico — постріли рикошетять від стін). Штраф "слабший впритул"
+  // до них не застосовний узагалі, незалежно від карти.
+  // На кущовій закритій карті штраф теж не застосовний і для решти антитанків — кущі дають
+  // прикриття для підходу, тому "слабший впритул" там не працює так, як на суто стінній карті.
+  if(map[1]==="closed"){
+    if(b.burst){ m *= 1.15; why.push([t("rStyleBurstClosed"),0]); }
+    else if(isFixedDealer && !b.anyRange && !mf.bushy){ m *= 0.87; why.push([t("rStyleFixedClosed"),1]); }
+  } else if(map[1]==="mid"){
+    if(isFixedDealer){ m *= 1.15; why.push([t("rStyleFixedMid"),0]); }
+    else if(b.burst){ m *= 0.87; why.push([t("rStyleBurstMid"),1]); }
+  }
+  if((cfg.r||[]).length && b.roles.some(r=>cfg.r.includes(r))){
+    m *= 1.25; why.push([t("rWant",{r:ROLE(b.roles.find(r=>cfg.r.includes(r))),m:mode,n:slot+1}),0]);
+  }
+  if(mf.noTank && b.roles.includes("tank")){ m *= 0.4; why.push([t("rNoTank"),1]); }
+  if(mf.bushy && b.roles.includes("assassin")){ m *= 1.35; why.push([t("rBushy"),0]); }
+  if(mf.bushy && b.roles.includes("tank") && foes.some(e=>WALLBREAKERS.includes(e.n))){
+    m *= 0.75; why.push([t("rWallbreakerTank"),1]);
+  }
+  if(mf.good && mf.good.includes(b.n)){ m *= 1.6; why.push([t("rMapGood",{t:T().loc[map[1]]}),0]); }
+  if(mf.bad  && mf.bad.includes(b.n))  { m *= 0.45; why.push([t("rMapBad",{t:T().acc[map[1]]}),1]); }
   let hurt = 0;
   foes.forEach(e=>{
     const p = pairOf(b.n,e.n);
-    if(p){ if(p[2]>0) m *= 1 + 0.30*p[2]; else if(p[2]<0) m *= 1 + 0.25*p[2]; }
-    else { const hit = hits(b, weakRole(e)) ? weakRole(e) : null;
-      if(hit){ const close=(hit==="tank"||hit==="assassin");
+    if(p){
+      if(p[2]>0){ m *= 1 + 0.30*p[2]; why.push([t("rPair",{n:e.n,x:p[3]}),0]); }
+      else if(p[2]<0){ m *= 1 + 0.25*p[2]; why.push([t("rPair",{n:e.n,x:p[3]}),1]); }
+    } else {
+      const hit = hits(b, weakRole(e)) ? weakRole(e) : null;
+      if(hit){
+        const close=(hit==="tank"||hit==="assassin");
         const K = {closed:[1.85,1.15], mid:[1.65,1.25], open:[1.40,1.38]};
         const assassinVsThrower = b.roles.includes("assassin") && hit==="thrower";
-        m *= close ? K[map[1]][b.burst?0:1] : (assassinVsThrower ? 1.45 : 1.30); }
-      else if(triBeats(b,e)) m *= 1.14; }
+        m *= close ? K[map[1]][b.burst?0:1] : (assassinVsThrower ? 1.45 : 1.30);
+        why.push([t("rCounters",{n:e.n,r:ROLE(hit)}),0]);
+      }
+      else if(triBeats(b,e)){ m *= 1.14; why.push([t("rTriangle",{n:e.n}),0]); }
+    }
     const back = pairOf(e.n,b.n);
-    if(back){ if(back[2]>0){ m *= 1 - 0.25*back[2]; hurt++; } }
-    else if(!safeFrom(b,e) && hits(e, weakRole(b))){ m *= 0.72; hurt++; }
-    else if(b.softLosesTo && e.roles.some(r=>b.softLosesTo.includes(r))) m *= 0.9;
-    else if(triBeats(e,b)) m *= 0.85;
+    if(back){ if(back[2]>0){ m *= 1 - 0.25*back[2]; hurt++; why.push([t("rPairBack",{n:e.n,x:back[3]}),1]); } }
+    else if(!safeFrom(b,e) && hits(e, weakRole(b))){ m *= 0.72; hurt++; why.push([t("rBy",{n:e.n,r:ROLE(weakRole(b))}),1]); }
+    else if(b.softLosesTo && e.roles.some(r=>b.softLosesTo.includes(r))){ m *= 0.9; why.push([t("rSoftBy",{n:e.n}),1]); }
+    else if(triBeats(e,b)){ m *= 0.85; why.push([t("rTriangleBy",{n:e.n}),1]); }
   });
-  if(hurt>=2) m *= 0.5;
+  if(hurt>=2){ m *= 0.5; why.push([t("rDouble"),1]); }
   // усі три піки суперника — control: асасіни особливо сильні проти такого складу
-  if(foes.length>=3 && foes.every(e=>e.roles.includes("control")) && b.roles.includes("assassin")) m *= 1.45;
-  if(b.roles.includes("thrower") && foes.some(e=>WALLBREAKERS.includes(e.n))) m *= 0.15;
-  return power(b)*m;
+  if(foes.length>=3 && foes.every(e=>e.roles.includes("control")) && b.roles.includes("assassin")){
+    m *= 1.45; why.push([t("rTripleControl"),0]);
+  }
+  if(b.roles.includes("thrower") && foes.some(e=>WALLBREAKERS.includes(e.n))){ m *= 0.15; why.push([t("rWallbreaker"),1]); }
+  const plus = why.filter(w=>!w[1]).slice(0,3);
+  const minus = why.filter(w=>w[1]).slice(0,3);
+  return {score: power(b)*m, why: plus.concat(minus)};
 }
+function scoreFinal(b, slot, oppNames){ return scoreFinalDetailed(b, slot, oppNames).score; }
 
 /* Оцінка 1-100: наскільки цей пік близький до найкращого, що взагалі можна було взяти в цей слот */
 function rate(name, slot, oppNames, takenNames){
@@ -2112,13 +2170,23 @@ function draftSummary(){
   const ourS   = OURS.reduce((a,i)=>a+scoreFinal(byName(picks[i]), i, their), 0);
   const theirS = THEIRS.reduce((a,i)=>a+scoreFinal(byName(picks[i]), i, our), 0);
   const win = Math.round(100*ourS/((ourS+theirS)||1));
+  const rows = [0,1,2,3,4,5].map(i=>{
+    const ours = OURS.includes(i);
+    const opp = ours ? their : our;
+    const detailed = scoreFinalDetailed(byName(picks[i]), i, opp);
+    return {
+      slot:i, name:picks[i], ours,
+      score: rate(picks[i], i, opp, picks.filter((n,k)=>n && k!==i).concat(bans)),
+      why: detailed.why
+    };
+  });
+  // Найкращий і найгірший НАШ пік — для загального підсумку драфту.
+  const oursRows = rows.filter(r=>r.ours && r.name);
+  const best = oursRows.length ? oursRows.reduce((a,b)=>b.score>a.score?b:a) : null;
+  const worst = oursRows.length ? oursRows.reduce((a,b)=>b.score<a.score?b:a) : null;
   return {
     win: Math.max(1, Math.min(99, win)),
-    rows: [0,1,2,3,4,5].map(i=>({
-      slot:i, name:picks[i], ours:OURS.includes(i),
-      score: rate(picks[i], i, OURS.includes(i)?their:our,
-                  picks.filter((n,k)=>n && k!==i).concat(bans))
-    }))
+    rows, best, worst
   };
 }
 
@@ -2159,12 +2227,17 @@ function recommend(forceSlot){
     if(mapFit(b)){ m *= 1.3; why.push([t("rMapGood",{t:T().loc[map[1]]}),0]); }
     else { m *= 0.7; why.push([t("rMapBad",{t:T().acc[map[1]]}),1]); }
 
+    const mf = map[2] || {};
     // стиль бою проти типу карти: бурст упритул сильний на закритій, фіксований
     // дальній урон сильний на середній — не залежить від суперника
-    const isFixedDealer = (b.roles.includes("antitank") || b.roles.includes("dmg")) && !b.burst;
+    // тільки ГОЛОВНА роль (roles[0]) — інакше Willow/Mico штрафувались за чужий стиль бою
+    const isFixedDealer = (b.roles[0]==="antitank" || b.roles[0]==="dmg") && !b.burst;
+    // anyRange (Surge, Lumi, Nita, Crow, Rico — кожен зі своєю причиною) — штраф не застосовний
+    // узагалі. На кущовій закритій карті штраф не застосовний і для решти — кущі дають
+    // прикриття для підходу, "слабший впритул" там не працює як на суто стінній карті.
     if(map[1]==="closed"){
       if(b.burst){ m *= 1.15; why.push([t("rStyleBurstClosed"),0]); }
-      else if(isFixedDealer){ m *= 0.87; why.push([t("rStyleFixedClosed"),1]); }
+      else if(isFixedDealer && !b.anyRange && !mf.bushy){ m *= 0.87; why.push([t("rStyleFixedClosed"),1]); }
     } else if(map[1]==="mid"){
       if(isFixedDealer){ m *= 1.15; why.push([t("rStyleFixedMid"),0]); }
       else if(b.burst){ m *= 0.87; why.push([t("rStyleBurstMid"),1]); }
@@ -2211,6 +2284,8 @@ function recommend(forceSlot){
       }
     });
 
+    // особливості конкретної карти (mf) уже визначено вище — потрібне для style-блоку й wallbreaker-перевірки
+
     // усі три піки суперника — control: асасіни особливо сильні проти такого складу
     if(enemy.length>=3 && enemy.every(e=>e.roles.includes("control")) && b.roles.includes("assassin")){
       m *= 1.45; why.push([t("rTripleControl"),0]);
@@ -2221,11 +2296,20 @@ function recommend(forceSlot){
       m *= 0.15; why.push([t("rWallbreaker"),1]);
     }
 
+    // Танк на кущовій карті: кущі — це прикриття для підходу. Якщо волбрейкер уже є у ворога —
+    // кущі зламані, підхід відкритий. Якщо ще немає, але у суперника лишились піки — це ризик,
+    // тому легший попереджувальний штраф, а не жорсткий (може й не взяти волбрейкера).
+    if(mf.bushy && b.roles.includes("tank")){
+      if(enemy.some(e=>WALLBREAKERS.includes(e.n))){
+        m *= 0.75; why.push([t("rWallbreakerTank"),1]);
+      } else if(foeLeft){
+        m *= 0.92; why.push([t("rWallbreakerRisk"),1]);
+      }
+    }
+
     // Бафі НЕ впливають на бали: тірліст уже складено з урахуванням бафі,
     // тож окремий штраф був би подвійним обліком. Червона позначка лишається як інформація.
 
-    // особливості конкретної карти: заборонені ролі та іменні винятки
-    const mf = map[2] || {};
     if(mf.noTank && b.roles.includes("tank")){ m *= 0.4; why.push([t("rNoTank"),1]); }
     if(mf.bushy && b.roles.includes("assassin")){ m *= 1.35; why.push([t("rBushy"),0]); }
     if(mf.water && b.walksOnWater){ m *= 1.3; why.push([t("rWater"),0]); }
@@ -2398,22 +2482,53 @@ function drawLegend(){
     `<span><span class="dot" style="background:var(--enemy)"></span>${t("legendThem",{x:f(THEIRS)})}</span>`;
 }
 function drawModes(){
-  $("modes").innerHTML="";
-  Object.keys(MAPS).forEach(m=>{
-    const btn=document.createElement("button");
-    btn.textContent=m; if(m===mode) btn.className="on";
-    btn.onclick=()=>{ mode=m; map=MAPS[m][0]; drawModes(); drawMaps(); render(); };
-    $("modes").appendChild(btn);
+  const box = $("modes");
+  const keys = Object.keys(MAPS);
+  // Перемальовуємо кнопки з нуля лише якщо їх ще нема — інакше кожен клік по режиму
+  // знищував і наново створював усі кнопки, а анімація появи (#modes button) грала
+  // щоразу заново, ніби сторінку перезавантажили. Тепер анімація йде тільки при
+  // першому вході в меню режимів; перемикання між режимами — без пересворення DOM.
+  const needsBuild = box.children.length !== keys.length;
+  if(needsBuild){
+    box.innerHTML="";
+    keys.forEach(m=>{
+      const btn=document.createElement("button");
+      btn.textContent=m; btn.dataset.modeName=m;
+      btn.onclick=()=>{ mode=m; map=MAPS[m][0]; drawModes(); drawMaps(); render(); };
+      box.appendChild(btn);
+    });
+  }
+  Array.from(box.children).forEach(btn=>{
+    btn.classList.toggle("on", btn.dataset.modeName===mode);
   });
 }
 function drawMaps(){
-  $("maps").innerHTML="";
-  MAPS[mode].forEach(m=>{
-    const btn=document.createElement("button");
-    btn.className="map"+(m[0]===map[0]?" on":"");
-    btn.innerHTML=`${m[0]} <span class="tag t-${m[1]}">${T().types[m[1]]}</span>`;
-    btn.onclick=()=>{ map=m; drawMaps(); render(); };
-    $("maps").appendChild(btn);
+  const box = $("maps");
+  const list = MAPS[mode];
+  // Той самий принцип, що й у drawModes: повне пересворення (і, відповідно, анімація
+  // появи) — тільки коли справді змінився список карт (інший режим чи перший вхід).
+  // Просто вибір іншої карти в тому самому режимі — без пересворення DOM.
+  const needsBuild = box.dataset.builtFor !== mode || box.children.length !== list.length;
+  if(needsBuild){
+    box.innerHTML="";
+    list.forEach(m=>{
+      const btn=document.createElement("button");
+      btn.className="map";
+      btn.innerHTML=`${m[0]} <span class="tag t-${m[1]}">${T().types[m[1]]}</span>`;
+      btn.onclick=()=>{ map=m; drawMaps(); render(); };
+      box.appendChild(btn);
+    });
+    box.dataset.builtFor = mode;
+  } else {
+    // Мова могла змінитись, поки список карт лишався тим самим — оновлюємо тільки
+    // текст бейджа типу карти, без пересворення самої кнопки.
+    Array.from(box.children).forEach((btn,i)=>{
+      const tagEl = btn.querySelector(".tag");
+      if(tagEl) tagEl.textContent = T().types[list[i][1]];
+    });
+  }
+  Array.from(box.children).forEach((btn,i)=>{
+    btn.classList.toggle("on", list[i][0]===map[0]);
   });
 }
 function drawBans(){
@@ -2482,14 +2597,38 @@ function showRecs(){
     const d = draftSummary();
     const bar = `<div class="winbar"><div class="wus" style="width:${d.win}%">${d.win}%</div>`
               + `<div class="wthem" style="width:${100-d.win}%">${100-d.win}%</div></div>`;
-    const side = ours => d.rows.filter(r=>r.ours===ours).map(r=>
-      `<div class="prow"><span class="pn">${r.name}</span>`
-      + `<span class="pbar"><i style="width:${r.score}%"></i></span>`
-      + `<span class="psc">${r.score}</span></div>`).join("");
+    const sub = window.subscriptionActive;
+    const side = ours => d.rows.filter(r=>r.ours===ours).map(r=>{
+      // r.why = плюси, потім мінуси (див. scoreFinalDetailed). slice(0,2) на об'єднаному
+      // масиві майже завжди показував тільки плюси — мінуси просто не встигали потрапити
+      // в перші два елементи. Тепер явно беремо трохи плюсів і трохи мінусів окремо.
+      const plus = (r.why||[]).filter(w=>!w[1]).slice(0,2);
+      const minus = (r.why||[]).filter(w=>w[1]).slice(0,2);
+      const whyHtml = (sub && r.name && (plus.length||minus.length))
+        ? `<div class="pwhy">${plus.concat(minus).map(w=>`<div class="why${w[1]?" neg":""}">${w[0]}</div>`).join("")}</div>`
+        : "";
+      return `<div class="prow"><span class="pn">${r.name}</span>`
+        + `<span class="pbar"><i style="width:${r.score}%"></i></span>`
+        + `<span class="psc">${r.score}</span></div>${whyHtml}`;
+    }).join("");
+    // Загальний підсумок: найсильніший і найслабший НАШ пік із головною причиною кожного —
+    // тільки для підписки. Безкоштовним — маленька ненав'язлива підказка, що фіча існує.
+    let overall = "";
+    if(sub && d.best && d.worst){
+      const bestReason = d.best.why && d.best.why.find(w=>!w[1]);
+      const worstReason = d.worst.why && d.worst.why.find(w=>w[1]);
+      overall = `<div class="draftOverall">`
+        + (d.best.score>0 ? `<div class="dOverallRow"><b>${t("draftBestPick")}</b> ${d.best.name} (${d.best.score})${bestReason?` — ${bestReason[0]}`:""}</div>` : ``)
+        + (d.worst.score<d.best.score ? `<div class="dOverallRow"><b>${t("draftWorstPick")}</b> ${d.worst.name} (${d.worst.score})${worstReason?` — ${worstReason[0]}`:""}</div>` : ``)
+        + `</div>`;
+    } else if(!sub){
+      overall = `<div class="draftOverall dLocked" onclick="openSubModal()">🔒 ${t("draftExplainTeaser")}</div>`;
+    }
     $("out").innerHTML =
       `<h2 style="margin:0 0 8px">${t("winTitle")}</h2>${bar}
        <div class="wlabels"><span style="color:var(--ally)">${t("usShort")}</span>
        <span style="color:var(--enemy)">${t("themShort")}</span></div>
+       ${overall}
        <h2 style="margin:22px 0 8px">${t("pickTitle2")}</h2>
        <div class="pgrid">
          <div class="pcol us"><div class="phead">${t("usShort")}</div>${side(true)}</div>
@@ -2658,7 +2797,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     .catch(()=>{});
   function decorateModes(){
     document.querySelectorAll("#modes button").forEach(b=>{
-      const name = b.textContent.trim();
+      const name = b.dataset.modeName || b.textContent.trim();
       if(!MODE_ICONS[name]) return;
       if(b.querySelector(".micon img")) return;   // картинка вже підключена — нічого не робити
       const img = MODE_IMG[name] ? `<img src="${MODE_IMG[name]}" alt="" loading="lazy" onerror="this.remove()">` : "";
