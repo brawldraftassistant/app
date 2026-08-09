@@ -2686,6 +2686,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH2t:"Вводь піки й бани", hH2d:"Позначай вибори обох команд у порядку 1-2-2-1-1-2 — як у справжньому драфті.",
     hH3t:"Отримуй найкращий пік", hH3d:"Асистент рахує контри, ролі й тип карти — і пояснює, чому саме цей бравлер.",
     hStatsT:"Моя статистика", stDraftsL:"драфтів", stModeL:"улюблений режим", stStreakL:"днів поспіль", stBansL:"банів пораховано", hFaqT:"Часті питання",
+    hStatsHeadT2:"Статистика Brawl Stars", hStatsIntro2:"Введи свій тег гравця — покажемо трофеї, вінрейт і найкращих бійців.", tagShow:"Показати",
     hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
@@ -2701,14 +2702,34 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH2t:"Enter picks and bans", hH2d:"Log both teams' choices in the real 1-2-2-1-1-2 draft order.",
     hH3t:"Get the best pick", hH3d:"The assistant weighs counters, roles and map type — and explains why.",
     hStatsT:"Your stats", stDraftsL:"drafts", stModeL:"favorite mode", stStreakL:"day streak", stBansL:"bans scored", hFaqT:"FAQ",
+    hStatsHeadT2:"Brawl Stars stats", hStatsIntro2:"Enter your player tag — we'll show trophies, win rate and best brawlers.", tagShow:"Show",
     hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
     hF4q:"Is this an official Supercell app?", hF4a:"No, it's a fan project not affiliated with Supercell."
   });
+  Object.assign(TXT.es, {
+    hStatsHeadT2:"Estadísticas de Brawl Stars", hStatsIntro2:"Introduce tu tag de jugador — mostraremos trofeos, % de victorias y tus mejores brawlers.", tagShow:"Mostrar"
+  });
+  Object.assign(TXT.pt, {
+    hStatsHeadT2:"Estatísticas do Brawl Stars", hStatsIntro2:"Digite sua tag de jogador — mostraremos troféus, taxa de vitórias e seus melhores brawlers.", tagShow:"Mostrar"
+  });
+  Object.assign(TXT.ru, {
+    hStatsHeadT2:"Статистика Brawl Stars", hStatsIntro2:"Введи свой тег игрока — покажем трофеи, винрейт и лучших бойцов.", tagShow:"Показать"
+  });
+  Object.assign(TXT.tr, {
+    hStatsHeadT2:"Brawl Stars istatistikleri", hStatsIntro2:"Oyuncu etiketini gir — kupaları, kazanma oranını ve en iyi brawler'larını gösterelim.", tagShow:"Göster"
+  });
+  Object.assign(TXT.ar, {
+    hStatsHeadT2:"إحصائيات Brawl Stars", hStatsIntro2:"أدخل تاغ اللاعب الخاص بك — سنعرض الكؤوس ونسبة الفوز وأفضل الشخصيات.", tagShow:"عرض"
+  });
+  Object.assign(TXT.de, {
+    hStatsHeadT2:"Brawl Stars Statistiken", hStatsIntro2:"Gib deinen Spieler-Tag ein — wir zeigen Trophäen, Siegquote und deine besten Brawler.", tagShow:"Anzeigen"
+  });
 
   const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
-                    "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a"];
+                    "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a",
+                    "hStatsHeadT2","hStatsIntro2"];
   TXT.uk.wNext="Далі"; TXT.uk.wStart="Почати"; TXT.en.wNext="Next"; TXT.en.wStart="Start";
   TXT.uk.tDraft="Драфт"; TXT.uk.tHow="Як працює"; TXT.uk.tFaq="FAQ"; TXT.uk.tStats="Моя статистика";
   TXT.en.tDraft="Draft"; TXT.en.tHow="How it works"; TXT.en.tFaq="FAQ"; TXT.en.tStats="My Stats";
@@ -2720,6 +2741,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     document.getElementById("tabDraft").textContent = t("tDraft");
     document.getElementById("tabHow").textContent = t("tHow");
     document.getElementById("tabFaq").textContent = t("tFaq");
+    const tl = document.getElementById("tagLookup"); if(tl) tl.textContent = t("tagShow");
   }
 
   /* --- вкладки --- */
