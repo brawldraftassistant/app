@@ -63,7 +63,7 @@ button.on{background:var(--signal); color:#12161F; border-color:var(--signal); f
 .t-open{background:#4A3A22; color:#FFD27A}
 
 /* draft board — the 1-2-2-1-1-2 rhythm is the structure of the game */
-.board{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-top:4px}
+.board{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px; margin-top:4px}
 .slot{position:relative; aspect-ratio:3/4; border-radius:var(--radius); border:2px solid var(--line);
   background:var(--panel); display:flex; flex-direction:column; align-items:center; justify-content:center;
   gap:3px; padding:4px; cursor:pointer; text-align:center; font-size:11px; line-height:1.2}
@@ -124,6 +124,14 @@ input[type=text]{width:100%; padding:10px 12px; margin-bottom:12px; background:v
 .tier{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.1em; padding:2px 6px;
   border-radius:4px; vertical-align:middle; background:#2A3550; color:var(--muted)}
 .tier.S{background:linear-gradient(100deg,#FFD75E,#E8A317); color:#231704; box-shadow:0 0 10px rgba(255,197,49,.3)}
+.rarity{display:inline-block; font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; vertical-align:middle; color:#fff}
+.rarity.r1{background:#8A9199}
+.rarity.r2{background:#8C6A4C}
+.rarity.r3{background:#3EA6D9}
+.rarity.r4{background:#3ABF5A}
+.rarity.r5{background:#B04ADB}
+.rarity.r6{background:#FF3D3D}
+.rarity.r7{background:linear-gradient(100deg,#FF3D8B,#38B6FF,#FFD75E)}
 .rec{cursor:pointer; transition:border-color .12s, transform .08s}
 .rec:hover{border-color:#3F4C69} .rec:active{transform:scale(.995)}
 .rec .tap{float:right; font-size:11px; color:var(--muted)}
@@ -1371,6 +1379,8 @@ function noteFor(name){
   return tr.uk || "";
 }
 
+// 1=Starting Brawler(звичайний) ... 7=Ultra Legendary(найрідкісніший)
+const RARITY = {"Shelly":1,"Colt":2,"Bull":2,"Brock":2,"Barley":2,"Nita":2,"El Primo":2,"Poco":2,"Rosa":2,"Rico":3,"Jessie":3,"Dynamike":3,"Darryl":3,"Penny":3,"Tick":3,"Carl":3,"8-Bit":3,"Jacky":3,"Gus":3,"Bo":4,"Piper":4,"Pam":4,"Frank":4,"Bibi":4,"Bea":4,"Emz":4,"Gale":4,"Nani":4,"Colette":4,"Edgar":4,"Stu":4,"Belle":4,"Grom":4,"Griff":4,"Ash":4,"Lola":4,"Bonnie":4,"Sam":4,"Mandy":4,"Maisie":4,"Hank":4,"Pearl":4,"Larry & Lawrie":4,"Angelo":4,"Berry":4,"Shade":4,"Meeple":4,"Trunk":4,"Bolt":4,"Mortis":5,"Tara":5,"Gene":5,"Mr. P":5,"Max":5,"Sprout":5,"Lou":5,"Byron":5,"Raffs":5,"Squeak":5,"Buzz":5,"Fang":5,"Eve":5,"Janet":5,"Otis":5,"Buster":5,"Grey":5,"R-T":5,"Willow":5,"Doug":5,"Chuck":5,"Charlie":5,"Mico":5,"Melodie":5,"Lily":5,"Clancy":5,"Moe":5,"Juju":5,"Ollie":5,"Lumi":5,"Finx":5,"Jae-Yong":5,"Alli":5,"Mina":5,"Ziggy":5,"Gigi":5,"Glowy":5,"Nadia":5,"Damian":5,"Starr Nova":5,"Spike":6,"Crow":6,"Leon":6,"Sandy":6,"Surge":6,"Amber":6,"Meg":6,"Chester":6,"Cordelius":6,"Kit":6,"Draco":6,"Kenji":6,"Pierce":6,"Nori":6,"Kaze":7,"Sirius":7};
 const BINFO = {
 "Surge":{t:"S",roles:["antitank"],buffie:true},
 "Brock":{t:"S",roles:["control"],buffie:true},
@@ -1531,7 +1541,7 @@ const RTL=["ar"];
 
 const TXT={
 uk:{title:"Драфт-асистент",sub:"Ranked · порядок піків 1-2-2-1-1-2 · база знань, липень 2026",
- hLang:"Мова",hFirst:"Перший пік",hMode:"Режим",hMap:"Карта",hRank:"Ранг",rankBlind:"До міфіка",rankOpen:"Після міфіка",rBuffie:"Потрібні бафі — без них слабший",rDouble:"Його контрять одразу двоє — не варто",rTripleControl:"У ворога всі три — контроль, асасін проти них дуже сильний",rTriangle:"Б'є {n} за трикутником DPS/HP",rTriangleBy:"{n} б'є нас за трикутником DPS/HP",rWallbreaker:"У ворога є руйнівник стін — стіни більше не сховають",rWallbreakerTank:"У ворога є руйнівник стін — кущі зламані, підхід відкритий",rWallbreakerRisk:"У суперника лишились піки — може взяти руйнівника стін і зламати кущі",rStyleBurstClosed:"Бурст упритул сильний на закритій карті",rStyleFixedClosed:"Фіксований дальній урон гірше проявляється на закритій карті",rStyleFixedMid:"Фіксований дальній урон сильний на середній карті",rStyleBurstMid:"Бурст упритул гірше проявляється на середній карті",rNoTank:"На цій карті танки не грають",rBushy:"Кущова карта — вбивці підкрадаються краще",rWater:"Ходить по воді — вільно маневрує на цій карті",blindTitle:"Найкращі піки на цю карту й режим",tapBan:"Тисни на бійця, щоб забанити",needBuffie:"NEED BUFFIE",altsShort:"Альтернативи",winTitle:"Шанси на перемогу",pickTitle2:"Оцінка піків",draftBestPick:"Найсильніший пік:",draftWorstPick:"Найслабший пік:",draftExplainTeaser:"Ranked+ пояснює кожен пік — чому він хороший чи поганий",loading:"Рахуємо…",networkError:"Не вдалося зв'язатися з сервером. Перевір інтернет і спробуй ще раз.",usShort:"Ми",themShort:"Ворог",qBans:"Найімовірніші",qbMeta:"Немає першого піка — баним найсильнішу мету, щоб її не забрали",qbPlan:"Є перший пік — візьмемо {r}, тому баним тих, хто його контрить",hBanRec:"Кого банити",bwMeta:"Топ мети — заберуть, якщо не забанити",bwCounter:"Контрить {n} — наш перший пік",bwOften:"Часта ціль для бану",altBans:"Альтернативні бани",allRoles:"усі",hBans:"Бани",hBansOpt:"(необов'язково)",
+ hLang:"Мова",hFirst:"Перший пік",hMode:"Режим",hMap:"Карта",hRank:"Ранг",rankBlind:"До міфіка",rankOpen:"Після міфіка",rBuffie:"Потрібні бафі — без них слабший",rDouble:"Його контрять одразу двоє — не варто",rTripleControl:"У ворога всі три — контроль, асасін проти них дуже сильний",rTriangle:"Б'є {n} за трикутником DPS/HP",rTriangleBy:"{n} б'є нас за трикутником DPS/HP",rWallbreaker:"У ворога є руйнівник стін — стіни більше не сховають",rWallbreakerTank:"У ворога є руйнівник стін — кущі зламані, підхід відкритий",rWallbreakerRisk:"У суперника лишились піки — може взяти руйнівника стін і зламати кущі",rStyleBurstClosed:"Бурст упритул сильний на закритій карті",rStyleFixedClosed:"Фіксований дальній урон гірше проявляється на закритій карті",rStyleFixedMid:"Фіксований дальній урон сильний на середній карті",rStyleBurstMid:"Бурст упритул гірше проявляється на середній карті",rNoTank:"На цій карті танки не грають",rBushy:"Кущова карта — вбивці підкрадаються краще",rWater:"Ходить по воді — вільно маневрує на цій карті",blindTitle:"Найкращі піки на цю карту й режим",tapBan:"Тисни на бійця, щоб забанити",needBuffie:"NEED BUFFIE",altsShort:"Альтернативи",winTitle:"Шанси на перемогу",pickTitle2:"Оцінка піків",draftBestPick:"Найсильніший пік:",draftWorstPick:"Найслабший пік:",draftExplainTeaser:"Ranked+ пояснює кожен пік — чому він хороший чи поганий",loading:"Рахуємо…",networkError:"Не вдалося зв'язатися з сервером. Перевір інтернет і спробуй ще раз.",usShort:"Ми",themShort:"Ворог",qBans:"Найімовірніші",qbMeta:"Немає першого піка — баним найсильнішу мету, щоб її не забрали",qbPlan:"Є перший пік — візьмемо {r}, тому баним тих, хто його контрить",hBanRec:"Кого банити",bwMeta:"Топ мети — заберуть, якщо не забанити",bwCounter:"Контрить {n} — наш перший пік",bwOften:"Часта ціль для бану",altBans:"Альтернативні бани",allRoles:"усі",hBans:"Бани",hBansOpt:"(необов'язково)",rarity1:"Стартовий",rarity2:"Рідкісний",rarity3:"Дуже рідкісний",rarity4:"Епічний",rarity5:"Міфічний",rarity6:"Легендарний",rarity7:"Ультра-легендарний",
  hDraft:"Драфт",hRec:"Рекомендація",optOurs:"Наш",optTheirs:"Ворога",
  legendUs:"Ми — піки {x}",legendThem:"Ворог — піки {x}",clear:"Очистити драфт",
  banAdd:"+ Забанити",banTitle:"Кого банимо",pickOur:"Наш пік {n}",pickFoe:"Пік ворога {n}",
@@ -1565,7 +1575,7 @@ uk:{title:"Драфт-асистент",sub:"Ranked · порядок піків
  loc:{closed:"закритій",mid:"середній",open:"відкритій"},acc:{closed:"закриту",mid:"середню",open:"відкриту"}},
 
 en:{title:"Draft Assistant",sub:"Ranked · 1-2-2-1-1-2 pick order · knowledge base, July 2026",
- hLang:"Language",hFirst:"First pick",hMode:"Mode",hMap:"Map",hRank:"Rank",rankBlind:"Below Mythic",rankOpen:"Mythic and above",rBuffie:"Needs Buffies — weaker without them",rDouble:"Two of their picks counter him — not worth it",rTripleControl:"Enemy is all control — assassins are very strong here",rTriangle:"Beats {n} via the DPS/HP triangle",rTriangleBy:"{n} beats us via the DPS/HP triangle",rWallbreaker:"Enemy has a wall-breaker — walls won't hide you anymore",rWallbreakerTank:"Enemy has a wall-breaker — bushes are gone, your approach is exposed",rWallbreakerRisk:"Enemy still has picks left — they could bring a wall-breaker and clear the bushes",rStyleBurstClosed:"Point-blank burst is strong on closed maps",rStyleFixedClosed:"Fixed ranged damage underperforms on closed maps",rStyleFixedMid:"Fixed ranged damage is strong on mid maps",rStyleBurstMid:"Point-blank burst underperforms on mid maps",rNoTank:"Tanks don't work on this map",rBushy:"Bushy map — assassins sneak up better",rWater:"Walks on water — moves freely on this map",blindTitle:"Best picks for this map and mode",tapBan:"Tap a brawler to ban",needBuffie:"NEED BUFFIE",altsShort:"Alternatives",winTitle:"Win chance",pickTitle2:"Pick ratings",draftBestPick:"Strongest pick:",draftWorstPick:"Weakest pick:",draftExplainTeaser:"Ranked+ explains every pick — why it's good or bad",loading:"Crunching numbers…",networkError:"Couldn't reach the server. Check your connection and try again.",usShort:"Us",themShort:"Enemy",qBans:"Most likely",qbMeta:"No first pick — ban the strongest meta so they can't take it",qbPlan:"You have first pick — you'll take {r}, so ban what counters it",hBanRec:"Who to ban",bwMeta:"Top of the meta — they'll take it if you don't ban",bwCounter:"Counters {n} — our first pick",bwOften:"Frequent ban target",altBans:"Alternative bans",allRoles:"all",hBans:"Bans",hBansOpt:"(optional)",
+ hLang:"Language",hFirst:"First pick",hMode:"Mode",hMap:"Map",hRank:"Rank",rankBlind:"Below Mythic",rankOpen:"Mythic and above",rBuffie:"Needs Buffies — weaker without them",rDouble:"Two of their picks counter him — not worth it",rTripleControl:"Enemy is all control — assassins are very strong here",rTriangle:"Beats {n} via the DPS/HP triangle",rTriangleBy:"{n} beats us via the DPS/HP triangle",rWallbreaker:"Enemy has a wall-breaker — walls won't hide you anymore",rWallbreakerTank:"Enemy has a wall-breaker — bushes are gone, your approach is exposed",rWallbreakerRisk:"Enemy still has picks left — they could bring a wall-breaker and clear the bushes",rStyleBurstClosed:"Point-blank burst is strong on closed maps",rStyleFixedClosed:"Fixed ranged damage underperforms on closed maps",rStyleFixedMid:"Fixed ranged damage is strong on mid maps",rStyleBurstMid:"Point-blank burst underperforms on mid maps",rNoTank:"Tanks don't work on this map",rBushy:"Bushy map — assassins sneak up better",rWater:"Walks on water — moves freely on this map",blindTitle:"Best picks for this map and mode",tapBan:"Tap a brawler to ban",needBuffie:"NEED BUFFIE",altsShort:"Alternatives",winTitle:"Win chance",pickTitle2:"Pick ratings",draftBestPick:"Strongest pick:",draftWorstPick:"Weakest pick:",draftExplainTeaser:"Ranked+ explains every pick — why it's good or bad",loading:"Crunching numbers…",networkError:"Couldn't reach the server. Check your connection and try again.",usShort:"Us",themShort:"Enemy",qBans:"Most likely",qbMeta:"No first pick — ban the strongest meta so they can't take it",qbPlan:"You have first pick — you'll take {r}, so ban what counters it",hBanRec:"Who to ban",bwMeta:"Top of the meta — they'll take it if you don't ban",bwCounter:"Counters {n} — our first pick",bwOften:"Frequent ban target",altBans:"Alternative bans",allRoles:"all",hBans:"Bans",hBansOpt:"(optional)",rarity1:"Starting",rarity2:"Rare",rarity3:"Super Rare",rarity4:"Epic",rarity5:"Mythic",rarity6:"Legendary",rarity7:"Ultra Legendary",
  hDraft:"Draft",hRec:"Recommendation",optOurs:"Ours",optTheirs:"Theirs",
  legendUs:"Us — picks {x}",legendThem:"Enemy — picks {x}",clear:"Clear draft",
  banAdd:"+ Ban",banTitle:"Ban who",pickOur:"Our pick {n}",pickFoe:"Enemy pick {n}",
@@ -2167,19 +2177,20 @@ function drawChips(){
 }
 function drawList(q){
   const taken = picks.filter(Boolean).concat(bans);
-  // Раніше список сортувався за результатом рекомендації (чи бану) — це вимагало б
-  // окремого запиту до сервера просто для сортування, і до того ж непомітно "зливало"
-  // порядок рекомендацій навіть безкоштовним користувачам (перші в списку — це й були
-  // найкращі піки). Тепер просто за абеткою — простіше, швидше, нічого не витікає.
+  // Сортуємо за рідкістю (звичайний → Ultra Legendary), а не за абеткою. В межах
+  // однієї рідкості — за абеткою, для стабільного порядку. Рахуємо локально (RARITY),
+  // без запиту до сервера, і нічого не витікає — рідкість не секрет, це публічна
+  // інформація про саму гру, не про наші рекомендації.
   $("blist").innerHTML="";
   Object.keys(BINFO).filter(n=>!taken.includes(n)
              && n.toLowerCase().includes(q.toLowerCase())
              && (!roleFilter || BINFO[n].roles.includes(roleFilter)))
-   .sort((a,b)=>a.localeCompare(b))
+   .sort((a,b)=> (RARITY[a]||0)-(RARITY[b]||0) || a.localeCompare(b))
    .forEach(n=>{
      const info = bInfo(n);
+     const r = RARITY[n]||0;
      const btn=document.createElement("button");
-     btn.innerHTML=`${n}${info.buffie?' <span class="buffie"><span class="z">⚡</span>'+t("needBuffie")+'</span>':''}<span class="r">${info.roles.map(ROLE).join(", ")}</span>`;
+     btn.innerHTML=`${n}${r?` <span class="rarity r${r}">${t("rarity"+r)}</span>`:""}${info.buffie?' <span class="buffie"><span class="z">⚡</span>'+t("needBuffie")+'</span>':''}<span class="r">${info.roles.map(ROLE).join(", ")}</span>`;
      btn.onclick=()=>{
        if(target==="ban"){ bans.push(n); }
        else { picks[target]=n; $("overlay").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; }
