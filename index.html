@@ -538,6 +538,19 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .t-closed{ background:var(--berry); color:#fff } .t-mid{ background:var(--mint) } .t-open{ background:var(--sun) }
 #blist > button{ display:flex; align-items:center; gap:11px; flex-wrap:wrap }
 .listport{ width:32px; height:32px; border-radius:10px; border:3px solid var(--edge) }
+
+/* Список піку — портрети, згруповані по ролях (замість текстових рядків) */
+.pickSection{margin-bottom:16px}
+.pickSectionTitle{font-family:Oswald,sans-serif; font-size:12px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 8px; padding-bottom:4px; border-bottom:1px solid var(--line)}
+.pickGrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(74px,1fr)); gap:9px}
+.pickTile{display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer;
+  background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:6px 4px 8px;
+  transition:transform .1s}
+.pickTile:active{transform:scale(.94)}
+.pickTile img{width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:11px; border:2px solid var(--edge); background:var(--panel2)}
+.pickTile span{font-size:10.5px; font-weight:700; text-align:center; line-height:1.15;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%}
 .pickpanel{ background:#3A2088; border:4px solid var(--edge); border-radius:24px; box-shadow:0 10px 0 var(--edge), 0 30px 60px rgba(0,0,0,.55) }
 input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radius:14px; color:#fff; font-family:Nunito,sans-serif; font-weight:800 }
 #installbar{ background:#3A2088; border:3px solid var(--edge); border-radius:20px; box-shadow:0 6px 0 var(--edge) }
@@ -1230,7 +1243,8 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div id="blk-draft"><h2 id="h-draft">Draft</h2>
 <div class="board" id="board"><div class="slot ally active"><div class="n">1</div><div style="color:var(--muted)">ours</div></div><div class="slot enemy"><div class="n">2</div><div style="color:var(--muted)">enemy</div></div><div class="slot enemy"><div class="n">3</div><div style="color:var(--muted)">enemy</div></div><div class="slot ally"><div class="n">4</div><div style="color:var(--muted)">ours</div></div><div class="slot ally"><div class="n">5</div><div style="color:var(--muted)">ours</div></div><div class="slot enemy"><div class="n">6</div><div style="color:var(--muted)">enemy</div></div></div>
 <div class="legend" id="legend"><span><span class="dot" style="background:var(--ally)"></span>Us — picks 1, 4, 5</span><span><span class="dot" style="background:var(--enemy)"></span>Enemy — picks 2, 3, 6</span></div>
-<div style="margin-top:10px"><button class="util" id="reset">Clear draft</button></div></div>
+<div style="margin-top:10px"><button class="util" id="reset">Clear draft</button></div>
+</div>
 
 <h2 id="h-rec">Recommendation</h2>
 <div id="out"><div class="sub" style="margin-bottom:10px"><b style="color:var(--ally)">Our pick 1</b> · first pick of the draft — strongest safe meta, enemy has shown nothing yet</div><div class="gapline">Comp has no answer yet to: thrower, tank, assassin, control</div><div class="rec n1" onclick="take(&#39;Surge&#39;)">
@@ -1261,6 +1275,13 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
         <div class="an">Starr Nova <span class="tier S">S-TIER</span></div>
         <div class="ar">assassin · 16</div>
       </div></div></div>
+
+<div id="blk-inlinepick" style="margin-top:16px">
+  <h2 id="h-inlinepick">Хто пікає</h2>
+  <input type="text" id="searchInline" placeholder="Search by name…" autocomplete="off">
+  <div class="chips" id="chipsInline"></div>
+  <div id="blistInline"></div>
+</div>
 
 <div class="note" id="t-foot">Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — runs locally on your device. Brawler notes are in the original language (Ukrainian).</div>
 <div class="note" style="opacity:.6; font-size:11.5px; margin-top:6px">Unofficial fan project — not affiliated with, endorsed, or supported by Supercell. Brawler artwork © Supercell, used under Supercell's Fan Content Policy (supercell.com/fan-content-policy).</div>
@@ -1990,14 +2011,18 @@ function drawBoard(){
       x.onclick=ev=>{ ev.stopPropagation(); picks[i]=null; render(); };
       d.appendChild(x);
     }
-    d.onclick=()=>{ if(!picks[i]) openPicker(i); };
+    d.onclick=()=>{ if(!picks[i]){ window.scrollTo({top:$("blk-inlinepick").offsetTop-60, behavior:"smooth"}); } };
     $("board").appendChild(d);
   }
 }
 async function render(){
   // drawQuickBans() і showRecs() обидва звертаються до сервера — паралельно, а не по черзі,
   // щоб не чекати вдвічі довше на кожну дію користувача.
-  if(!blind){ drawBoard(); drawBans(); drawLegend(); await Promise.all([drawQuickBans(), showRecs()]); }
+  if(!blind){
+    drawBoard(); drawBans(); drawLegend();
+    updateInlinePickHeader(); drawChipsInline(); drawListInline($("searchInline").value);
+    await Promise.all([drawQuickBans(), showRecs()]);
+  }
   else { await showRecs(); }
 }
 
@@ -2157,49 +2182,106 @@ async function showRecs(){
 
 function openPicker(tg){
   target=tg;
-  $("picktitle").textContent = tg==="ban" ? t("banTitle")
-    : (OURS.includes(tg) ? t("pickOur",{n:tg+1}) : t("pickFoe",{n:tg+1}));
+  $("picktitle").textContent = t("banTitle");
   $("search").value=""; roleFilter=null; drawChips(); drawList(""); $("overlay").classList.add("show");
   document.documentElement.classList.add("modal-open");
 }
-let roleFilter=null;
-function drawChips(){
-  const box=$("chips"); box.innerHTML="";
+let roleFilter=null;         // модалка (тільки бани тепер)
+let roleFilterInline=null;   // завжди видимий список під дошкою (звичайні піки)
+
+// Спільний рендер списку бійців — і для модалки банів, і для інлайн-списку піків.
+// Сортування за рідкістю (звичайний → Ultra Legendary), локально, без запиту до сервера —
+// рідкість не секрет, це публічна інформація про саму гру, не про наші рекомендації.
+function renderChips(boxId, getFilter, setFilter, onChange){
+  const box=$(boxId); box.innerHTML="";
   const all=["antitank","assassin","control","tank","support","sniper","thrower","dmg"];
   const mk=(label,val)=>{
     const c=document.createElement("button");
-    c.className="chip"+(roleFilter===val?" on":""); c.textContent=label;
-    c.onclick=()=>{ roleFilter=val; drawChips(); drawList($("search").value); };
+    c.className="chip"+(getFilter()===val?" on":""); c.textContent=label;
+    c.onclick=()=>{ setFilter(val); onChange(); };
     box.appendChild(c);
   };
   mk(t("allRoles"),null);
   all.forEach(r=>mk(ROLE(r),r));
 }
-function drawList(q){
+function renderBrawlerList(listId, q, filterVal, onPick){
   const taken = picks.filter(Boolean).concat(bans);
-  // Сортуємо за рідкістю (звичайний → Ultra Legendary), а не за абеткою. В межах
-  // однієї рідкості — за абеткою, для стабільного порядку. Рахуємо локально (RARITY),
-  // без запиту до сервера, і нічого не витікає — рідкість не секрет, це публічна
-  // інформація про саму гру, не про наші рекомендації.
-  $("blist").innerHTML="";
+  $(listId).innerHTML="";
   Object.keys(BINFO).filter(n=>!taken.includes(n)
              && n.toLowerCase().includes(q.toLowerCase())
-             && (!roleFilter || BINFO[n].roles.includes(roleFilter)))
+             && (!filterVal || BINFO[n].roles.includes(filterVal)))
    .sort((a,b)=> (RARITY[a]||0)-(RARITY[b]||0) || a.localeCompare(b))
    .forEach(n=>{
      const info = bInfo(n);
      const r = RARITY[n]||0;
      const btn=document.createElement("button");
      btn.innerHTML=`${n}${r?` <span class="rarity r${r}">${t("rarity"+r)}</span>`:""}${info.buffie?' <span class="buffie"><span class="z">⚡</span>'+t("needBuffie")+'</span>':''}<span class="r">${info.roles.map(ROLE).join(", ")}</span>`;
-     btn.onclick=()=>{
-       if(target==="ban"){ bans.push(n); }
-       else { picks[target]=n; $("overlay").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; }
-       drawList($("search").value); render();
-     };
-     $("blist").appendChild(btn);
+     btn.onclick=()=>onPick(n);
+     $(listId).appendChild(btn);
    });
 }
+
+// --- модалка (лишилась тільки для банів — окрема дія, не частина основного потоку) ---
+function drawChips(){ renderChips("chips", ()=>roleFilter, v=>{roleFilter=v;}, ()=>drawList($("search").value)); }
+function drawList(q){
+  renderBrawlerList("blist", q, roleFilter, n=>{
+    bans.push(n);
+    drawList($("search").value); render();
+  });
+}
 $("search").oninput=e=>drawList(e.target.value);
+
+// --- інлайн-список під дошкою (завжди видно, не треба нічого відкривати) ---
+const ROLE_ORDER = ["antitank","assassin","control","tank","support","sniper","thrower","dmg","gemcarry"];
+function renderBrawlerGrid(containerId, q, filterVal, onPick){
+  const taken = picks.filter(Boolean).concat(bans);
+  const box = $(containerId);
+  box.innerHTML = "";
+  const avail = Object.keys(BINFO).filter(n=>!taken.includes(n) && n.toLowerCase().includes(q.toLowerCase()));
+  ROLE_ORDER.forEach(role=>{
+    if(filterVal && filterVal!==role) return;
+    // Групуємо за ГОЛОВНОЮ роллю (roles[0]) — так само, як усюди в застосунку,
+    // щоб боєць не дублювався в кількох секціях одразу.
+    const names = avail.filter(n=>BINFO[n].roles[0]===role)
+      .sort((a,b)=>(RARITY[a]||0)-(RARITY[b]||0) || a.localeCompare(b));
+    if(!names.length) return;
+    const section = document.createElement("div");
+    section.className = "pickSection";
+    const h = document.createElement("div");
+    h.className = "pickSectionTitle";
+    h.textContent = ROLE(role);
+    section.appendChild(h);
+    const grid = document.createElement("div");
+    grid.className = "pickGrid";
+    names.forEach(n=>{
+      const tile = document.createElement("div");
+      tile.className = "pickTile";
+      const src = window.brawlerPortrait ? (window.brawlerPortrait(n)||"") : "";
+      tile.innerHTML = `<img src="${src}" alt="" loading="lazy"><span>${n}</span>`;
+      tile.onclick = ()=>onPick(n);
+      grid.appendChild(tile);
+    });
+    section.appendChild(grid);
+    box.appendChild(section);
+  });
+}
+function drawChipsInline(){ renderChips("chipsInline", ()=>roleFilterInline, v=>{roleFilterInline=v;}, ()=>drawListInline($("searchInline").value)); }
+function drawListInline(q){
+  renderBrawlerGrid("blistInline", q, roleFilterInline, n=>{
+    const slot = nextSlot();
+    if(slot===undefined) return;
+    picks[slot]=n;
+    render(); // перемалює дошку і сам список — уже на наступний слот
+  });
+}
+function updateInlinePickHeader(){
+  const slot = nextSlot();
+  const box = $("blk-inlinepick");
+  if(blind || slot===undefined){ box.style.display="none"; return; }
+  box.style.display="";
+  $("h-inlinepick").textContent = OURS.includes(slot) ? t("pickOur",{n:slot+1}) : t("pickFoe",{n:slot+1});
+}
+$("searchInline").oninput=e=>drawListInline(e.target.value);
 $("closepick").onclick=()=>{ $("overlay").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; };
 $("reset").onclick=()=>{ picks=[null,null,null,null,null,null]; bans=[]; render(); };
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ $("overlay").classList.remove("show"); $("langmenu").classList.remove("show"); document.documentElement.classList.remove("modal-open"); target=null; } });
