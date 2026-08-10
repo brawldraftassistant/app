@@ -291,11 +291,13 @@ body{padding-top:calc(16px + env(safe-area-inset-top)); padding-bottom:calc(60px
 /* Фон живе на html, а body ПРОЗОРИЙ — інакше суцільний фон body малюється
    лише всередині колонки max-width і на широкому екрані видно «шов» по боках. */
 html{
+  overflow-x:hidden;
   background:
     radial-gradient(70% 50% at 50% -8%, #5B32C9 0%, #3A1E86 45%, #241155 100%)
     fixed #241155;
 }
 body{
+  overflow-x:hidden;
   background:transparent; color:var(--text);
   font-family:Nunito,system-ui,sans-serif; font-weight:700; font-size:16px;
 }
@@ -2001,11 +2003,18 @@ function take(name){
   picks[lastRecSlot]=name; target=null; render();
   window.scrollTo({top:$("board").offsetTop-60, behavior:"smooth"});
 }
+let recGen = 0;
 async function showRecs(){
+  // Захист від "гонки відповідей": якщо клікнути швидко (напр. двічі поспіль змінити
+  // карту), запити до сервера можуть повернутись не в тому порядку, і старіша відповідь
+  // могла б перезаписати щойно показані свіжі дані. Тому кожен виклик showRecs() отримує
+  // свій номер, і перед кожним записом у DOM перевіряємо — чи це досі найновіший виклик.
+  const myGen = ++recGen;
   $("out").innerHTML = `<div class="sub">${t("loading")}</div>`;
 
   if(blind){
     const res = await apiCall({ type:"blind", mode, mapIdx, picks, bans, weFirst });
+    if(myGen !== recGen) return; // прийшла застаріла відповідь — ігноруємо
     if(res.error){ $("out").innerHTML = `<div class="sub">${t("networkError")}</div>`; return; }
     if(!res.active){
       $("out").innerHTML = `<div class="rec recLocked" onclick="openSubModal()">
@@ -2034,10 +2043,12 @@ async function showRecs(){
   }
 
   const res = await apiCall({ type:"recommend", mode, mapIdx, picks, bans, weFirst });
+  if(myGen !== recGen) return;
   if(res.error){ $("out").innerHTML = `<div class="sub">${t("networkError")}</div>`; return; }
 
   if(res.slot === null){
     const fin = await apiCall({ type:"final", mode, mapIdx, picks, bans, weFirst });
+    if(myGen !== recGen) return;
     if(fin.error){ $("out").innerHTML = `<div class="sub">${t("networkError")}</div>`; return; }
     const bar = `<div class="winbar"><div class="wus" style="width:${fin.win}%">${fin.win}%</div>`
               + `<div class="wthem" style="width:${100-fin.win}%">${100-fin.win}%</div></div>`;
