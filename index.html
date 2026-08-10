@@ -2918,7 +2918,15 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   let subCode = "";
   window.subscriptionActive = false;
   try{ subCode = localStorage.getItem("subCode") || ""; } catch(e){}
-  try{ window.subscriptionActive = localStorage.getItem("subActive") === "1"; } catch(e){}
+  // ВАЖЛИВО (безпека): localStorage.subActive — це ЛИШЕ косметична підказка для миттєвого
+  // показу кнопки при завантаженні (щоб не блимало "Subscribe" на секунду навіть у реальних
+  // підписників, поки йде мережевий запит). Це НЕ джерело правди для доступу — інакше будь-хто
+  // міг у консолі браузера написати localStorage.setItem("subActive","1") і назавжди отримати
+  // платний контент без жодної оплати й без реального коду. Реальний subscriptionActive
+  // виставляється тільки нижче, відповіддю сервера з checkCode() — і перевірка тепер
+  // запускається ЗАВЖДИ, коли є збережений код, незалежно від цієї підказки.
+  let cachedGuess = false;
+  try{ cachedGuess = localStorage.getItem("subActive") === "1"; } catch(e){}
 
   function refreshSubBtn(){
     const btn = document.getElementById("subBtn");
@@ -2926,6 +2934,12 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     btn.textContent = subscriptionActive ? "✅ Ranked+" : "✨ Subscribe";
     btn.classList.toggle("active", subscriptionActive);
   }
+  // Перший, косметичний рендер кнопки за здогадкою (без розблокування будь-якого контенту) —
+  // щоб не блимало для реальних підписників, поки йде перевірка сервера нижче.
+  (function(){
+    const btn = document.getElementById("subBtn");
+    if(btn && cachedGuess){ btn.textContent = "✅ Ranked+"; btn.classList.add("active"); }
+  })();
   refreshSubBtn();
 
   async function checkCode(code, silent){
@@ -3084,7 +3098,12 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   })();
 
   // якщо код уже збережений локально з попереднього візиту — перевіряємо його статус мовчки
-  if(subCode && !window.subscriptionActive){ checkCode(subCode, true); }
+  // БЕЗПЕКА: перевіряємо сервер ЗАВЖДИ, коли є збережений код — незалежно від того, що каже
+  // локальний прапорець. Раніше перевірка пропускалась, якщо subscriptionActive вже було true,
+  // а це значення бралось з localStorage без жодної перевірки — тобто досить було написати
+  // в консолі браузера localStorage.setItem("subActive","1"), і сайт назавжди довіряв цьому,
+  // ніколи більше не звіряючись із сервером. Тепер справжній доступ підтверджує лише сервер.
+  if(subCode){ checkCode(subCode, true); }
 
   function esc(s){ return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 
