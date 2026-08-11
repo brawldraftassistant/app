@@ -2315,11 +2315,28 @@ function drawListInline(q){
 // той самий список винятків, що вже використовується для портретів (Grey→Gray, Nadia→Najia).
 const OWNED_NAME_ALIAS = { grey:"gray", nadia:"najia" };
 function normOwnedName(s){ return String(s).toLowerCase().replace(/[^a-z0-9]/g,""); }
-function matchOwnedNames(apiBrawlerNames){
-  const apiSet = new Set(apiBrawlerNames.map(normOwnedName));
+// Тепер приймає ПОВНІ об'єкти бійців з Brawl Stars API (не просто імена), і рахує "власним"
+// бійця лише якщо він реально повністю прокачаний: сила 11, є хоч одна пасивка, є хоч
+// один гаджет. Гіперзаряд — окремо: офіційне API не завжди явно віддає це поле в звичайній
+// відповіді /players/{tag}, тому враховуємо його ЛИШЕ якщо воно справді присутнє у відповіді
+// (щоб не зламати фільтр повністю через поле, якого може просто не бути).
+function matchOwnedNames(apiBrawlers){
+  const byNorm = new Map();
+  apiBrawlers.forEach(b=>{
+    const n = normOwnedName(b.name);
+    byNorm.set(n, b);
+  });
   return Object.keys(BINFO).filter(ourName=>{
     const n = normOwnedName(ourName);
-    return apiSet.has(n) || apiSet.has(OWNED_NAME_ALIAS[n] || n);
+    const apiB = byNorm.get(n) || byNorm.get(OWNED_NAME_ALIAS[n] || n);
+    if(!apiB) return false;
+    const maxPower = (apiB.power||0) >= 11;
+    const hasStarPower = Array.isArray(apiB.starPowers) && apiB.starPowers.length >= 1;
+    const hasGadget = Array.isArray(apiB.gadgets) && apiB.gadgets.length >= 1;
+    // Гіперзаряд: рахуємо тільки якщо поле реально прийшло у відповіді API
+    const hcField = apiB.hypercharge ?? apiB.hyperCharge ?? apiB.hyperchargeLevel;
+    const hasHypercharge = hcField===undefined ? true : (Array.isArray(hcField) ? hcField.length>=1 : !!hcField);
+    return maxPower && hasStarPower && hasGadget && hasHypercharge;
   });
 }
 
@@ -2333,6 +2350,10 @@ function refreshOwnedUI(){
     wrap.style.display = "";
     $("ownedToggle").checked = ownedToggleOn;
     status.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
+  } else if(ownedBrawlers && ownedBrawlers.length===0){
+    // тег зчитано успішно, але жоден боєць не прокачаний на повну (сила 11 + пасивка + гаджет)
+    wrap.style.display = "none";
+    status.textContent = t("ownedZero");
   } else {
     wrap.style.display = "none";
     status.textContent = "";
@@ -2420,7 +2441,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     ownedHintTitle:"🎯 Без тега бот може порадити бійця, якого в тебе ще нема", ownedIntro:"Введи свій тег — і рекомендації будуть тільки з тих бійців, яких ти реально маєш.", ownedTagBtn:"Завантажити",
     tagModalTitle:"Введи свій тег!", tagModalDesc:"Щоб радити драфт під твоїх прокачаних бійців!", tagModalGo:"Показати мою статистику", tagModalSkip:"Пропустити",
     ownedToggleLabel:"Радити тільки моїх бійців", ownedNeedTag:"Введи тег гравця.", ownedError:"Не вдалося завантажити — перевір тег.",
-    ownedLoaded:"Знайдено {n} бійців — рекомендації тепер лише з них.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.",
+    ownedLoaded:"Знайдено {n} бійців на 11 силі з пасивкою й гаджетом — рекомендації тепер лише з них.", ownedZero:"Тег зчитано, але жоден боєць не прокачаний на 11 силу з пасивкою й гаджетом — радимо як завжди.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.",
     hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
@@ -2440,7 +2461,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     ownedHintTitle:"🎯 Without your tag we might suggest a brawler you don't even have", ownedIntro:"Enter your tag — we'll only recommend brawlers you actually own.", ownedTagBtn:"Load",
     tagModalTitle:"Enter your tag!", tagModalDesc:"So we can build drafts around your leveled-up brawlers!", tagModalGo:"Show my stats", tagModalSkip:"Skip",
     ownedToggleLabel:"Only recommend my brawlers", ownedNeedTag:"Enter your player tag.", ownedError:"Couldn't load — check the tag.",
-    ownedLoaded:"Found {n} brawlers — recommendations now come from those only.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.",
+    ownedLoaded:"Found {n} maxed-out brawlers (power 11, star power, gadget) — recommendations now come from those only.", ownedZero:"Tag loaded, but no brawler is fully maxed (power 11 + star power + gadget) — recommending as usual.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.",
     hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
@@ -2788,7 +2809,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     // список "власних" бійців для фільтрації рекомендацій у драфті, і запам'ятовуємо
     // тег, щоб наступного разу підвантажити все саме, без повторного вводу.
     if(Array.isArray(data.brawlers) && typeof matchOwnedNames === "function"){
-      const matched = matchOwnedNames(data.brawlers.map(b=>b.name));
+      const matched = matchOwnedNames(data.brawlers);
       ownedBrawlers = matched; ownedToggleOn = true;
       try{
         localStorage.setItem("ownedBrawlers", JSON.stringify(matched));
