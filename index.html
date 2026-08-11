@@ -1567,16 +1567,23 @@ function translateWhy(why){
 // у рекомендаціях. Зберігається локально, щоб не питати тег щоразу заново.
 let ownedBrawlers = null;
 let ownedToggleOn = true;
+// Якщо є збережений тег — зараз піде свіже підвантаження (lookupTag викликається
+// автоматично при старті). Поки воно не завершилось, НЕ довіряємо старому збереженому
+// списку — інакше екран міг би на мить (чи довше, при повільному інтернеті) показати
+// рекомендацію за застарілими даними, перш ніж свіжі підтягнуться і виправлять картинку.
+let ownedBrawlersFresh = false;
 try{
   const savedOwned = localStorage.getItem("ownedBrawlers");
   if(savedOwned) ownedBrawlers = JSON.parse(savedOwned);
   const savedToggle = localStorage.getItem("ownedToggleOn");
   if(savedToggle !== null) ownedToggleOn = savedToggle === "1";
-} catch(e){}
+  // тега нема — значить, і оновлювати нічого, наявний (навіть порожній) список вважаємо "свіжим"
+  if(!localStorage.getItem("playerTag")) ownedBrawlersFresh = true;
+} catch(e){ ownedBrawlersFresh = true; }
 
 async function apiCall(body){
   try{
-    const useOwned = ownedToggleOn && ownedBrawlers && ownedBrawlers.length;
+    const useOwned = ownedBrawlersFresh && ownedToggleOn && ownedBrawlers && ownedBrawlers.length;
     const res = await fetch(`${WORKER_URL}/recommend`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -2773,7 +2780,10 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       res = await fetch(`${WORKER_URL}/?tag=${encodeURIComponent(tag)}`);
       text = await res.text();
     } catch(netErr){
-      // мережева помилка (немає інтернету, Worker недоступний тощо) — показуємо як є
+      // мережева помилка (немає інтернету, Worker недоступний тощо) — показуємо як є.
+      // Фільтр "своїх" бійців при цьому не блокуємо назавжди — довіряємо тому, що вже
+      // збережено з минулого разу, а не залишаємо застосунок без фільтра до кінця сесії.
+      ownedBrawlersFresh = true;
       box.innerHTML = `<div class="statsErr"><b>Не вдалося з'єднатися.</b><br>${esc(netErr.message || netErr)}</div>`;
       $id("tagLookup").disabled = false;
       return;
@@ -2783,6 +2793,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     try{ data = JSON.parse(text); } catch(e){ /* відповідь не JSON — покажемо сирий текст нижче */ }
 
     if(!res.ok){
+      ownedBrawlersFresh = true;
       // ГОЛОВНЕ: завжди показуємо точний текст/код помилки на сторінці, нічого не ховаємо
       const reason = (data && (data.reason || data.message || data.error)) || null;
       box.innerHTML = `<div class="statsErr">
@@ -2794,6 +2805,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     }
 
     if(!data){
+      ownedBrawlersFresh = true;
       box.innerHTML = `<div class="statsErr"><b>Незрозуміла відповідь сервера.</b><div class="statsRaw">${esc(text)}</div></div>`;
       $id("tagLookup").disabled = false;
       return;
@@ -2810,13 +2822,19 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     // тег, щоб наступного разу підвантажити все саме, без повторного вводу.
     if(Array.isArray(data.brawlers) && typeof matchOwnedNames === "function"){
       const matched = matchOwnedNames(data.brawlers);
-      ownedBrawlers = matched; ownedToggleOn = true;
+      ownedBrawlers = matched; ownedToggleOn = true; ownedBrawlersFresh = true;
       try{
         localStorage.setItem("ownedBrawlers", JSON.stringify(matched));
         localStorage.setItem("ownedToggleOn", "1");
         localStorage.setItem("playerTag", tag);
       } catch(e){}
       if(typeof refreshOwnedUI === "function") refreshOwnedUI();
+      // Перемальовуємо рекомендацію: без цього стара (ще з попереднього візиту чи до
+      // цього фіксу) відповідь могла лишитись на екрані, поки свіжий список бійців
+      // підвантажувався мовчки й ніде не застосовувався.
+      if(typeof render === "function") render();
+    } else {
+      ownedBrawlersFresh = true;
     }
 
     try{
