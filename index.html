@@ -791,6 +791,8 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 /* ---------- Моя статистика ---------- */
 .statsIntro{ color:var(--muted); font-size:15px; margin:8px 0 18px; font-weight:700 }
+.ownedHint{ display:inline-block; background:#3A2088; border:1px solid rgba(255,255,255,.15);
+  border-radius:12px; padding:8px 12px; font-size:13px; font-weight:800; color:#FFD75E; margin-bottom:8px }
 .tagRow{ display:flex; gap:10px; margin-bottom:18px }
 .onlyToggle{
   display:flex; align-items:center; gap:11px; margin:18px 0 4px; font-size:14.5px;
@@ -1159,6 +1161,19 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 </div>
 <div class="sub" id="t-sub" style="display:none">Ranked · 1-2-2-1-1-2 pick order · knowledge base, July 2026</div>
 
+<div id="tagModal" class="subOverlay" style="display:none">
+  <div class="subCard">
+    <button type="button" class="subClose" id="tagModalClose">✕</button>
+    <div class="subLockIcon">🎯</div>
+    <h2 id="tagModalTitle">Введи свій тег!</h2>
+    <p id="tagModalDesc">Щоб радити драфт під твоїх прокачаних бійців!</p>
+    <input type="text" id="tagModalInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
+    <div id="tagModalMsg" class="subMsg"></div>
+    <button type="button" class="subPay" id="tagModalGo">Показати мою статистику</button>
+    <button type="button" class="subCancelLink" id="tagModalSkip">Пропустити</button>
+  </div>
+</div>
+
 <div id="home">
   <div class="hero">
     <div class="orb o1"></div><div class="orb o2"></div>
@@ -1175,12 +1190,18 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     </div>
   </div>
   <div class="homeStats">
+    <div class="ownedHint" id="ownedHintTitle">🎯 Без тега бот може порадити бійця, якого в тебе ще нема</div>
     <h2 id="hStatsHeadT2">Статистика Brawl Stars</h2>
-    <p class="statsIntro" id="hStatsIntro2">Введи свій тег гравця — покажемо трофеї, вінрейт і найкращих бійців.</p>
+    <p class="statsIntro" id="hStatsIntro2">Введи свій тег гравця — покажемо трофеї, вінрейт, найкращих бійців, і рекомендуватимемо лише тих, кого ти реально маєш.</p>
     <div class="tagRow">
       <input type="text" id="tagInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
       <button type="button" id="tagLookup">Показати</button>
     </div>
+    <label class="onlyToggle" id="ownedToggleWrap" style="display:none">
+      <input type="checkbox" id="ownedToggle" checked>
+      <span id="ownedToggleLabel">Радити тільки моїх бійців у драфті</span>
+    </label>
+    <div id="ownedStatus" style="margin:4px 0 0"></div>
     <div id="statsBox"></div>
   </div>
 
@@ -1241,6 +1262,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div class="quick" id="quickbans"><button class="bq top" onclick="doBan(&#39;Meeple&#39;)"><span class="num">1</span><span>Meeple</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Sirius&#39;)"><span class="num">2</span><span>Sirius</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Starr Nova&#39;)"><span class="num">3</span><span>Starr Nova</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Damian&#39;)"><span>Damian</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Mortis&#39;)"><span>Mortis</span><span class="bt s">S</span><span class="bz">⚡</span></button><button class="bq alt" onclick="doBan(&#39;Edgar&#39;)"><span>Edgar</span><span class="bt s">S</span><span class="bz">⚡</span></button><div class="banhelp">Tap a brawler to ban</div><button class="addban" onclick="openPicker(&#39;ban&#39;)">+ Ban</button></div></div>
 
 <div id="blk-draft"><h2 id="h-draft">Draft</h2>
+
 <div class="board" id="board"><div class="slot ally active"><div class="n">1</div><div style="color:var(--muted)">ours</div></div><div class="slot enemy"><div class="n">2</div><div style="color:var(--muted)">enemy</div></div><div class="slot enemy"><div class="n">3</div><div style="color:var(--muted)">enemy</div></div><div class="slot ally"><div class="n">4</div><div style="color:var(--muted)">ours</div></div><div class="slot ally"><div class="n">5</div><div style="color:var(--muted)">ours</div></div><div class="slot enemy"><div class="n">6</div><div style="color:var(--muted)">enemy</div></div></div>
 <div class="legend" id="legend"><span><span class="dot" style="background:var(--ally)"></span>Us — picks 1, 4, 5</span><span><span class="dot" style="background:var(--enemy)"></span>Enemy — picks 2, 3, 6</span></div>
 <div style="margin-top:10px"><button class="util" id="reset">Clear draft</button></div>
@@ -1541,12 +1563,24 @@ function translateWhy(why){
   return (why||[]).map(w=>[t(w[0], w[1]||undefined), w[2]]);
 }
 
+// Список бійців, яких гравець реально має (за тегом) — і чи використовувати цей фільтр
+// у рекомендаціях. Зберігається локально, щоб не питати тег щоразу заново.
+let ownedBrawlers = null;
+let ownedToggleOn = true;
+try{
+  const savedOwned = localStorage.getItem("ownedBrawlers");
+  if(savedOwned) ownedBrawlers = JSON.parse(savedOwned);
+  const savedToggle = localStorage.getItem("ownedToggleOn");
+  if(savedToggle !== null) ownedToggleOn = savedToggle === "1";
+} catch(e){}
+
 async function apiCall(body){
   try{
+    const useOwned = ownedToggleOn && ownedBrawlers && ownedBrawlers.length;
     const res = await fetch(`${WORKER_URL}/recommend`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...body, code: subCode }),
+      body: JSON.stringify({ ...body, code: subCode, ownedBrawlers: useOwned ? ownedBrawlers : undefined }),
     });
     return await res.json();
   } catch(e){
@@ -2142,6 +2176,7 @@ async function showRecs(){
     return;
   }
   if(res.gaps && res.gaps.length && !blind) html+=`<div class="gapline">${t("gap",{x:res.gaps.map(ROLE).join(", ")})}</div>`;
+  if(res.ownedFallback) html+=`<div class="gapline">⚠️ ${t("ownedFallbackNote")}</div>`;
 
   if(!res.active){
     // Одна чітка рекомендація, ОДНІЄЇ ролі — job це роль, яку реально просить цей пік
@@ -2274,6 +2309,42 @@ function drawListInline(q){
     render(); // перемалює дошку і сам список — уже на наступний слот
   });
 }
+// Brawl Stars API повертає імена в своєму форматі (типу "MR_P", "EL_PRIMO") — зводимо
+// і їх, і наші власні імена (BINFO) до одного вигляду для порівняння: тільки літери й
+// цифри, нижній регістр. Кілька бійців у нас названі інакше, ніж в офіційному API —
+// той самий список винятків, що вже використовується для портретів (Grey→Gray, Nadia→Najia).
+const OWNED_NAME_ALIAS = { grey:"gray", nadia:"najia" };
+function normOwnedName(s){ return String(s).toLowerCase().replace(/[^a-z0-9]/g,""); }
+function matchOwnedNames(apiBrawlerNames){
+  const apiSet = new Set(apiBrawlerNames.map(normOwnedName));
+  return Object.keys(BINFO).filter(ourName=>{
+    const n = normOwnedName(ourName);
+    return apiSet.has(n) || apiSet.has(OWNED_NAME_ALIAS[n] || n);
+  });
+}
+
+// Оновлює видимість перемикача й текст статусу під полем тега — викликається і після
+// успішного пошуку (lookupTag), і одразу при завантаженні сторінки, якщо список уже
+// збережено з минулого разу.
+function refreshOwnedUI(){
+  const wrap = $("ownedToggleWrap"), status = $("ownedStatus");
+  if(!wrap || !status) return;
+  if(ownedBrawlers && ownedBrawlers.length){
+    wrap.style.display = "";
+    $("ownedToggle").checked = ownedToggleOn;
+    status.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
+  } else {
+    wrap.style.display = "none";
+    status.textContent = "";
+  }
+}
+if($("ownedToggle")) $("ownedToggle").onchange = e=>{
+  ownedToggleOn = e.target.checked;
+  try{ localStorage.setItem("ownedToggleOn", ownedToggleOn ? "1" : "0"); } catch(err){}
+  render();
+};
+refreshOwnedUI();
+
 function updateInlinePickHeader(){
   const slot = nextSlot();
   const box = $("blk-inlinepick");
@@ -2346,6 +2417,10 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH3t:"Отримуй найкращий пік", hH3d:"Асистент рахує контри, ролі й тип карти — і пояснює, чому саме цей бравлер.",
     hStatsT:"Моя статистика", stDraftsL:"драфтів", stModeL:"улюблений режим", stStreakL:"днів поспіль", stBansL:"банів пораховано", hFaqT:"Часті питання",
     hStatsHeadT2:"Статистика Brawl Stars", hStatsIntro2:"Введи свій тег гравця — покажемо трофеї, вінрейт і найкращих бійців.", tagShow:"Показати",
+    ownedHintTitle:"🎯 Без тега бот може порадити бійця, якого в тебе ще нема", ownedIntro:"Введи свій тег — і рекомендації будуть тільки з тих бійців, яких ти реально маєш.", ownedTagBtn:"Завантажити",
+    tagModalTitle:"Введи свій тег!", tagModalDesc:"Щоб радити драфт під твоїх прокачаних бійців!", tagModalGo:"Показати мою статистику", tagModalSkip:"Пропустити",
+    ownedToggleLabel:"Радити тільки моїх бійців", ownedNeedTag:"Введи тег гравця.", ownedError:"Не вдалося завантажити — перевір тег.",
+    ownedLoaded:"Знайдено {n} бійців — рекомендації тепер лише з них.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.",
     hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
@@ -2361,7 +2436,11 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     hH2t:"Enter picks and bans", hH2d:"Log both teams' choices in the real 1-2-2-1-1-2 draft order.",
     hH3t:"Get the best pick", hH3d:"The assistant weighs counters, roles and map type — and explains why.",
     hStatsT:"Your stats", stDraftsL:"drafts", stModeL:"favorite mode", stStreakL:"day streak", stBansL:"bans scored", hFaqT:"FAQ",
-    hStatsHeadT2:"Brawl Stars stats", hStatsIntro2:"Enter your player tag — we'll show trophies, win rate and best brawlers.", tagShow:"Show",
+    hStatsHeadT2:"Brawl Stars stats", hStatsIntro2:"Enter your player tag — we'll show trophies, win rate, best brawlers, and only recommend brawlers you actually own.", tagShow:"Show",
+    ownedHintTitle:"🎯 Without your tag we might suggest a brawler you don't even have", ownedIntro:"Enter your tag — we'll only recommend brawlers you actually own.", ownedTagBtn:"Load",
+    tagModalTitle:"Enter your tag!", tagModalDesc:"So we can build drafts around your leveled-up brawlers!", tagModalGo:"Show my stats", tagModalSkip:"Skip",
+    ownedToggleLabel:"Only recommend my brawlers", ownedNeedTag:"Enter your player tag.", ownedError:"Couldn't load — check the tag.",
+    ownedLoaded:"Found {n} brawlers — recommendations now come from those only.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.",
     hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
@@ -2401,6 +2480,14 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     document.getElementById("tabHow").textContent = t("tHow");
     document.getElementById("tabFaq").textContent = t("tFaq");
     const tl = document.getElementById("tagLookup"); if(tl) tl.textContent = t("tagShow");
+    const oht = document.getElementById("ownedHintTitle"); if(oht) oht.textContent = t("ownedHintTitle");
+    const tmt = document.getElementById("tagModalTitle"); if(tmt) tmt.textContent = t("tagModalTitle");
+    const tmd = document.getElementById("tagModalDesc"); if(tmd) tmd.textContent = t("tagModalDesc");
+    const tmg = document.getElementById("tagModalGo"); if(tmg) tmg.textContent = t("tagModalGo");
+    const tms = document.getElementById("tagModalSkip"); if(tms) tms.textContent = t("tagModalSkip");
+    const ol = document.getElementById("ownedToggleLabel"); if(ol) ol.textContent = t("ownedToggleLabel");
+    const os = document.getElementById("ownedStatus");
+    if(os && typeof ownedBrawlers !== "undefined" && ownedBrawlers && ownedBrawlers.length) os.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
   }
 
   /* --- вкладки --- */
@@ -2697,6 +2784,20 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     renderStatsCard(data, null);
     $id("tagLookup").disabled = false;
 
+    // той самий запит уже дав нам весь ростер бійців гравця — заодно оновлюємо
+    // список "власних" бійців для фільтрації рекомендацій у драфті, і запам'ятовуємо
+    // тег, щоб наступного разу підвантажити все саме, без повторного вводу.
+    if(Array.isArray(data.brawlers) && typeof matchOwnedNames === "function"){
+      const matched = matchOwnedNames(data.brawlers.map(b=>b.name));
+      ownedBrawlers = matched; ownedToggleOn = true;
+      try{
+        localStorage.setItem("ownedBrawlers", JSON.stringify(matched));
+        localStorage.setItem("ownedToggleOn", "1");
+        localStorage.setItem("playerTag", tag);
+      } catch(e){}
+      if(typeof refreshOwnedUI === "function") refreshOwnedUI();
+    }
+
     try{
       const bres = await fetch(`${WORKER_URL}/battlelog?tag=${encodeURIComponent(tag)}`);
       const btext = await bres.text();
@@ -2912,6 +3013,44 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
 
   const $id = s=>document.getElementById(s);
+
+  // Перший візит: якщо тег ще ніколи не вводили і людина не натискала "Пропустити" —
+  // показуємо вітальне вікно одразу при вході. Якщо тег уже збережено з минулого разу —
+  // нікого не турбуємо, просто тихо довантажуємо все саме (і статистику, і бійців).
+  function openTagModal(){
+    $id("tagModal").style.display = "flex";
+    document.documentElement.classList.add("modal-open");
+    $id("tagModalInput").focus();
+  }
+  function closeTagModal(){
+    $id("tagModal").style.display = "none";
+    document.documentElement.classList.remove("modal-open");
+  }
+  $id("tagModalClose").onclick = ()=>{ try{ localStorage.setItem("tagPromptSkipped","1"); }catch(e){} closeTagModal(); };
+  $id("tagModalSkip").onclick = ()=>{ try{ localStorage.setItem("tagPromptSkipped","1"); }catch(e){} closeTagModal(); };
+  $id("tagModalGo").onclick = async ()=>{
+    const raw = ($id("tagModalInput").value || "").trim();
+    if(!raw){ $id("tagModalMsg").textContent = t("ownedNeedTag"); return; }
+    $id("tagInput").value = raw;
+    $id("tagModalGo").disabled = true;
+    $id("tagModalMsg").textContent = t("loading");
+    await lookupTag();
+    $id("tagModalGo").disabled = false;
+    closeTagModal();
+    // одразу показуємо профіль людини, як і просили — прокручуємо до статистики
+    const box = $id("statsBox");
+    if(box) box.scrollIntoView({behavior:"smooth", block:"start"});
+  };
+  $id("tagModalInput").addEventListener("keydown", e=>{ if(e.key==="Enter") $id("tagModalGo").click(); });
+
+  try{
+    const savedTag = localStorage.getItem("playerTag");
+    if(savedTag){
+      $id("tagInput").value = "#"+savedTag; lookupTag();
+    } else if(localStorage.getItem("tagPromptSkipped") !== "1"){
+      openTagModal();
+    }
+  } catch(e){}
   const steps=[...document.querySelectorAll(".wstep")];
   const dots=[...document.querySelectorAll("#wdots i")];
   let wi=0;
