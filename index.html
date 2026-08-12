@@ -1245,10 +1245,6 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 </section>
     <section class="wstep" data-w="3"><div id="blk-first"><h2 id="h-first">First pick</h2>
 <div class="row" id="first"><button class="on">Ours</button><button>Theirs</button></div>
-<div id="myPickWrap" style="display:none; margin-top:12px">
-  <div class="statsIntro" id="myPickLabel" style="margin:0 0 6px; font-size:13px">Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)</div>
-  <div class="chips" id="myPickChips"></div>
-</div>
 </div>
 
 </section>
@@ -1267,6 +1263,11 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div class="quick" id="quickbans"><button class="bq top" onclick="doBan(&#39;Meeple&#39;)"><span class="num">1</span><span>Meeple</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Sirius&#39;)"><span class="num">2</span><span>Sirius</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Starr Nova&#39;)"><span class="num">3</span><span>Starr Nova</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Damian&#39;)"><span>Damian</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Mortis&#39;)"><span>Mortis</span><span class="bt s">S</span><span class="bz">⚡</span></button><button class="bq alt" onclick="doBan(&#39;Edgar&#39;)"><span>Edgar</span><span class="bt s">S</span><span class="bz">⚡</span></button><div class="banhelp">Tap a brawler to ban</div><button class="addban" onclick="openPicker(&#39;ban&#39;)">+ Ban</button></div></div>
 
 <div id="blk-draft"><h2 id="h-draft">Draft</h2>
+
+<div id="myPickWrap" style="display:none; margin-bottom:10px">
+  <div class="statsIntro" id="myPickLabel" style="margin:0 0 6px; font-size:13px">Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)</div>
+  <div class="chips" id="myPickChips"></div>
+</div>
 
 <div class="board" id="board"><div class="slot ally active"><div class="n">1</div><div style="color:var(--muted)">ours</div></div><div class="slot enemy"><div class="n">2</div><div style="color:var(--muted)">enemy</div></div><div class="slot enemy"><div class="n">3</div><div style="color:var(--muted)">enemy</div></div><div class="slot ally"><div class="n">4</div><div style="color:var(--muted)">ours</div></div><div class="slot ally"><div class="n">5</div><div style="color:var(--muted)">ours</div></div><div class="slot enemy"><div class="n">6</div><div style="color:var(--muted)">enemy</div></div></div>
 <div class="legend" id="legend"><span><span class="dot" style="background:var(--ally)"></span>Us — picks 1, 4, 5</span><span><span class="dot" style="background:var(--enemy)"></span>Enemy — picks 2, 3, 6</span></div>
