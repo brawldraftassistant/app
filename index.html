@@ -1201,6 +1201,10 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <input type="checkbox" id="ownedToggle" checked>
       <span id="ownedToggleLabel">Радити тільки моїх бійців у драфті</span>
     </label>
+    <div id="myPickWrap" style="display:none; margin-top:8px">
+      <div class="statsIntro" id="myPickLabel" style="margin:0 0 6px; font-size:13px">Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)</div>
+      <div class="chips" id="myPickChips"></div>
+    </div>
     <div id="ownedStatus" style="margin:4px 0 0"></div>
     <div id="statsBox"></div>
   </div>
@@ -1583,7 +1587,15 @@ try{
 
 async function apiCall(body){
   try{
-    const useOwned = ownedBrawlersFresh && ownedToggleOn && ownedBrawlers && ownedBrawlers.length;
+    let useOwned = ownedBrawlersFresh && ownedToggleOn && ownedBrawlers && ownedBrawlers.length;
+    // Фільтр "тільки моїх бійців" стосується лише мого власного піку в команді — для
+    // піків тіммейтів (інші 2 з наших 3 слотів) радимо найкращих загалом, бо в тіммейта
+    // інший ростер, і ми його не знаємо.
+    if(useOwned && (!body.type || body.type==="recommend")){
+      const targetSlot = Number.isInteger(body.forceSlot) ? body.forceSlot : nextSlot();
+      const mySlot = OURS[myTeamPickIndex];
+      if(targetSlot !== mySlot) useOwned = false;
+    }
     const res = await fetch(`${WORKER_URL}/recommend`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1942,7 +1954,7 @@ function drawFirst(){
     const btn=document.createElement("button");
     btn.className="firstbtn" + (weFirst===v ? " on" : "");
     btn.innerHTML=`<span class="firstemoji">${emoji}</span><span>${label}</span>`;
-    btn.onclick=()=>{ weFirst=v; setSides(); picks=[null,null,null,null,null,null]; drawFirst(); render(); };
+    btn.onclick=()=>{ weFirst=v; setSides(); picks=[null,null,null,null,null,null]; drawFirst(); if(typeof drawMyPickChips==="function") drawMyPickChips(); render(); };
     $("first").appendChild(btn);
   });
 }
@@ -2350,25 +2362,56 @@ function matchOwnedNames(apiBrawlers){
 // Оновлює видимість перемикача й текст статусу під полем тега — викликається і після
 // успішного пошуку (lookupTag), і одразу при завантаженні сторінки, якщо список уже
 // збережено з минулого разу.
+// Який з наших 3 піків у команді — саме мій (той, до якого застосовуємо фільтр "тільки
+// моїх бійців"). Решта 2 наших слотів — це тіммейти, у них інший ростер, тож для них
+// завжди радимо найкращих загалом, незалежно від перемикача.
+let myTeamPickIndex = 0;
+try{
+  const savedIdx = localStorage.getItem("myTeamPickIndex");
+  if(savedIdx !== null) myTeamPickIndex = parseInt(savedIdx,10) || 0;
+} catch(e){}
+
+function drawMyPickChips(){
+  const box = $("myPickChips");
+  if(!box) return;
+  box.innerHTML = "";
+  OURS.forEach((slotIdx, i)=>{
+    const btn = document.createElement("button");
+    btn.className = "chip" + (myTeamPickIndex===i ? " on" : "");
+    btn.textContent = t("pickShort",{n:slotIdx+1});
+    btn.onclick = ()=>{
+      myTeamPickIndex = i;
+      try{ localStorage.setItem("myTeamPickIndex", String(i)); } catch(err){}
+      drawMyPickChips();
+      render();
+    };
+    box.appendChild(btn);
+  });
+}
+
 function refreshOwnedUI(){
-  const wrap = $("ownedToggleWrap"), status = $("ownedStatus");
+  const wrap = $("ownedToggleWrap"), status = $("ownedStatus"), myPickWrap = $("myPickWrap");
   if(!wrap || !status) return;
   if(ownedBrawlers && ownedBrawlers.length){
     wrap.style.display = "";
     $("ownedToggle").checked = ownedToggleOn;
     status.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
+    if(myPickWrap){ myPickWrap.style.display = ownedToggleOn ? "" : "none"; drawMyPickChips(); }
   } else if(ownedBrawlers && ownedBrawlers.length===0){
     // тег зчитано успішно, але жоден боєць не прокачаний на повну (сила 11 + пасивка + гаджет)
     wrap.style.display = "none";
     status.textContent = t("ownedZero");
+    if(myPickWrap) myPickWrap.style.display = "none";
   } else {
     wrap.style.display = "none";
     status.textContent = "";
+    if(myPickWrap) myPickWrap.style.display = "none";
   }
 }
 if($("ownedToggle")) $("ownedToggle").onchange = e=>{
   ownedToggleOn = e.target.checked;
   try{ localStorage.setItem("ownedToggleOn", ownedToggleOn ? "1" : "0"); } catch(err){}
+  refreshOwnedUI();
   render();
 };
 refreshOwnedUI();
@@ -2448,7 +2491,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     ownedHintTitle:"🎯 Без тега бот може порадити бійця, якого в тебе ще нема", ownedIntro:"Введи свій тег — і рекомендації будуть тільки з тих бійців, яких ти реально маєш.", ownedTagBtn:"Завантажити",
     tagModalTitle:"Введи свій тег!", tagModalDesc:"Щоб радити драфт під твоїх прокачаних бійців!", tagModalGo:"Показати мою статистику", tagModalSkip:"Пропустити",
     ownedToggleLabel:"Радити тільки моїх бійців", ownedNeedTag:"Введи тег гравця.", ownedError:"Не вдалося завантажити — перевір тег.",
-    ownedLoaded:"Знайдено {n} бійців на 11 силі з пасивкою й гаджетом — рекомендації тепер лише з них.", ownedZero:"Тег зчитано, але жоден боєць не прокачаний на 11 силу з пасивкою й гаджетом — радимо як завжди.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.",
+    ownedLoaded:"Знайдено {n} бійців на 11 силі з пасивкою й гаджетом — рекомендації тепер лише з них.", ownedZero:"Тег зчитано, але жоден боєць не прокачаний на 11 силу з пасивкою й гаджетом — радимо як завжди.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.", pickShort:"Пік {n}", myPickLabel:"Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)",
     hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
@@ -2468,7 +2511,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     ownedHintTitle:"🎯 Without your tag we might suggest a brawler you don't even have", ownedIntro:"Enter your tag — we'll only recommend brawlers you actually own.", ownedTagBtn:"Load",
     tagModalTitle:"Enter your tag!", tagModalDesc:"So we can build drafts around your leveled-up brawlers!", tagModalGo:"Show my stats", tagModalSkip:"Skip",
     ownedToggleLabel:"Only recommend my brawlers", ownedNeedTag:"Enter your player tag.", ownedError:"Couldn't load — check the tag.",
-    ownedLoaded:"Found {n} maxed-out brawlers (power 11, star power, gadget) — recommendations now come from those only.", ownedZero:"Tag loaded, but no brawler is fully maxed (power 11 + star power + gadget) — recommending as usual.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.",
+    ownedLoaded:"Found {n} maxed-out brawlers (power 11, star power, gadget) — recommendations now come from those only.", ownedZero:"Tag loaded, but no brawler is fully maxed (power 11 + star power + gadget) — recommending as usual.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.", pickShort:"Pick {n}", myPickLabel:"Which team pick is yours? (the filter only applies to it — teammates get the best picks overall)",
     hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
@@ -2509,6 +2552,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     document.getElementById("tabFaq").textContent = t("tFaq");
     const tl = document.getElementById("tagLookup"); if(tl) tl.textContent = t("tagShow");
     const oht = document.getElementById("ownedHintTitle"); if(oht) oht.textContent = t("ownedHintTitle");
+    const mpl = document.getElementById("myPickLabel"); if(mpl) mpl.textContent = t("myPickLabel");
+    if(typeof drawMyPickChips==="function") drawMyPickChips();
     const tmt = document.getElementById("tagModalTitle"); if(tmt) tmt.textContent = t("tagModalTitle");
     const tmd = document.getElementById("tagModalDesc"); if(tmd) tmd.textContent = t("tagModalDesc");
     const tmg = document.getElementById("tagModalGo"); if(tmg) tmg.textContent = t("tagModalGo");
