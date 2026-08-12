@@ -1201,10 +1201,6 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <input type="checkbox" id="ownedToggle" checked>
       <span id="ownedToggleLabel">Радити тільки моїх бійців у драфті</span>
     </label>
-    <div id="myPickWrap" style="display:none; margin-top:8px">
-      <div class="statsIntro" id="myPickLabel" style="margin:0 0 6px; font-size:13px">Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)</div>
-      <div class="chips" id="myPickChips"></div>
-    </div>
     <div id="ownedStatus" style="margin:4px 0 0"></div>
     <div id="statsBox"></div>
   </div>
@@ -1248,7 +1244,12 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 </section>
     <section class="wstep" data-w="3"><div id="blk-first"><h2 id="h-first">First pick</h2>
-<div class="row" id="first"><button class="on">Ours</button><button>Theirs</button></div></div>
+<div class="row" id="first"><button class="on">Ours</button><button>Theirs</button></div>
+<div id="myPickWrap" style="display:none; margin-top:12px">
+  <div class="statsIntro" id="myPickLabel" style="margin:0 0 6px; font-size:13px">Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)</div>
+  <div class="chips" id="myPickChips"></div>
+</div>
+</div>
 
 </section>
   </div>
