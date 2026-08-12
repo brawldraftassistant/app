@@ -793,6 +793,10 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .statsIntro{ color:var(--muted); font-size:15px; margin:8px 0 18px; font-weight:700 }
 .ownedHint{ display:inline-block; background:#3A2088; border:1px solid rgba(255,255,255,.15);
   border-radius:12px; padding:8px 12px; font-size:13px; font-weight:800; color:#FFD75E; margin-bottom:8px }
+.myPickLabel{ font-family:Oswald,sans-serif; font-size:19px; font-weight:900; text-transform:uppercase;
+  letter-spacing:.04em; color:#FFD75E; text-shadow:0 0 12px rgba(255,215,94,.5); margin:0 0 8px;
+  animation:myPickPulse 1.6s ease-in-out infinite }
+@keyframes myPickPulse{ 0%,100%{ opacity:1; transform:scale(1) } 50%{ opacity:.75; transform:scale(1.03) } }
 .tagRow{ display:flex; gap:10px; margin-bottom:18px }
 .onlyToggle{
   display:flex; align-items:center; gap:11px; margin:18px 0 4px; font-size:14.5px;
@@ -1265,7 +1269,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div id="blk-draft"><h2 id="h-draft">Draft</h2>
 
 <div id="myPickWrap" style="display:none; margin-bottom:10px">
-  <div class="statsIntro" id="myPickLabel" style="margin:0 0 6px; font-size:13px">Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)</div>
+  <div class="myPickLabel" id="myPickLabel">ЯКИЙ ПІК ТВІЙ?</div>
   <div class="chips" id="myPickChips"></div>
 </div>
 
@@ -2493,7 +2497,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     ownedHintTitle:"🎯 Без тега бот може порадити бійця, якого в тебе ще нема", ownedIntro:"Введи свій тег — і рекомендації будуть тільки з тих бійців, яких ти реально маєш.", ownedTagBtn:"Завантажити",
     tagModalTitle:"Введи свій тег!", tagModalDesc:"Щоб радити драфт під твоїх прокачаних бійців!", tagModalGo:"Показати мою статистику", tagModalSkip:"Пропустити",
     ownedToggleLabel:"Радити тільки моїх бійців", ownedNeedTag:"Введи тег гравця.", ownedError:"Не вдалося завантажити — перевір тег.",
-    ownedLoaded:"Знайдено {n} бійців на 11 силі з пасивкою й гаджетом — рекомендації тепер лише з них.", ownedZero:"Тег зчитано, але жоден боєць не прокачаний на 11 силу з пасивкою й гаджетом — радимо як завжди.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.", pickShort:"Пік {n}", myPickLabel:"Який пік у команді — твій? (фільтр діє тільки на нього, тіммейтам радимо найкращих)",
+    ownedLoaded:"Знайдено {n} бійців на 11 силі з пасивкою й гаджетом — рекомендації тепер лише з них.", ownedZero:"Тег зчитано, але жоден боєць не прокачаний на 11 силу з пасивкою й гаджетом — радимо як завжди.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.", pickShort:"Пік {n}", myPickLabel:"ЯКИЙ ПІК ТВІЙ?",
     hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
@@ -2513,7 +2517,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     ownedHintTitle:"🎯 Without your tag we might suggest a brawler you don't even have", ownedIntro:"Enter your tag — we'll only recommend brawlers you actually own.", ownedTagBtn:"Load",
     tagModalTitle:"Enter your tag!", tagModalDesc:"So we can build drafts around your leveled-up brawlers!", tagModalGo:"Show my stats", tagModalSkip:"Skip",
     ownedToggleLabel:"Only recommend my brawlers", ownedNeedTag:"Enter your player tag.", ownedError:"Couldn't load — check the tag.",
-    ownedLoaded:"Found {n} maxed-out brawlers (power 11, star power, gadget) — recommendations now come from those only.", ownedZero:"Tag loaded, but no brawler is fully maxed (power 11 + star power + gadget) — recommending as usual.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.", pickShort:"Pick {n}", myPickLabel:"Which team pick is yours? (the filter only applies to it — teammates get the best picks overall)",
+    ownedLoaded:"Found {n} maxed-out brawlers (power 11, star power, gadget) — recommendations now come from those only.", ownedZero:"Tag loaded, but no brawler is fully maxed (power 11 + star power + gadget) — recommending as usual.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.", pickShort:"Pick {n}", myPickLabel:"WHICH PICK IS YOURS?",
     hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
