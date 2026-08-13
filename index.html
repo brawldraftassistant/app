@@ -791,6 +791,8 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 /* ---------- Моя статистика ---------- */
 .statsIntro{ color:var(--muted); font-size:15px; margin:8px 0 18px; font-weight:700 }
+.adSlot{ margin:14px 0; padding:6px; background:var(--panel); border:1px solid var(--line);
+  border-radius:14px; min-height:60px; overflow:hidden; text-align:center }
 .ownedHint{ display:inline-block; background:#3A2088; border:1px solid rgba(255,255,255,.15);
   border-radius:12px; padding:8px 12px; font-size:13px; font-weight:800; color:#FFD75E; margin-bottom:8px }
 .myPickLabel{ font-family:Oswald,sans-serif; font-size:19px; font-weight:900; text-transform:uppercase;
@@ -1116,6 +1118,10 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 </style>
 <script data-goatcounter="https://xailyx.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
+<!-- Google AdSense: коли отримаєш свій Publisher ID (ca-pub-XXXXXXXXXX з adsense.google.com),
+     розкоментуй рядок нижче і встав СВІЙ ID замість ca-pub-XXXXXXXXXXXXXXXX.
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
 </head>
 <body>
 <div class="bgfx" aria-hidden="true"><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -1131,10 +1137,6 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     <button class="langbtn" id="langbtn"><span class="flag">🇬🇧</span><span class="code">EN</span><span style="opacity:.5">▾</span></button>
     <div class="langmenu" id="langmenu"><button><span class="flag">🇺🇦</span><span class="code">UA</span><span>Українська</span></button><button class="on"><span class="flag">🇬🇧</span><span class="code">EN</span><span>English</span></button><button><span class="flag">🇪🇸</span><span class="code">ES</span><span>Español</span></button><button><span class="flag">🇧🇷</span><span class="code">PT</span><span>Português</span></button><button><span class="flag">🇷🇺</span><span class="code">RU</span><span>Русский</span></button><button><span class="flag">🇹🇷</span><span class="code">TR</span><span>Türkçe</span></button><button><span class="flag">🇸🇦</span><span class="code">AR</span><span>العربية</span></button><button><span class="flag">🇩🇪</span><span class="code">DE</span><span>Deutsch</span></button></div>
   </div>
-  <span class="subBtnWrap">
-    <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i>
-    <button type="button" class="subBtn" id="subBtn">✨ Subscribe</button>
-  </span>
 </header>
 <div id="subModal" class="subOverlay" style="display:none">
   <div class="subCard">
@@ -1193,6 +1195,15 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <button id="startbtn" class="cta" type="button">Почати драфт</button>
     </div>
   </div>
+<!-- Місце під банер: коли будеш готовий, розкоментуй, встав СВІЙ ca-pub-XXXXXXXXXXXXXXXX
+     (той самий, що вгорі в <head>) і data-ad-slot (створюється в AdSense → Ads → By ad unit → Display ads).
+<div class="adSlot">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+-->
+
   <div class="homeStats">
     <div class="ownedHint" id="ownedHintTitle">🎯 Без тега бот може порадити бійця, якого в тебе ще нема</div>
     <h2 id="hStatsHeadT2">Статистика Brawl Stars</h2>
@@ -1201,10 +1212,6 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <input type="text" id="tagInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
       <button type="button" id="tagLookup">Показати</button>
     </div>
-    <label class="onlyToggle" id="ownedToggleWrap" style="display:none">
-      <input type="checkbox" id="ownedToggle" checked>
-      <span id="ownedToggleLabel">Радити тільки моїх бійців у драфті</span>
-    </label>
     <div id="ownedStatus" style="margin:4px 0 0"></div>
     <div id="statsBox"></div>
   </div>
@@ -1317,6 +1324,14 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 <div class="note" id="t-foot">Scoring uses role counters, tier, map type, the role this pick calls for, and bans. No AI calls — runs locally on your device. Brawler notes are in the original language (Ukrainian).</div>
 <div class="note" style="opacity:.6; font-size:11.5px; margin-top:6px">Unofficial fan project — not affiliated with, endorsed, or supported by Supercell. Brawler artwork © Supercell, used under Supercell's Fan Content Policy (supercell.com/fan-content-policy).</div>
+
+<!-- Друге місце під банер (унизу сторінки) — та сама заготовка, розкоментуй і встав свої ID, коли будеш готовий.
+<div class="adSlot">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+-->
 
 
 </div>
@@ -1573,10 +1588,9 @@ function translateWhy(why){
   return (why||[]).map(w=>[t(w[0], w[1]||undefined), w[2]]);
 }
 
-// Список бійців, яких гравець реально має (за тегом) — і чи використовувати цей фільтр
-// у рекомендаціях. Зберігається локально, щоб не питати тег щоразу заново.
+// Список бійців, яких гравець реально має (за тегом). Зберігається локально,
+// щоб не питати тег щоразу заново.
 let ownedBrawlers = null;
-let ownedToggleOn = true;
 // Якщо є збережений тег — зараз піде свіже підвантаження (lookupTag викликається
 // автоматично при старті). Поки воно не завершилось, НЕ довіряємо старому збереженому
 // списку — інакше екран міг би на мить (чи довше, при повільному інтернеті) показати
@@ -1585,15 +1599,13 @@ let ownedBrawlersFresh = false;
 try{
   const savedOwned = localStorage.getItem("ownedBrawlers");
   if(savedOwned) ownedBrawlers = JSON.parse(savedOwned);
-  const savedToggle = localStorage.getItem("ownedToggleOn");
-  if(savedToggle !== null) ownedToggleOn = savedToggle === "1";
   // тега нема — значить, і оновлювати нічого, наявний (навіть порожній) список вважаємо "свіжим"
   if(!localStorage.getItem("playerTag")) ownedBrawlersFresh = true;
 } catch(e){ ownedBrawlersFresh = true; }
 
 async function apiCall(body){
   try{
-    let useOwned = ownedBrawlersFresh && ownedToggleOn && ownedBrawlers && ownedBrawlers.length;
+    let useOwned = ownedBrawlersFresh && ownedBrawlers && ownedBrawlers.length;
     // Фільтр "тільки моїх бійців" стосується лише мого власного піку в команді — для
     // піків тіммейтів (інші 2 з наших 3 слотів) радимо найкращих загалом, бо в тіммейта
     // інший ростер, і ми його не знаємо.
@@ -1607,7 +1619,9 @@ async function apiCall(body){
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...body, code: subCode, ownedBrawlers: useOwned ? ownedBrawlers : undefined }),
     });
-    return await res.json();
+    const data = await res.json();
+    data.__myPick = !!useOwned;
+    return data;
   } catch(e){
     return { error: true };
   }
@@ -2226,7 +2240,7 @@ async function showRecs(){
       ${NOTE_TR[r.name]?`<div class="why" style="color:var(--muted)"><span style="opacity:0">+</span>${noteFor(r.name)}</div>`:""}
     </div>`;
   });
-  if(res.alts && res.alts.length && !blind){
+  if(res.alts && res.alts.length && !blind && !res.__myPick){
     html+=`<h2 style="margin:20px 0 8px">${t("alts",{job:(res.job||[]).map(ROLE).join(" / ")})}</h2><div class="alts">`;
     res.alts.forEach(r=>{
       const info = bInfo(r.name);
@@ -2396,30 +2410,20 @@ function drawMyPickChips(){
 }
 
 function refreshOwnedUI(){
-  const wrap = $("ownedToggleWrap"), status = $("ownedStatus"), myPickWrap = $("myPickWrap");
-  if(!wrap || !status) return;
+  const status = $("ownedStatus"), myPickWrap = $("myPickWrap");
+  if(!status) return;
   if(ownedBrawlers && ownedBrawlers.length){
-    wrap.style.display = "";
-    $("ownedToggle").checked = ownedToggleOn;
     status.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
-    if(myPickWrap){ myPickWrap.style.display = ownedToggleOn ? "" : "none"; drawMyPickChips(); }
+    if(myPickWrap){ myPickWrap.style.display = ""; drawMyPickChips(); }
   } else if(ownedBrawlers && ownedBrawlers.length===0){
     // тег зчитано успішно, але жоден боєць не прокачаний на повну (сила 11 + пасивка + гаджет)
-    wrap.style.display = "none";
     status.textContent = t("ownedZero");
     if(myPickWrap) myPickWrap.style.display = "none";
   } else {
-    wrap.style.display = "none";
     status.textContent = "";
     if(myPickWrap) myPickWrap.style.display = "none";
   }
 }
-if($("ownedToggle")) $("ownedToggle").onchange = e=>{
-  ownedToggleOn = e.target.checked;
-  try{ localStorage.setItem("ownedToggleOn", ownedToggleOn ? "1" : "0"); } catch(err){}
-  refreshOwnedUI();
-  render();
-};
 refreshOwnedUI();
 
 function updateInlinePickHeader(){
@@ -2687,7 +2691,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   }
   window.openSubModal = openSubModal;
 
-  document.getElementById("subBtn").onclick = openSubModal;
+  const subBtnEl = document.getElementById("subBtn");
+  if(subBtnEl) subBtnEl.onclick = openSubModal;
   document.getElementById("subClose").onclick = closeSubModal;
   document.getElementById("subModal").addEventListener("click", e=>{ if(e.target.id === "subModal") closeSubModal(); });
 
@@ -2873,10 +2878,9 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     // тег, щоб наступного разу підвантажити все саме, без повторного вводу.
     if(Array.isArray(data.brawlers) && typeof matchOwnedNames === "function"){
       const matched = matchOwnedNames(data.brawlers);
-      ownedBrawlers = matched; ownedToggleOn = true; ownedBrawlersFresh = true;
+      ownedBrawlers = matched; ownedBrawlersFresh = true;
       try{
         localStorage.setItem("ownedBrawlers", JSON.stringify(matched));
-        localStorage.setItem("ownedToggleOn", "1");
         localStorage.setItem("playerTag", tag);
       } catch(e){}
       if(typeof refreshOwnedUI === "function") refreshOwnedUI();
