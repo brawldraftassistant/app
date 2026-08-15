@@ -9,6 +9,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Draft">
+<!-- Безпека: обмежуємо, звідки сторінка може вантажити скрипти/стилі/дані —
+     захист від XSS-ін'єкцій сторонніх ресурсів, навіть якщо десь у майбутньому
+     проскочить неекранований рядок. Дозволені лише домени, які реально
+     використовуються в коді (Worker API, BrawlAPI/Brawlify, шрифти, аналітика, реклама). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.brawlify.com https://api.brawlapi.com https://*.googlesyndication.com https://*.doubleclick.net; connect-src 'self' https://draft-assistant-api.xailyx.workers.dev https://api.brawlapi.com https://cdn.brawlify.com https://gc.zgo.at https://xailyx.goatcounter.com; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com; frame-ancestors 'none';">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icons/icon-192.png" sizes="192x192" type="image/png">
 <link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
@@ -16,7 +22,7 @@
 <title>Draft Assistant — Brawl Stars Ranked</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#0B0F1A; --panel:#151C2B; --panel2:#1B2436; --line:#26314A;
@@ -27,12 +33,12 @@
 *{box-sizing:border-box}
 body{
   margin:0; background:var(--ink); color:var(--text);
-  font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15px; line-height:1.45;
+  font-family:Manrope,system-ui,sans-serif; font-size:15px; line-height:1.45;
   padding:16px 14px 60px; max-width:760px; margin:0 auto;
 }
-h1{font-family:Oswald,sans-serif; font-weight:700; font-size:26px; letter-spacing:.02em; margin:0 0 2px; text-transform:uppercase}
+h1{font-family:Unbounded,sans-serif; font-weight:700; font-size:26px; letter-spacing:.02em; margin:0 0 2px; text-transform:uppercase}
 .sub{color:var(--muted); font-size:13px; margin-bottom:20px}
-h2{font-family:Oswald,sans-serif; font-weight:500; font-size:13px; letter-spacing:.14em;
+h2{font-family:Unbounded,sans-serif; font-weight:500; font-size:13px; letter-spacing:.14em;
    text-transform:uppercase; color:var(--muted); margin:26px 0 9px}
 .row{display:flex; flex-wrap:wrap; gap:6px}
 .appbar{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
@@ -67,7 +73,7 @@ button.on{background:var(--signal); color:#12161F; border-color:var(--signal); f
 .slot{position:relative; aspect-ratio:3/4; border-radius:var(--radius); border:2px solid var(--line);
   background:var(--panel); display:flex; flex-direction:column; align-items:center; justify-content:center;
   gap:3px; padding:4px; cursor:pointer; text-align:center; font-size:11px; line-height:1.2}
-.slot .n{font-family:Oswald,sans-serif; font-size:15px; color:var(--muted)}
+.slot .n{font-family:Unbounded,sans-serif; font-size:15px; color:var(--muted)}
 .slot.ally{border-color:rgba(45,140,255,.55)} .slot.ally .n{color:var(--ally)}
 .slot.enemy{border-color:rgba(255,77,94,.55)} .slot.enemy .n{color:var(--enemy)}
 .slot.filled{background:var(--panel2)}
@@ -90,8 +96,8 @@ button.on{background:var(--signal); color:#12161F; border-color:var(--signal); f
 .rec.foe{border-left-color:var(--enemy)} .rec.foe.n2{border-left-color:#8E4450} .rec.foe.n3{border-left-color:#5E3038}
 .rec.foe .score{color:var(--enemy)} .rec.foe.n2 .score,.rec.foe.n3 .score{color:var(--muted)}
 .rechead{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
-.name{font-family:Oswald,sans-serif; font-size:20px; font-weight:700; letter-spacing:.01em}
-.score{font-family:Oswald,sans-serif; font-size:15px; color:var(--signal)}
+.name{font-family:Unbounded,sans-serif; font-size:20px; font-weight:700; letter-spacing:.01em}
+.score{font-family:Unbounded,sans-serif; font-size:15px; color:var(--signal)}
 .rec.n2 .score,.rec.n3 .score{color:var(--muted)}
 .roles{font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin:1px 0 7px}
 .why{font-size:13px; margin:2px 0; padding-left:16px; position:relative}
@@ -107,7 +113,7 @@ button.on{background:var(--signal); color:#12161F; border-color:var(--signal); f
 .pickpanel{max-width:740px; margin:0 auto; background:var(--panel); border:1px solid var(--line);
   border-radius:14px; padding:16px}
 .pickhead{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
-.pickhead h3{font-family:Oswald,sans-serif; margin:0; font-size:17px; letter-spacing:.03em}
+.pickhead h3{font-family:Unbounded,sans-serif; margin:0; font-size:17px; letter-spacing:.03em}
 input[type=text]{width:100%; padding:10px 12px; margin-bottom:12px; background:var(--ink);
   border:1px solid var(--line); border-radius:var(--radius); color:var(--text); font-family:inherit; font-size:15px}
 .blist{display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:6px}
@@ -149,7 +155,7 @@ input[type=text]{width:100%; padding:10px 12px; margin-bottom:12px; background:v
 .bq:hover{border-color:var(--enemy)}
 .bq.top{border-color:rgba(255,77,94,.5)}
 .bq.alt{opacity:.6; font-size:12px; padding:6px 10px}
-.bq .num{font-family:Oswald,sans-serif; font-weight:700; font-size:12px; color:var(--enemy)}
+.bq .num{font-family:Unbounded,sans-serif; font-weight:700; font-size:12px; color:var(--enemy)}
 .bq .bt{font-size:9px; font-weight:700; letter-spacing:.06em; color:var(--muted); opacity:.8}
 .bq .bt.s{color:var(--signal); opacity:1}
 .bq .bz{font-size:11px}
@@ -205,13 +211,13 @@ h2::before{content:""; width:3px; height:13px; border-radius:2px; background:var
   padding:9px; border-top:2px solid var(--signal)}
 .roleblock.r2{border-top-color:#38C7A0} .roleblock.r3{border-top-color:#7B8CFF}
 .rolehead{display:flex; align-items:center; gap:5px; margin-bottom:7px}
-.rolenum{font-family:Oswald,sans-serif; font-size:10px; font-weight:700; color:#0B0F1A;
+.rolenum{font-family:Unbounded,sans-serif; font-size:10px; font-weight:700; color:#0B0F1A;
   background:var(--signal); width:16px; height:16px; border-radius:50%; flex:none;
   display:flex; align-items:center; justify-content:center}
 .roleblock.r2 .rolenum{background:#38C7A0} .roleblock.r3 .rolenum{background:#7B8CFF}
-.rolename{font-family:Oswald,sans-serif; font-size:12px; letter-spacing:.04em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rolename{font-family:Unbounded,sans-serif; font-size:12px; letter-spacing:.04em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .winbar{display:flex; height:34px; border-radius:9px; overflow:hidden; border:1px solid var(--line)}
-.winbar>div{display:flex; align-items:center; justify-content:center; font-family:Oswald,sans-serif;
+.winbar>div{display:flex; align-items:center; justify-content:center; font-family:Unbounded,sans-serif;
   font-size:15px; font-weight:700; transition:width .3s}
 .wus{background:linear-gradient(90deg,#1E5FA8,#2D8CFF); color:#fff}
 .wthem{background:linear-gradient(90deg,#FF4D5E,#A32B38); color:#fff}
@@ -225,7 +231,7 @@ h2::before{content:""; width:3px; height:13px; border-radius:2px; background:var
 .pbar{width:38px; height:5px; background:var(--line); border-radius:3px; overflow:hidden; flex:none}
 .pbar i{display:block; height:100%; background:var(--signal)}
 .pcol.them .pbar i{background:var(--enemy)}
-.psc{font-family:Oswald,sans-serif; font-size:13px; min-width:22px; text-align:right}
+.psc{font-family:Unbounded,sans-serif; font-size:13px; min-width:22px; text-align:right}
 .pwhy{margin:-3px 0 8px 0}
 .pwhy .why{font-size:11px; padding-left:14px; margin:1px 0}
 .pwhy .why::before{left:1px}
@@ -241,7 +247,7 @@ h2::before{content:""; width:3px; height:13px; border-radius:2px; background:var
 .roleblock.r2 .rrow.top{border-color:rgba(56,199,160,.5)}
 .roleblock.r3 .rrow.top{border-color:rgba(123,140,255,.5)}
 .rrow.dim{background:none; border-style:dashed; opacity:.6; font-size:11px; padding:5px 7px}
-.rrank{font-family:Oswald,sans-serif; font-size:10px; color:var(--muted)}
+.rrank{font-family:Unbounded,sans-serif; font-size:10px; color:var(--muted)}
 .rname{font-weight:600; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .ct{font-size:9px; font-weight:700; color:var(--muted)}
 .ct.s{color:var(--signal)}
@@ -265,7 +271,7 @@ body{padding-top:calc(16px + env(safe-area-inset-top)); padding-bottom:calc(60px
   box-shadow:0 18px 40px rgba(0,0,0,.6)}
 #installbar.show{display:flex}
 #installbar .txt{flex:1; font-size:13px; line-height:1.3}
-#installbar .txt b{display:block; font-family:Oswald,sans-serif; letter-spacing:.04em; text-transform:uppercase; font-size:13px}
+#installbar .txt b{display:block; font-family:Unbounded,sans-serif; letter-spacing:.04em; text-transform:uppercase; font-size:13px}
 #installbar .txt span{color:var(--muted); font-size:12px}
 #installbtn{background:var(--signal); color:#12161F; border-color:var(--signal); font-weight:700; white-space:nowrap}
 #installclose{background:none; border:none; color:var(--muted); padding:6px 4px; font-size:16px}
@@ -307,7 +313,7 @@ html{
 body{
   overflow-x:hidden;
   background:transparent; color:var(--text);
-  font-family:Nunito,system-ui,sans-serif; font-weight:700; font-size:16px;
+  font-family:Manrope,system-ui,sans-serif; font-weight:700; font-size:16px;
 }
 /* --- живий фон: три шари, що повільно рухаються --- */
 .bgfx{ position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden }
@@ -338,13 +344,13 @@ html.modal-open .subBtnWrap .spark,
 html.modal-open .subBtn{ animation-play-state:paused !important; }
 
 h1{
-  font-family:Rubik,system-ui,sans-serif; font-weight:900; font-style:italic;
+  font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-style:italic;
   font-size:17px; letter-spacing:.01em; text-transform:uppercase; color:#fff;
   text-shadow:2px 2px 0 var(--edge);
 }
 .sub{ color:var(--muted); font-weight:700 }
 h2{
-  font-family:Rubik,system-ui,sans-serif; font-weight:900; font-size:17px;
+  font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-size:17px;
   letter-spacing:.02em; text-transform:uppercase; color:var(--signal);
   text-shadow:2px 2px 0 var(--edge); transform:skewX(-5deg); transform-origin:left bottom;
 }
@@ -352,7 +358,7 @@ h2::before{ display:none }
 
 /* ---------- кнопки: товсті, «натискні» ---------- */
 button{
-  font-family:Nunito,system-ui,sans-serif; font-weight:900;
+  font-family:Manrope,system-ui,sans-serif; font-weight:900;
   background:#4A2CA6; color:#fff;
   border:3px solid var(--edge); border-radius:16px;
   box-shadow:0 5px 0 var(--edge);
@@ -403,13 +409,13 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .hero{ position:relative; padding:26px 0 8px }
 .heroin{ position:relative }
 .eyebrow{
-  display:inline-block; font-family:Rubik,sans-serif; font-weight:900; font-size:12px;
+  display:inline-block; font-family:Unbounded,sans-serif; font-weight:900; font-size:12px;
   letter-spacing:.14em; color:#3A1500; background:var(--mint);
   border:3px solid var(--edge); border-radius:999px; padding:6px 14px;
   box-shadow:0 4px 0 var(--edge); transform:rotate(-2deg);
 }
 .herotitle{
-  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:44px;
+  font-family:Unbounded,sans-serif; font-weight:900; font-style:italic; font-size:44px;
   line-height:1.02; text-transform:uppercase; margin:16px 0 14px; color:#fff;
   text-shadow:3px 3px 0 var(--edge), 6px 6px 0 rgba(0,0,0,.28);
 }
@@ -424,12 +430,75 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .schip:nth-child(3){ background:var(--mint); transform:rotate(-1deg) }
 .cta{
   display:block; width:100%; padding:19px 22px; font-size:20px; font-weight:900;
-  font-family:Rubik,sans-serif; font-style:italic; text-transform:uppercase;
+  font-family:Unbounded,sans-serif; font-style:italic; text-transform:uppercase;
   border-radius:999px; border:4px solid var(--edge); color:#3A1500;
   background:var(--grad); box-shadow:0 7px 0 #8A5A00, 0 16px 30px rgba(0,0,0,.35);
 }
 .cta:hover{ filter:brightness(1.08) }
 .cta:active{ transform:translateY(6px); box-shadow:0 1px 0 #8A5A00 }
+
+/* ---------- Плитки навігації на головній: Драфт / Тір-лист / Стратегії / Статистика ---------- */
+.pillars{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0 8px }
+.pillar{
+  position:relative; text-align:left; background:var(--panel); border:3px solid var(--edge);
+  border-radius:18px; box-shadow:0 6px 0 var(--edge); padding:18px 16px 16px;
+  cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;
+}
+/* Плитки виглядали однаково й зливались — без зміни самої палітри додаємо трохи
+   "стікерності", як і в інших елементах сайту (schip-и теж по черзі під нахилом):
+   легкий нахил через одну, і кольорова "шайба" під іконкою з тих самих --sun/--berry/
+   --mint/--grape, що вже є в палітрі — просто застосовуємо їх послідовно по картках. */
+.pillar:nth-child(odd){ transform:rotate(-.6deg) }
+.pillar:nth-child(even){ transform:rotate(.6deg) }
+.pillar:hover{ transform:translateY(-3px) scale(1.015); box-shadow:0 9px 0 var(--edge) }
+.pillar:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--edge) }
+.pillar .pIcon{
+  font-size:22px; line-height:1; margin-bottom:10px; display:grid; place-items:center;
+  width:44px; height:44px; border-radius:14px; border:3px solid var(--edge);
+}
+.pillar:nth-child(1) .pIcon{ background:var(--sun) }
+.pillar:nth-child(2) .pIcon{ background:var(--mint) }
+.pillar:nth-child(3) .pIcon{ background:var(--grape) }
+.pillar:nth-child(4) .pIcon{ background:var(--berry) }
+.pillar .pTitle{ font-family:Unbounded,sans-serif; font-weight:900; font-size:15px; margin-bottom:4px }
+.pillar .pDesc{ color:var(--muted); font-size:12.5px; line-height:1.4; font-weight:700 }
+.pillar .pSoon{
+  position:absolute; top:12px; right:12px; font-size:9.5px; font-weight:900; letter-spacing:.06em;
+  text-transform:uppercase; color:#3A1500; background:var(--sun); border:2px solid var(--edge);
+  border-radius:999px; padding:3px 8px; transform:rotate(3deg);
+}
+@media (min-width:560px){ .pillars{ grid-template-columns:repeat(4,1fr) } }
+
+/* ---------- Тір-лист (окремий екран) ---------- */
+.tierSec{ padding-top:20px }
+.tierTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.tierBack{
+  font-size:13px; font-weight:900; padding:8px 14px; border-radius:999px; border:3px solid var(--edge);
+  background:var(--panel); color:var(--text); box-shadow:0 4px 0 var(--edge);
+}
+.tierIntro{ color:var(--muted); font-size:14px; font-weight:700; margin:8px 0 20px; max-width:56ch }
+.tierGroup{ margin-bottom:18px }
+.tierHead{
+  display:flex; align-items:center; gap:10px; padding:8px 14px; border-radius:12px 12px 0 0;
+  border:3px solid var(--edge); border-bottom:none;
+}
+.tierLetter{
+  font-family:Unbounded,sans-serif; font-weight:900; font-size:18px; width:30px; height:30px;
+  display:grid; place-items:center; border-radius:9px; background:rgba(0,0,0,.18);
+}
+.tierLabel{ font-family:Unbounded,sans-serif; font-weight:900; font-size:13px; letter-spacing:.06em }
+.tierHead.tierS{ background:linear-gradient(100deg,#FFD75E,#E8A317); color:#231704 }
+.tierHead.tierA{ background:var(--mint); color:#0B2E1A }
+.tierHead.tierB{ background:#5FB8E8; color:#04202E }
+.tierHead.tierC{ background:#9C8CE0; color:#1C1440 }
+.tierHead.tierD{ background:#8A93A6; color:#1B2030 }
+.tierHead.tierF{ background:var(--berry); color:#fff }
+.tierRows{ border:3px solid var(--edge); border-radius:0 0 12px 12px; background:var(--panel); overflow:hidden }
+.tierRow{ display:flex; align-items:center; gap:10px; padding:9px 14px; border-top:1px solid rgba(255,255,255,.06) }
+.tierRow:first-child{ border-top:none }
+.tierPort{ width:30px; height:30px; border-radius:9px; object-fit:cover; border:2px solid var(--edge); flex:0 0 auto }
+.tierName{ font-weight:900; font-size:14px; flex:1 1 auto }
+.tierRoles{ color:var(--muted); font-size:12px; font-weight:700; text-transform:capitalize }
 
 /* ---------- «Як працює» / FAQ ---------- */
 #howview, #faqview{ padding-top:20px }
@@ -445,7 +514,7 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .howcard p{ margin:0; color:var(--muted); font-size:15px; line-height:1.55; font-weight:700 }
 .hnum{
   position:absolute; left:16px; top:18px; width:36px; height:36px; border-radius:12px;
-  display:grid; place-items:center; font-family:Rubik,sans-serif; font-weight:900; font-size:17px;
+  display:grid; place-items:center; font-family:Unbounded,sans-serif; font-weight:900; font-size:17px;
   color:#3A1500; border:3px solid var(--edge); box-shadow:0 4px 0 var(--edge);
 }
 .howcard:nth-child(1) .hnum{ background:var(--sun) }
@@ -503,7 +572,7 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
   background:var(--panel); border:3px solid var(--edge); border-radius:18px;
   box-shadow:0 5px 0 var(--edge); padding:12px 14px; margin-bottom:18px; font-weight:900;
 }
-.setchip b{ font-family:Rubik,sans-serif; font-weight:900; color:var(--signal); text-shadow:1.5px 1.5px 0 var(--edge); text-transform:uppercase; font-size:14px }
+.setchip b{ font-family:Unbounded,sans-serif; font-weight:900; color:var(--signal); text-shadow:1.5px 1.5px 0 var(--edge); text-transform:uppercase; font-size:14px }
 .setchip .sep{ opacity:.35 }
 .setchip button{ margin-inline-start:auto; padding:9px 16px; font-size:13.5px; border-radius:999px; background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00 }
 
@@ -524,7 +593,7 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .rec.n1{ background:linear-gradient(180deg,#5231B8,#3A2088); border-color:var(--signal); box-shadow:0 6px 0 #8A5A00 }
 .rec:active{ transform:translateY(4px); box-shadow:0 2px 0 var(--edge) }
 .rec .name{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
-.score{ font-family:Rubik,sans-serif; font-weight:900; color:var(--signal); text-shadow:2px 2px 0 var(--edge) }
+.score{ font-family:Unbounded,sans-serif; font-weight:900; color:var(--signal); text-shadow:2px 2px 0 var(--edge) }
 .tier{ border:3px solid var(--edge); border-radius:10px; font-weight:900; color:#3A1500 }
 .tier.S{ background:var(--grad) }
 .bport{ width:40px; height:40px; border-radius:13px; object-fit:cover; flex:0 0 auto; border:3px solid var(--edge) }
@@ -541,7 +610,7 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 
 /* Список піку — портрети, згруповані по ролях (замість текстових рядків) */
 .pickSection{margin-bottom:16px}
-.pickSectionTitle{font-family:Oswald,sans-serif; font-size:12px; font-weight:700; letter-spacing:.12em;
+.pickSectionTitle{font-family:Unbounded,sans-serif; font-size:12px; font-weight:700; letter-spacing:.12em;
   text-transform:uppercase; color:var(--muted); margin:0 0 8px; padding-bottom:4px; border-bottom:1px solid var(--line)}
 .pickGrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(74px,1fr)); gap:9px}
 .pickTile{display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer;
@@ -552,7 +621,7 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .pickTile span{font-size:10.5px; font-weight:700; text-align:center; line-height:1.15;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%}
 .pickpanel{ background:#3A2088; border:4px solid var(--edge); border-radius:24px; box-shadow:0 10px 0 var(--edge), 0 30px 60px rgba(0,0,0,.55) }
-input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radius:14px; color:#fff; font-family:Nunito,sans-serif; font-weight:800 }
+input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radius:14px; color:#fff; font-family:Manrope,sans-serif; font-weight:800 }
 #installbar{ background:#3A2088; border:3px solid var(--edge); border-radius:20px; box-shadow:0 6px 0 var(--edge) }
 #installbtn{ background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00 }
 #netbadge{ background:var(--grad); color:#3A1500; border:3px solid var(--edge); box-shadow:0 4px 0 #8A5A00 }
@@ -570,16 +639,30 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   .howcard{ padding-top:64px; padding-left:20px }
   .hnum{ top:18px; left:20px }
   #modes button, #maps button{ font-size:18px; padding:17px 20px }
-  /* герой у дві колонки: текст ліворуч, швидкий старт праворуч */
-  #home{ display:grid; grid-template-columns:1.05fr .95fr; gap:34px; align-items:center;
-         min-height:calc(100vh - 190px) }
-  .hero{ grid-column:1 }
-  .quickstart{ grid-column:2; margin-top:0 }
-  .qsgrid{ grid-template-columns:repeat(2,1fr) }
-  .qs{ padding:16px 16px; font-size:15.5px; border-radius:20px }
   /* майстер і драфт лишаються однією колонкою по центру */
   #wizard, #draftview{ max-width:720px; margin-inline:auto }
   .faq{ max-width:840px; margin-inline:auto }
+}
+/* ---------- дуже широкий екран: справжній desktop-layout, а не розтягнута мобільна
+   колонка. Раніше тут була неробоча розкладка в 2 колонки (.quickstart вже не існує
+   в розмітці) — картки-плитки випадково зʼїжджали в порожню другу колонку і губились
+   праворуч від hero. Тепер hero й плитки — по центру, ширшим, справжнім блоком. ---------- */
+@media (min-width:1200px){
+  body{ max-width:1360px; padding-left:32px; padding-right:32px }
+  #home{ padding-top:12px }
+  .hero{ text-align:center; padding:34px 0 10px }
+  .heroin{ max-width:760px; margin:0 auto }
+  .eyebrow{ transform:none }
+  .herotitle{ font-size:72px }
+  .herotag{ margin-left:auto; margin-right:auto }
+  .statchips{ justify-content:center }
+  .cta{ margin:0 auto; min-width:380px }
+  .pillars{ max-width:1200px; margin:34px auto 8px; gap:18px }
+  .pillar{ padding:22px 20px 20px }
+  .pillar .pIcon{ font-size:24px; width:52px; height:52px; border-radius:16px }
+  .pillar .pTitle{ font-size:17px }
+  .pillar .pDesc{ font-size:13.5px }
+  .homeStats{ max-width:640px; margin-left:auto; margin-right:auto }
 }
 @media (min-width:1024px){
   .herotitle{ font-size:68px }
@@ -795,7 +878,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   border-radius:14px; min-height:60px; overflow:hidden; text-align:center }
 .ownedHint{ display:inline-block; background:#3A2088; border:1px solid rgba(255,255,255,.15);
   border-radius:12px; padding:8px 12px; font-size:13px; font-weight:800; color:#FFD75E; margin-bottom:8px }
-.myPickLabel{ font-family:Oswald,sans-serif; font-size:19px; font-weight:900; text-transform:uppercase;
+.myPickLabel{ font-family:Unbounded,sans-serif; font-size:19px; font-weight:900; text-transform:uppercase;
   letter-spacing:.04em; color:#FFD75E; text-shadow:0 0 12px rgba(255,215,94,.5); margin:0 0 8px;
   animation:myPickPulse 1.6s ease-in-out infinite }
 @keyframes myPickPulse{ 0%,100%{ opacity:1; transform:scale(1) } 50%{ opacity:.75; transform:scale(1.03) } }
@@ -831,7 +914,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .statsCard .statnum{ font-size:22px; text-shadow:1.5px 1.5px 0 var(--edge) }
 .statsCard .statlbl{ font-size:10.5px; margin-top:3px }
 @media (min-width:460px){ .statsCard .statgrid{ grid-template-columns:repeat(4,1fr) } }
-.statsName{ font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:22px; margin-bottom:14px }
+.statsName{ font-family:Unbounded,sans-serif; font-weight:900; font-style:italic; font-size:22px; margin-bottom:14px }
 .statsTag{ color:var(--muted); font-style:normal; font-size:14px }
 .bwList{ display:flex; flex-direction:column; gap:8px; margin-top:10px }
 .bwRow{
@@ -869,7 +952,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .topsGrid{ display:grid; gap:14px; margin-top:16px }
 @media (min-width:560px){ .topsGrid{ grid-template-columns:repeat(3,1fr) } }
 .topsCol{ background:var(--panel2); border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge); padding:12px 12px 8px }
-.topsTitle{ font-family:Rubik,sans-serif; font-weight:900; font-size:13px; margin-bottom:10px }
+.topsTitle{ font-family:Unbounded,sans-serif; font-weight:900; font-size:13px; margin-bottom:10px }
 .topRow{ display:flex; align-items:center; gap:9px; padding:6px 0; border-top:1px solid rgba(255,255,255,.08) }
 .topRow:first-of-type{ border-top:none }
 .topPort{ width:30px; height:30px; border-radius:9px; border:2px solid var(--edge); flex:0 0 auto; object-fit:cover }
@@ -898,7 +981,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 @media (min-width:480px){ .bTime{ width:auto; margin-inline-start:auto } }
 .statspanel{ margin-top:26px }
 .qslabel{
-  font-family:Rubik,sans-serif; font-weight:900; font-size:12px; letter-spacing:.14em;
+  font-family:Unbounded,sans-serif; font-weight:900; font-size:12px; letter-spacing:.14em;
   text-transform:uppercase; color:var(--muted); margin-bottom:14px;
 }
 .statgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px }
@@ -911,7 +994,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .statcard:nth-child(3){ background:linear-gradient(180deg,#0E7490,#155E75) }
 .statcard:nth-child(4){ background:linear-gradient(180deg,#BE185D,#9D174D) }
 .statnum{
-  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:34px;
+  font-family:Unbounded,sans-serif; font-weight:900; font-style:italic; font-size:34px;
   line-height:1; color:var(--signal); text-shadow:2px 2px 0 var(--edge);
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
@@ -948,7 +1031,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 /* ---------- велика позначка чийого зараз ходу ---------- */
 .turnLabel{
-  font-family:Rubik,sans-serif; font-weight:900; font-style:italic;
+  font-family:Unbounded,sans-serif; font-weight:900; font-style:italic;
   font-size:24px; line-height:1.1; text-transform:uppercase; margin-bottom:4px;
   display:inline-block;
 }
@@ -981,7 +1064,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .subBtnWrap{ position:relative; flex:0 0 auto; display:inline-flex }
 .subBtn{
   position:relative; z-index:1; flex:0 0 auto; padding:9px 16px; font-size:13px; border-radius:999px;
-  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; letter-spacing:.01em;
+  font-family:Unbounded,sans-serif; font-weight:900; font-style:italic; letter-spacing:.01em;
   background:linear-gradient(135deg,#FF3D8B 0%,#A855F7 55%,#38B6FF 100%);
   color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.35);
   border:3px solid var(--edge); box-shadow:0 4px 0 #6B1E8C, 0 0 0 rgba(168,85,247,0);
@@ -1050,7 +1133,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 }
 .subLockIcon{ font-size:46px; margin-bottom:6px; position:relative; z-index:1 }
 .subCard h2{
-  font-family:Rubik,sans-serif; font-weight:900; font-style:italic; font-size:27px;
+  font-family:Unbounded,sans-serif; font-weight:900; font-style:italic; font-size:27px;
   color:var(--signal); text-shadow:2px 2px 0 var(--edge), 0 0 24px rgba(255,210,48,.5);
   margin-bottom:10px; position:relative; z-index:1;
 }
@@ -1184,9 +1267,9 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   <div class="hero">
     <div class="orb o1"></div><div class="orb o2"></div>
     <div class="heroin">
-      <div class="eyebrow" id="hEyebrow">RANKED DRAFT TOOL</div>
-      <div class="herotitle" id="hTitle">Перемагай<br>у драфті</div>
-      <p class="herotag" id="hTag">Розумні піки для Ranked: карта, склади обох команд і бани — все враховано.</p>
+      <div class="eyebrow" id="hEyebrow">RANKED HUB</div>
+      <div class="herotitle" id="hTitle">Все для<br>Brawl Stars Ranked</div>
+      <p class="herotag" id="hTag">Драфт, тір-лист, стратегії й статистика — в одному місці. Для новачків і для про.</p>
       <div class="statchips">
         <span class="schip" id="hC1">105 бравлерів</span>
         <span class="schip" id="hC2">6 режимів</span>
@@ -1194,6 +1277,30 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       </div>
       <button id="startbtn" class="cta" type="button">Почати драфт</button>
     </div>
+  </div>
+
+  <div class="pillars" id="pillars">
+    <button type="button" class="pillar" id="pillarDraft">
+      <span class="pIcon">🧠</span>
+      <span class="pTitle" id="pDraftT">Драфт-асистент</span>
+      <span class="pDesc" id="pDraftD">Пік за піком: підказки під карту, бани й склад обох команд</span>
+    </button>
+    <button type="button" class="pillar" id="pillarTier">
+      <span class="pIcon">🏆</span>
+      <span class="pTitle" id="pTierT">Тір-лист</span>
+      <span class="pDesc" id="pTierD">Усі бійці одним списком: S/A/B/C/D/F і роль кожного</span>
+    </button>
+    <button type="button" class="pillar" id="pillarStrat">
+      <span class="pSoon" id="pStratSoon">Скоро</span>
+      <span class="pIcon">📚</span>
+      <span class="pTitle" id="pStratT">Стратегії й гайди</span>
+      <span class="pDesc" id="pStratD">Ролі, контри, як читати драфт — від основ до просунутого</span>
+    </button>
+    <button type="button" class="pillar" id="pillarStats">
+      <span class="pIcon">📊</span>
+      <span class="pTitle" id="pStatsT">Моя статистика</span>
+      <span class="pDesc" id="pStatsD">Трофеї, вінрейт і найкращі бійці за твоїм тегом</span>
+    </button>
   </div>
 <!-- Місце під банер: коли будеш готовий, розкоментуй, встав СВІЙ ca-pub-XXXXXXXXXXXXXXXX
      (той самий, що вгорі в <head>) і data-ad-slot (створюється в AdSense → Ads → By ad unit → Display ads).
@@ -1203,18 +1310,6 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 -->
-
-  <div class="homeStats">
-    <div class="ownedHint" id="ownedHintTitle">🎯 Без тега бот може порадити бійця, якого в тебе ще нема</div>
-    <h2 id="hStatsHeadT2">Статистика Brawl Stars</h2>
-    <p class="statsIntro" id="hStatsIntro2">Введи свій тег гравця — покажемо трофеї, вінрейт, найкращих бійців, і рекомендуватимемо лише тих, кого ти реально маєш.</p>
-    <div class="tagRow">
-      <input type="text" id="tagInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
-      <button type="button" id="tagLookup">Показати</button>
-    </div>
-    <div id="ownedStatus" style="margin:4px 0 0"></div>
-    <div id="statsBox"></div>
-  </div>
 
 
 </div>
@@ -1238,7 +1333,32 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     <details class="faq"><summary id="hF4q">Це офіційний застосунок Supercell?</summary><p id="hF4a">Ні, це фанатський проєкт, не пов'язаний із Supercell.</p></details>
   </section>
 </div>
-<div id="statsview" style="display:none"></div>
+<div id="statsview" style="display:none">
+  <section class="tierSec">
+    <div class="tierTop">
+      <h2 id="hStatsHeadT2">Статистика Brawl Stars</h2>
+      <button type="button" class="tierBack" id="statsBack">← На головну</button>
+    </div>
+    <p class="tierIntro" id="hStatsIntro2">Введи свій тег гравця — покажемо трофеї, вінрейт, найкращих бійців, і рекомендуватимемо лише тих, кого ти реально маєш.</p>
+    <div class="ownedHint" id="ownedHintTitle">🎯 Без тега бот може порадити бійця, якого в тебе ще нема</div>
+    <div class="tagRow">
+      <input type="text" id="tagInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
+      <button type="button" id="tagLookup">Показати</button>
+    </div>
+    <div id="ownedStatus" style="margin:4px 0 0"></div>
+    <div id="statsBox"></div>
+  </section>
+</div>
+<div id="tierview" style="display:none">
+  <section class="tierSec">
+    <div class="tierTop">
+      <h2 id="hTierT2">Тір-лист</h2>
+      <button type="button" class="tierBack" id="tierBack">← На головну</button>
+    </div>
+    <p class="tierIntro" id="hTierIntro">Усі бійці, згруповані за силою в поточній меті Ranked. Той самий підрахунок, що й у драфт-асистенті.</p>
+    <div id="tierBox"></div>
+  </section>
+</div>
 
 <div id="wizard" style="display:none">
   <div class="wsteps">
@@ -2488,8 +2608,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
   // головний екран
   Object.assign(TXT.uk, {
-    hEyebrow:"RANKED DRAFT TOOL", hTitle:"Перемагай<br>у драфті",
-    hTag:"Розумні піки для Ranked: карта, склади обох команд і бани — все враховано.",
+    hEyebrow:"RANKED HUB", hTitle:"Все для<br>Brawl Stars Ranked",
+    hTag:"Драфт, тір-лист, стратегії й статистика — в одному місці. Для новачків і для про.",
     hC1:"105 бравлерів", hC2:"6 режимів", hC3:"Працює офлайн",
     hStart:"Почати драфт", hContinue:"Продовжити драфт",
     hHowT:"Як це працює",
@@ -2502,14 +2622,22 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     tagModalTitle:"Введи свій тег!", tagModalDesc:"Щоб радити драфт під твоїх прокачаних бійців!", tagModalGo:"Показати мою статистику", tagModalSkip:"Пропустити",
     ownedToggleLabel:"Радити тільки моїх бійців", ownedNeedTag:"Введи тег гравця.", ownedError:"Не вдалося завантажити — перевір тег.",
     ownedLoaded:"Знайдено {n} бійців на 11 силі з пасивкою й гаджетом — рекомендації тепер лише з них.", ownedZero:"Тег зчитано, але жоден боєць не прокачаний на 11 силу з пасивкою й гаджетом — радимо як завжди.", ownedFallbackNote:"Серед твоїх бійців нема гарного варіанту для цього піку — показуємо всіх.", pickShort:"Пік {n}", myPickLabel:"ЯКИЙ ПІК ТВІЙ?",
-    hF1q:"Це безкоштовно?", hF1a:"Базовий функціонал — так, повністю безкоштовно, без реклами й без реєстрації. Ranked+ ($5/міс) — опційна підписка, яка відкриває конкретні імена бравлерів замість лише ролі.",
+    hF1q:"Це безкоштовно?", hF1a:"Так, повністю безкоштовно — весь функціонал, без реєстрації.",
     hF2q:"Чи працює без інтернету?", hF2a:"Так — після першого відкриття застосунок повністю працює офлайн.",
     hF3q:"Звідки дані про бравлерів?", hF3a:"База й логіка — власні, оновлюються з кожним патчем мети. Портрети — з відкритого фан-API Brawlify.",
-    hF4q:"Це офіційний застосунок Supercell?", hF4a:"Ні, це фанатський проєкт, не пов'язаний із Supercell."
+    hF4q:"Це офіційний застосунок Supercell?", hF4a:"Ні, це фанатський проєкт, не пов'язаний із Supercell.",
+    pDraftT:"Драфт-асистент", pDraftD:"Пік за піком: підказки під карту, бани й склад обох команд",
+    pTierT:"Тір-лист", pTierD:"Усі бійці одним списком: S/A/B/C/D/F і роль кожного",
+    pStratT:"Стратегії й гайди", pStratD:"Ролі, контри, як читати драфт — від основ до просунутого", pStratSoon:"Скоро",
+    pStatsT:"Моя статистика", pStatsD:"Трофеї, вінрейт і найкращі бійці за твоїм тегом",
+    hTierT2:"Тір-лист", hTierIntro:"Усі бійці, згруповані за силою в поточній меті Ranked. Той самий підрахунок, що й у драфт-асистенті.",
+    tierBack:"← На головну", pStratComing:"Пишемо перші гайди — зазирни трохи пізніше 👀",
+    tierLoading:"Завантажуємо тір-лист…", tierLoadErr:"Не вдалося завантажити тір-лист. Перевір з'єднання і спробуй ще раз.",
+    statsBack:"← На головну"
   });
   Object.assign(TXT.en, {
-    hEyebrow:"RANKED DRAFT TOOL", hTitle:"Win the<br>draft",
-    hTag:"Smart picks for Ranked: map, both team comps and bans — all factored in.",
+    hEyebrow:"RANKED HUB", hTitle:"Everything for<br>Brawl Stars Ranked",
+    hTag:"Draft, tier list, strategies and stats — all in one place. For beginners and pros alike.",
     hC1:"105 brawlers", hC2:"6 modes", hC3:"Works offline",
     hStart:"Start drafting", hContinue:"Continue draft",
     hHowT:"How it works",
@@ -2522,36 +2650,83 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     tagModalTitle:"Enter your tag!", tagModalDesc:"So we can build drafts around your leveled-up brawlers!", tagModalGo:"Show my stats", tagModalSkip:"Skip",
     ownedToggleLabel:"Only recommend my brawlers", ownedNeedTag:"Enter your player tag.", ownedError:"Couldn't load — check the tag.",
     ownedLoaded:"Found {n} maxed-out brawlers (power 11, star power, gadget) — recommendations now come from those only.", ownedZero:"Tag loaded, but no brawler is fully maxed (power 11 + star power + gadget) — recommending as usual.", ownedFallbackNote:"None of your brawlers fit this pick well — showing everyone instead.", pickShort:"Pick {n}", myPickLabel:"WHICH PICK IS YOURS?",
-    hF1q:"Is it free?", hF1a:"The core app — yes, completely free, no ads, no sign-up. Ranked+ ($5/month) is an optional subscription that unlocks the exact brawler name instead of just the role.",
+    hF1q:"Is it free?", hF1a:"Yes, completely free — the full app, no sign-up required.",
     hF2q:"Does it work offline?", hF2a:"Yes — after the first launch the app works fully offline.",
     hF3q:"Where does brawler data come from?", hF3a:"The database and logic are our own, updated every meta patch. Portraits come from the open Brawlify fan API.",
-    hF4q:"Is this an official Supercell app?", hF4a:"No, it's a fan project not affiliated with Supercell."
+    hF4q:"Is this an official Supercell app?", hF4a:"No, it's a fan project not affiliated with Supercell.",
+    pDraftT:"Draft assistant", pDraftD:"Pick by pick: tips tuned to the map, bans and both team comps",
+    pTierT:"Tier list", pTierD:"Every brawler in one list: S/A/B/C/D/F and role",
+    pStratT:"Strategies & guides", pStratD:"Roles, counters, how to read a draft — from basics to advanced", pStratSoon:"Soon",
+    pStatsT:"My stats", pStatsD:"Trophies, win rate and best brawlers for your tag",
+    hTierT2:"Tier List", hTierIntro:"Every brawler grouped by strength in the current Ranked meta. Same math the draft assistant uses.",
+    tierBack:"← Home", pStratComing:"Writing the first guides — check back soon 👀",
+    tierLoading:"Loading the tier list…", tierLoadErr:"Couldn't load the tier list. Check your connection and try again.",
+    statsBack:"← Home"
   });
   Object.assign(TXT.es, {
     hStatsHeadT2:"Estadísticas de Brawl Stars", hStatsIntro2:"Introduce tu tag de jugador — mostraremos trofeos, % de victorias y tus mejores brawlers.", tagShow:"Mostrar"
-  });
+  , rTripleControl:"El rival es todo control — los asesinos son muy fuertes aquí", rTriangle:"Vence a {n} por el triángulo DPS/HP", rTriangleBy:"{n} nos vence por el triángulo DPS/HP", rWallbreaker:"El rival tiene un rompemuros — los muros ya no te esconden", rWallbreakerTank:"El rival tiene un rompemuros — los arbustos desaparecen, tu acercamiento queda expuesto", rWallbreakerRisk:"Al rival le quedan picks — podría traer un rompemuros y despejar los arbustos", rStyleBurstClosed:"El burst a quemarropa es fuerte en mapas cerrados", rStyleFixedClosed:"El daño fijo a distancia rinde peor en mapas cerrados", rStyleFixedMid:"El daño fijo a distancia es fuerte en mapas medios", rStyleBurstMid:"El burst a quemarropa rinde peor en mapas medios", draftBestPick:"Pick más fuerte:", draftWorstPick:"Pick más débil:", draftExplainTeaser:"Ranked+ explica cada pick — por qué es bueno o malo", loading:"Calculando…", networkError:"No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.", rarity1:"Inicial", rarity2:"Rara", rarity3:"Súper Rara", rarity4:"Épica", rarity5:"Mítica", rarity6:"Legendaria", rarity7:"Ultra Legendaria", hEyebrow:"RANKED HUB", hTitle:"Todo para<br>Brawl Stars Ranked", hTag:"Draft, tier list, estrategias y estadísticas — todo en un solo lugar. Para principiantes y pros.", hC1:"105 brawlers", hC2:"6 modos", hC3:"Funciona sin conexión", hStart:"Empezar draft", hContinue:"Continuar draft", hHowT:"Cómo funciona", hH1t:"Elige modo y mapa", hH1d:"Cada recomendación está ajustada al mapa exacto, no a una tier list genérica.", hH2t:"Introduce picks y baneos", hH2d:"Registra las elecciones de ambos equipos en el orden real 1-2-2-1-1-2.", hH3t:"Obtén el mejor pick", hH3d:"El asistente evalúa counters, roles y tipo de mapa — y explica por qué.", hStatsT:"Tus estadísticas", stDraftsL:"drafts", stModeL:"modo favorito", stStreakL:"días seguidos", stBansL:"baneos calculados", hFaqT:"Preguntas frecuentes", ownedHintTitle:"🎯 Sin tu tag podríamos sugerir un brawler que aún no tienes", ownedIntro:"Introduce tu tag — y solo recomendaremos brawlers que realmente tengas.", ownedTagBtn:"Cargar", tagModalTitle:"¡Introduce tu tag!", tagModalDesc:"¡Así podemos armar drafts según tus brawlers mejorados!", tagModalGo:"Mostrar mis estadísticas", tagModalSkip:"Omitir", ownedToggleLabel:"Recomendar solo mis brawlers", ownedError:"No se pudo cargar — revisa el tag.", ownedLoaded:"Encontramos {n} brawlers al máximo (poder 11, power point y gadget) — las recomendaciones ahora vienen solo de ellos.", ownedZero:"Tag cargado, pero ningún brawler está al máximo (poder 11 + power point + gadget) — recomendamos como siempre.", ownedFallbackNote:"Ninguno de tus brawlers encaja bien en este pick — mostramos a todos.", pickShort:"Pick {n}", myPickLabel:"¿CUÁL PICK ES TUYO?", hF1q:"¿Es gratis?", hF1a:"Sí, totalmente gratis — toda la app, sin registro.", hF2q:"¿Funciona sin internet?", hF2a:"Sí — después de abrirla la primera vez, la app funciona totalmente sin conexión.", hF3q:"¿De dónde vienen los datos de los brawlers?", hF3a:"La base de datos y la lógica son propias, y se actualizan con cada parche de meta. Los retratos vienen de la API fan abierta de Brawlify.", hF4q:"¿Es una app oficial de Supercell?", hF4a:"No, es un proyecto de fans no afiliado a Supercell.", pDraftT:"Asistente de draft", pDraftD:"Pick a pick: consejos según el mapa, baneos y composición de ambos equipos", pTierT:"Tier list", pTierD:"Todos los brawlers en una lista: S/A/B/C/D/F y su rol", pStratT:"Estrategias y guías", pStratD:"Roles, counters, cómo leer un draft — de lo básico a lo avanzado", pStratSoon:"Pronto", pStatsT:"Mis estadísticas", pStatsD:"Trofeos, win rate y mejores brawlers según tu tag", hTierT2:"Tier list", hTierIntro:"Todos los brawlers agrupados por poder en la meta actual de Ranked. El mismo cálculo que usa el asistente de draft.", tierBack:"← Inicio", pStratComing:"Estamos escribiendo las primeras guías — vuelve pronto 👀", tierLoading:"Cargando la tier list…", tierLoadErr:"No se pudo cargar la tier list. Revisa tu conexión e inténtalo de nuevo.", statsBack:"← Inicio"});
   Object.assign(TXT.pt, {
     hStatsHeadT2:"Estatísticas do Brawl Stars", hStatsIntro2:"Digite sua tag de jogador — mostraremos troféus, taxa de vitórias e seus melhores brawlers.", tagShow:"Mostrar"
-  });
+  , rTripleControl:"O rival é todo controle — assassinos são muito fortes aqui", rTriangle:"Vence {n} pelo triângulo DPS/HP", rTriangleBy:"{n} nos vence pelo triângulo DPS/HP", rWallbreaker:"O rival tem um quebra-paredes — os muros não vão mais te esconder", rWallbreakerTank:"O rival tem um quebra-paredes — os arbustos somem, sua aproximação fica exposta", rWallbreakerRisk:"O rival ainda tem picks — pode trazer um quebra-paredes e limpar os arbustos", rStyleBurstClosed:"O burst à queima-roupa é forte em mapas fechados", rStyleFixedClosed:"O dano fixo à distância rende pior em mapas fechados", rStyleFixedMid:"O dano fixo à distância é forte em mapas médios", rStyleBurstMid:"O burst à queima-roupa rende pior em mapas médios", draftBestPick:"Pick mais forte:", draftWorstPick:"Pick mais fraco:", draftExplainTeaser:"Ranked+ explica cada pick — por que é bom ou ruim", loading:"Calculando…", networkError:"Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.", rarity1:"Inicial", rarity2:"Rara", rarity3:"Super Rara", rarity4:"Épica", rarity5:"Mítica", rarity6:"Lendária", rarity7:"Ultra Lendária", hEyebrow:"RANKED HUB", hTitle:"Tudo para<br>Brawl Stars Ranked", hTag:"Draft, tier list, estratégias e estatísticas — tudo em um só lugar. Para iniciantes e pros.", hC1:"105 brawlers", hC2:"6 modos", hC3:"Funciona offline", hStart:"Começar draft", hContinue:"Continuar draft", hHowT:"Como funciona", hH1t:"Escolha o modo e o mapa", hH1d:"Cada recomendação é ajustada ao mapa exato, não a uma tier list genérica.", hH2t:"Insira picks e bans", hH2d:"Registre as escolhas das duas equipes na ordem real 1-2-2-1-1-2.", hH3t:"Obtenha o melhor pick", hH3d:"O assistente avalia counters, funções e tipo de mapa — e explica o porquê.", hStatsT:"Suas estatísticas", stDraftsL:"drafts", stModeL:"modo favorito", stStreakL:"dias seguidos", stBansL:"bans calculados", hFaqT:"Perguntas frequentes", ownedHintTitle:"🎯 Sem sua tag podemos sugerir um brawler que você ainda não tem", ownedIntro:"Digite sua tag — e só vamos recomendar brawlers que você realmente tem.", ownedTagBtn:"Carregar", tagModalTitle:"Digite sua tag!", tagModalDesc:"Assim podemos montar drafts com base nos seus brawlers evoluídos!", tagModalGo:"Mostrar minhas estatísticas", tagModalSkip:"Pular", ownedToggleLabel:"Recomendar só meus brawlers", ownedError:"Não foi possível carregar — verifique a tag.", ownedLoaded:"Encontramos {n} brawlers no máximo (poder 11, power point e gadget) — as recomendações agora vêm só deles.", ownedZero:"Tag carregada, mas nenhum brawler está no máximo (poder 11 + power point + gadget) — recomendando como sempre.", ownedFallbackNote:"Nenhum dos seus brawlers encaixa bem nesse pick — mostrando todos.", pickShort:"Pick {n}", myPickLabel:"QUAL PICK É SEU?", hF1q:"É grátis?", hF1a:"Sim, totalmente grátis — o app completo, sem cadastro.", hF2q:"Funciona sem internet?", hF2a:"Sim — depois de abrir pela primeira vez, o app funciona totalmente offline.", hF3q:"De onde vêm os dados dos brawlers?", hF3a:"O banco de dados e a lógica são próprios, atualizados a cada patch de meta. Os retratos vêm da API fã aberta do Brawlify.", hF4q:"É um app oficial da Supercell?", hF4a:"Não, é um projeto de fãs não afiliado à Supercell.", pDraftT:"Assistente de draft", pDraftD:"Pick a pick: dicas de acordo com o mapa, bans e composição das duas equipes", pTierT:"Tier list", pTierD:"Todos os brawlers em uma lista: S/A/B/C/D/F e a função de cada um", pStratT:"Estratégias e guias", pStratD:"Funções, counters, como ler um draft — do básico ao avançado", pStratSoon:"Em breve", pStatsT:"Minhas estatísticas", pStatsD:"Troféus, win rate e melhores brawlers pela sua tag", hTierT2:"Tier list", hTierIntro:"Todos os brawlers agrupados por força na meta atual do Ranked. O mesmo cálculo usado no assistente de draft.", tierBack:"← Início", pStratComing:"Estamos escrevendo os primeiros guias — volte em breve 👀", tierLoading:"Carregando a tier list…", tierLoadErr:"Não foi possível carregar a tier list. Verifique sua conexão e tente novamente.", statsBack:"← Início"});
   Object.assign(TXT.ru, {
     hStatsHeadT2:"Статистика Brawl Stars", hStatsIntro2:"Введи свой тег игрока — покажем трофеи, винрейт и лучших бойцов.", tagShow:"Показать"
-  });
+  , rTripleControl:"У врага все три — контроль, ассасин против них очень силён", rTriangle:"Бьёт {n} по треугольнику DPS/HP", rTriangleBy:"{n} бьёт нас по треугольнику DPS/HP", rWallbreaker:"У врага есть разрушитель стен — стены больше не укроют", rWallbreakerTank:"У врага есть разрушитель стен — кусты сломаны, подход открыт", rWallbreakerRisk:"У соперника остались пики — может взять разрушителя стен и снести кусты", rStyleBurstClosed:"Взрывной урон в упор силён на закрытой карте", rStyleFixedClosed:"Фиксированный дальний урон хуже проявляется на закрытой карте", rStyleFixedMid:"Фиксированный дальний урон силён на средней карте", rStyleBurstMid:"Взрывной урон в упор хуже проявляется на средней карте", draftBestPick:"Самый сильный пик:", draftWorstPick:"Самый слабый пик:", draftExplainTeaser:"Ranked+ объясняет каждый пик — почему он хорош или плох", loading:"Считаем…", networkError:"Не удалось связаться с сервером. Проверь интернет и попробуй снова.", rarity1:"Стартовый", rarity2:"Редкий", rarity3:"Сверхредкий", rarity4:"Эпический", rarity5:"Мифический", rarity6:"Легендарный", rarity7:"Ультра-легендарный", hEyebrow:"RANKED HUB", hTitle:"Всё для<br>Brawl Stars Ranked", hTag:"Драфт, тир-лист, стратегии и статистика — в одном месте. Для новичков и профи.", hC1:"105 бойцов", hC2:"6 режимов", hC3:"Работает офлайн", hStart:"Начать драфт", hContinue:"Продолжить драфт", hHowT:"Как это работает", hH1t:"Выбери режим и карту", hH1d:"Каждая рекомендация подстроена под конкретную карту, а не под общий тир-лист.", hH2t:"Вводи пики и баны", hH2d:"Отмечай выборы обеих команд в реальном порядке драфта 1-2-2-1-1-2.", hH3t:"Получай лучший пик", hH3d:"Ассистент учитывает контры, роли и тип карты — и объясняет, почему именно этот боец.", hStatsT:"Моя статистика", stDraftsL:"драфтов", stModeL:"любимый режим", stStreakL:"дней подряд", stBansL:"банов посчитано", hFaqT:"Частые вопросы", ownedHintTitle:"🎯 Без тега бот может посоветовать бойца, которого у тебя ещё нет", ownedIntro:"Введи свой тег — и рекомендации будут только из бойцов, которые у тебя реально есть.", ownedTagBtn:"Загрузить", tagModalTitle:"Введи свой тег!", tagModalDesc:"Чтобы советовать драфт под твоих прокачанных бойцов!", tagModalGo:"Показать мою статистику", tagModalSkip:"Пропустить", ownedToggleLabel:"Советовать только моих бойцов", ownedError:"Не удалось загрузить — проверь тег.", ownedLoaded:"Найдено {n} бойцов на 11 силе со звёздной способностью и гаджетом — рекомендации теперь только из них.", ownedZero:"Тег считан, но ни один боец не прокачан на 11 силу со звёздной способностью и гаджетом — советуем как обычно.", ownedFallbackNote:"Среди твоих бойцов нет хорошего варианта для этого пика — показываем всех.", pickShort:"Пик {n}", myPickLabel:"КАКОЙ ПИК ТВОЙ?", hF1q:"Это бесплатно?", hF1a:"Да, полностью бесплатно — весь функционал, без регистрации.", hF2q:"Работает без интернета?", hF2a:"Да — после первого запуска приложение полностью работает офлайн.", hF3q:"Откуда данные о бойцах?", hF3a:"База и логика — собственные, обновляются с каждым патчем меты. Портреты — из открытого фан-API Brawlify.", hF4q:"Это официальное приложение Supercell?", hF4a:"Нет, это фанатский проект, не связанный с Supercell.", pDraftT:"Драфт-ассистент", pDraftD:"Пик за пиком: подсказки под карту, баны и состав обеих команд", pTierT:"Тир-лист", pTierD:"Все бойцы одним списком: S/A/B/C/D/F и роль каждого", pStratT:"Стратегии и гайды", pStratD:"Роли, контры, как читать драфт — от основ до продвинутого", pStratSoon:"Скоро", pStatsT:"Моя статистика", pStatsD:"Трофеи, винрейт и лучшие бойцы по твоему тегу", hTierT2:"Тир-лист", hTierIntro:"Все бойцы, сгруппированные по силе в текущей мете Ranked. Тот же расчёт, что и в драфт-ассистенте.", tierBack:"← На главную", pStratComing:"Пишем первые гайды — загляни чуть позже 👀", tierLoading:"Загружаем тир-лист…", tierLoadErr:"Не удалось загрузить тир-лист. Проверь соединение и попробуй снова.", statsBack:"← На главную"});
   Object.assign(TXT.tr, {
     hStatsHeadT2:"Brawl Stars istatistikleri", hStatsIntro2:"Oyuncu etiketini gir — kupaları, kazanma oranını ve en iyi brawler'larını gösterelim.", tagShow:"Göster"
-  });
+  , rTripleControl:"Rakip tamamen kontrol — suikastçılar burada çok güçlü", rTriangle:"{n} kişiyi DPS/HP üçgeniyle yener", rTriangleBy:"{n} bizi DPS/HP üçgeniyle yener", rWallbreaker:"Rakipte duvar kırıcı var — duvarlar artık seni saklamaz", rWallbreakerTank:"Rakipte duvar kırıcı var — çalılar yok oluyor, yaklaşımın açıkta kalıyor", rWallbreakerRisk:"Rakipte hâlâ seçim hakkı var — duvar kırıcı getirip çalıları temizleyebilir", rStyleBurstClosed:"Yakın mesafe burst kapalı haritalarda güçlü", rStyleFixedClosed:"Sabit uzak mesafe hasarı kapalı haritalarda daha kötü performans gösterir", rStyleFixedMid:"Sabit uzak mesafe hasarı orta haritalarda güçlü", rStyleBurstMid:"Yakın mesafe burst orta haritalarda daha kötü performans gösterir", draftBestPick:"En güçlü seçim:", draftWorstPick:"En zayıf seçim:", draftExplainTeaser:"Ranked+ her seçimi açıklar — neden iyi ya da kötü olduğunu", loading:"Hesaplanıyor…", networkError:"Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.", rarity1:"Başlangıç", rarity2:"Nadir", rarity3:"Süper Nadir", rarity4:"Destansı", rarity5:"Mitik", rarity6:"Efsanevi", rarity7:"Ultra Efsanevi", hEyebrow:"RANKED HUB", hTitle:"Brawl Stars Ranked için<br>her şey", hTag:"Draft, tier list, stratejiler ve istatistikler — hepsi bir arada. Yeni başlayanlar ve pro oyuncular için.", hC1:"105 brawler", hC2:"6 mod", hC3:"Çevrimdışı çalışır", hStart:"Draft'a başla", hContinue:"Draft'a devam et", hHowT:"Nasıl çalışır", hH1t:"Mod ve harita seç", hH1d:"Her öneri genel bir tier liste değil, tam olarak o haritaya göre ayarlanır.", hH2t:"Seçimleri ve yasakları gir", hH2d:"İki takımın seçimlerini gerçek 1-2-2-1-1-2 draft sırasına göre işaretle.", hH3t:"En iyi seçimi al", hH3d:"Asistan counter'ları, rolleri ve harita tipini değerlendirir — ve nedenini açıklar.", hStatsT:"İstatistiklerin", stDraftsL:"draft", stModeL:"favori mod", stStreakL:"gün üst üste", stBansL:"yasak hesaplandı", hFaqT:"Sık sorulan sorular", ownedHintTitle:"🎯 Etiketin olmadan henüz sahip olmadığın bir brawler önerebiliriz", ownedIntro:"Etiketini gir — sadece gerçekten sahip olduğun brawler'ları önereceğiz.", ownedTagBtn:"Yükle", tagModalTitle:"Etiketini gir!", tagModalDesc:"Böylece geliştirdiğin brawler'lara göre draft önerebiliriz!", tagModalGo:"İstatistiklerimi göster", tagModalSkip:"Atla", ownedToggleLabel:"Sadece benim brawler'larımı öner", ownedError:"Yüklenemedi — etiketi kontrol et.", ownedLoaded:"{n} maksimum seviyede brawler bulundu (güç 11, yıldız gücü, gadget) — öneriler artık sadece bunlardan geliyor.", ownedZero:"Etiket yüklendi, ancak hiçbir brawler tam maksimum değil (güç 11 + yıldız gücü + gadget) — her zamanki gibi öneriyoruz.", ownedFallbackNote:"Brawler'larından hiçbiri bu seçime uymuyor — herkesi gösteriyoruz.", pickShort:"Seçim {n}", myPickLabel:"HANGİ SEÇİM SENİN?", hF1q:"Ücretsiz mi?", hF1a:"Evet, tamamen ücretsiz — kayıt gerektirmeyen tam uygulama.", hF2q:"İnternetsiz çalışır mı?", hF2a:"Evet — ilk açılıştan sonra uygulama tamamen çevrimdışı çalışır.", hF3q:"Brawler verileri nereden geliyor?", hF3a:"Veritabanı ve mantık bize ait, her meta yamasında güncellenir. Portreler açık Brawlify fan API'sinden geliyor.", hF4q:"Bu resmi bir Supercell uygulaması mı?", hF4a:"Hayır, Supercell ile bağlantısı olmayan bir hayran projesidir.", pDraftT:"Draft asistanı", pDraftD:"Seçim seçim: haritaya, yasaklara ve iki takımın kadrosuna göre ipuçları", pTierT:"Tier liste", pTierD:"Tüm brawler'lar tek listede: S/A/B/C/D/F ve rolleri", pStratT:"Stratejiler ve rehberler", pStratD:"Roller, counter'lar, draft nasıl okunur — temelden ileri seviyeye", pStratSoon:"Yakında", pStatsT:"İstatistiklerim", pStatsD:"Etiketine göre kupalar, kazanma oranı ve en iyi brawler'ların", hTierT2:"Tier Liste", hTierIntro:"Tüm brawler'lar mevcut Ranked meta'sındaki güçlerine göre gruplandı. Draft asistanının kullandığı aynı hesaplama.", tierBack:"← Ana sayfa", pStratComing:"İlk rehberleri yazıyoruz — yakında tekrar bak 👀", tierLoading:"Tier liste yükleniyor…", tierLoadErr:"Tier liste yüklenemedi. Bağlantını kontrol edip tekrar dene.", statsBack:"← Ana sayfa"});
   Object.assign(TXT.ar, {
     hStatsHeadT2:"إحصائيات Brawl Stars", hStatsIntro2:"أدخل تاغ اللاعب الخاص بك — سنعرض الكؤوس ونسبة الفوز وأفضل الشخصيات.", tagShow:"عرض"
-  });
+  , rTripleControl:"الخصم كله تحكم — القتلة أقوياء جدًا هنا", rTriangle:"يهزم {n} عبر مثلث DPS/HP", rTriangleBy:"{n} يهزمنا عبر مثلث DPS/HP", rWallbreaker:"لدى الخصم كاسر جدران — الجدران لن تخفيك بعد الآن", rWallbreakerTank:"لدى الخصم كاسر جدران — الشجيرات تختفي، اقترابك مكشوف", rWallbreakerRisk:"لا يزال لدى الخصم اختيارات متبقية — قد يحضر كاسر جدران ويزيل الشجيرات", rStyleBurstClosed:"الانفجار عن قرب قوي في الخرائط المغلقة", rStyleFixedClosed:"الضرر الثابت البعيد يكون أضعف في الخرائط المغلقة", rStyleFixedMid:"الضرر الثابت البعيد قوي في الخرائط المتوسطة", rStyleBurstMid:"الانفجار عن قرب يكون أضعف في الخرائط المتوسطة", draftBestPick:"أقوى اختيار:", draftWorstPick:"أضعف اختيار:", draftExplainTeaser:"Ranked+ يشرح كل اختيار — لماذا هو جيد أو سيء", loading:"جارٍ الحساب…", networkError:"تعذّر الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.", rarity1:"أساسي", rarity2:"نادر", rarity3:"نادر جدًا", rarity4:"ملحمي", rarity5:"أسطوري", rarity6:"خرافي", rarity7:"خرافي فائق", hEyebrow:"RANKED HUB", hTitle:"كل شيء عن<br>Brawl Stars Ranked", hTag:"الدرافت وقائمة المستويات والاستراتيجيات والإحصائيات — كلها في مكان واحد. للمبتدئين والمحترفين.", hC1:"105 شخصيات", hC2:"6 أوضاع", hC3:"يعمل دون اتصال", hStart:"ابدأ الدرافت", hContinue:"متابعة الدرافت", hHowT:"كيف يعمل", hH1t:"اختر الوضع والخريطة", hH1d:"كل توصية مضبوطة على الخريطة المحددة، وليست قائمة مستويات عامة.", hH2t:"أدخل الاختيارات والحظر", hH2d:"سجّل اختيارات كلا الفريقين بترتيب الدرافت الحقيقي 1-2-2-1-1-2.", hH3t:"احصل على أفضل اختيار", hH3d:"يزن المساعد الأضداد والأدوار ونوع الخريطة — ويشرح السبب.", hStatsT:"إحصائياتك", stDraftsL:"درافت", stModeL:"الوضع المفضل", stStreakL:"أيام متتالية", stBansL:"حظر محسوب", hFaqT:"الأسئلة الشائعة", ownedHintTitle:"🎯 بدون التاغ الخاص بك قد نقترح شخصية لا تملكها بعد", ownedIntro:"أدخل تاغك — وسنوصي فقط بالشخصيات التي تملكها فعلاً.", ownedTagBtn:"تحميل", tagModalTitle:"أدخل تاغك!", tagModalDesc:"لنتمكن من بناء درافت حول شخصياتك المطوّرة!", tagModalGo:"عرض إحصائياتي", tagModalSkip:"تخطي", ownedToggleLabel:"التوصية بشخصياتي فقط", ownedError:"تعذّر التحميل — تحقق من التاغ.", ownedLoaded:"تم العثور على {n} شخصية بأقصى مستوى (قوة 11 مع القدرة النجمية والأداة) — التوصيات الآن منها فقط.", ownedZero:"تم قراءة التاغ، لكن لا توجد شخصية بأقصى مستوى (قوة 11 + القدرة النجمية + الأداة) — نوصي كالمعتاد.", ownedFallbackNote:"لا توجد شخصية مناسبة لهذا الاختيار من بين شخصياتك — نعرض الجميع بدلاً من ذلك.", pickShort:"الاختيار {n}", myPickLabel:"أي اختيار هو اختيارك؟", hF1q:"هل هو مجاني؟", hF1a:"نعم، مجاني بالكامل — التطبيق كاملاً بدون تسجيل.", hF2q:"هل يعمل بدون إنترنت؟", hF2a:"نعم — بعد التشغيل الأول، يعمل التطبيق بالكامل دون اتصال بالإنترنت.", hF3q:"من أين تأتي بيانات الشخصيات؟", hF3a:"قاعدة البيانات والمنطق خاصان بنا، ويتم تحديثهما مع كل تحديث للميتا. الصور الرمزية تأتي من واجهة Brawlify المفتوحة للمعجبين.", hF4q:"هل هذا تطبيق رسمي من Supercell؟", hF4a:"لا، هذا مشروع من المعجبين وغير تابع لشركة Supercell.", pDraftT:"مساعد الدرافت", pDraftD:"اختيارًا تلو الآخر: نصائح مبنية على الخريطة والحظر وتشكيلة الفريقين", pTierT:"قائمة المستويات", pTierD:"جميع الشخصيات في قائمة واحدة: S/A/B/C/D/F ودور كل شخصية", pStratT:"الاستراتيجيات والأدلة", pStratD:"الأدوار والأضداد وكيفية قراءة الدرافت — من الأساسيات إلى المستوى المتقدم", pStratSoon:"قريبًا", pStatsT:"إحصائياتي", pStatsD:"الكؤوس ومعدل الفوز وأفضل الشخصيات حسب تاغك", hTierT2:"قائمة المستويات", hTierIntro:"جميع الشخصيات مجمّعة حسب قوتها في ميتا Ranked الحالية. نفس الحساب المستخدم في مساعد الدرافت.", tierBack:"→ الرئيسية", pStratComing:"نكتب الأدلة الأولى — عد قريبًا 👀", tierLoading:"جارٍ تحميل قائمة المستويات…", tierLoadErr:"تعذّر تحميل قائمة المستويات. تحقق من اتصالك وحاول مرة أخرى.", statsBack:"→ الرئيسية"});
   Object.assign(TXT.de, {
     hStatsHeadT2:"Brawl Stars Statistiken", hStatsIntro2:"Gib deinen Spieler-Tag ein — wir zeigen Trophäen, Siegquote und deine besten Brawler.", tagShow:"Anzeigen"
+  , rTripleControl:"Der Gegner ist komplett Control — Assassinen sind hier sehr stark", rTriangle:"Schlägt {n} über das DPS/HP-Dreieck", rTriangleBy:"{n} schlägt uns über das DPS/HP-Dreieck", rWallbreaker:"Der Gegner hat einen Wandbrecher — Wände schützen dich nicht mehr", rWallbreakerTank:"Der Gegner hat einen Wandbrecher — Büsche sind weg, dein Vorgehen liegt offen", rWallbreakerRisk:"Der Gegner hat noch Picks übrig — könnte einen Wandbrecher bringen und die Büsche räumen", rStyleBurstClosed:"Burst-Schaden aus nächster Nähe ist auf geschlossenen Karten stark", rStyleFixedClosed:"Fixer Fernschaden funktioniert auf geschlossenen Karten schlechter", rStyleFixedMid:"Fixer Fernschaden ist auf mittelgroßen Karten stark", rStyleBurstMid:"Burst-Schaden aus nächster Nähe funktioniert auf mittelgroßen Karten schlechter", draftBestPick:"Stärkster Pick:", draftWorstPick:"Schwächster Pick:", draftExplainTeaser:"Ranked+ erklärt jeden Pick — warum er gut oder schlecht ist", loading:"Berechne…", networkError:"Verbindung zum Server fehlgeschlagen. Prüfe deine Internetverbindung und versuche es erneut.", rarity1:"Standard", rarity2:"Selten", rarity3:"Extra Selten", rarity4:"Episch", rarity5:"Mythisch", rarity6:"Legendär", rarity7:"Ultra-Legendär", hEyebrow:"RANKED HUB", hTitle:"Alles für<br>Brawl Stars Ranked", hTag:"Draft, Tierlist, Strategien und Statistiken — alles an einem Ort. Für Anfänger und Profis.", hC1:"105 Brawler", hC2:"6 Modi", hC3:"Funktioniert offline", hStart:"Draft starten", hContinue:"Draft fortsetzen", hHowT:"So funktioniert's", hH1t:"Modus und Karte wählen", hH1d:"Jede Empfehlung ist genau auf die Karte abgestimmt, nicht auf eine generische Tierlist.", hH2t:"Picks und Bans eingeben", hH2d:"Trage die Picks beider Teams in der echten 1-2-2-1-1-2-Draftreihenfolge ein.", hH3t:"Den besten Pick bekommen", hH3d:"Der Assistent wägt Konter, Rollen und Kartentyp ab — und erklärt, warum.", hStatsT:"Deine Statistiken", stDraftsL:"Drafts", stModeL:"Lieblingsmodus", stStreakL:"Tage in Folge", stBansL:"Bans berechnet", hFaqT:"Häufige Fragen", ownedHintTitle:"🎯 Ohne deinen Tag könnten wir einen Brawler vorschlagen, den du noch gar nicht hast", ownedIntro:"Gib deinen Tag ein — wir empfehlen dann nur Brawler, die du wirklich besitzt.", ownedTagBtn:"Laden", tagModalTitle:"Gib deinen Tag ein!", tagModalDesc:"Damit wir Drafts passend zu deinen ausgebauten Brawlern erstellen können!", tagModalGo:"Meine Statistiken zeigen", tagModalSkip:"Überspringen", ownedToggleLabel:"Nur meine Brawler empfehlen", ownedError:"Laden fehlgeschlagen — prüfe den Tag.", ownedLoaded:"{n} voll ausgebaute Brawler gefunden (Stufe 11, Sternkraft und Gadget) — Empfehlungen kommen jetzt nur noch von diesen.", ownedZero:"Tag geladen, aber kein Brawler ist voll ausgebaut (Stufe 11 + Sternkraft + Gadget) — Empfehlung erfolgt wie gewohnt.", ownedFallbackNote:"Keiner deiner Brawler passt gut zu diesem Pick — wir zeigen stattdessen alle.", pickShort:"Pick {n}", myPickLabel:"WELCHER PICK IST DEINER?", hF1q:"Ist es kostenlos?", hF1a:"Ja, komplett kostenlos — die volle App, keine Registrierung nötig.", hF2q:"Funktioniert es offline?", hF2a:"Ja — nach dem ersten Start läuft die App vollständig offline.", hF3q:"Woher kommen die Brawler-Daten?", hF3a:"Datenbank und Logik sind unsere eigenen und werden bei jedem Meta-Patch aktualisiert. Die Porträts stammen aus der offenen Brawlify-Fan-API.", hF4q:"Ist das eine offizielle Supercell-App?", hF4a:"Nein, das ist ein Fan-Projekt ohne Verbindung zu Supercell.", pDraftT:"Draft-Assistent", pDraftD:"Pick für Pick: Tipps abgestimmt auf Karte, Bans und beide Team-Compositions", pTierT:"Tierlist", pTierD:"Alle Brawler in einer Liste: S/A/B/C/D/F und ihre Rolle", pStratT:"Strategien & Guides", pStratD:"Rollen, Konter, wie man einen Draft liest — von den Grundlagen bis zum Profi-Level", pStratSoon:"Bald", pStatsT:"Meine Statistiken", pStatsD:"Trophäen, Winrate und beste Brawler zu deinem Tag", hTierT2:"Tierlist", hTierIntro:"Alle Brawler nach Stärke im aktuellen Ranked-Meta gruppiert. Dieselbe Berechnung wie im Draft-Assistenten.", tierBack:"← Startseite", pStratComing:"Wir schreiben die ersten Guides — schau bald wieder vorbei 👀", tierLoading:"Tierlist wird geladen…", tierLoadErr:"Tierlist konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.", statsBack:"← Startseite"});
+
+
+  // Статистика гравця (профіль/винрейт/історія боїв) — раніше жорстко захардкоджена
+  // українською в renderStatsCard()/lookupTag(), тепер теж через t().
+  Object.assign(TXT.uk, {
+    statNoClub:"Без клубу", statFormRecent:"Форма (останні бої)", statLoadingDots:"Завантажуємо…", statFormRanked:"Форма в Ranked", statFormAll:"Форма (усі останні бої, без фільтра Ranked)", statNoRankedMatches:"Серед останніх боїв немає справжніх Ranked-матчів (3х3 з драфтом). Showdown до Ranked не належить. Зіграй кілька матчів у Ranked — і статистика зʼявиться.", statTrophies:"трофеїв", statBestTrophies:"рекорд трофеїв", statAccLevel:"рівень акаунта", statBrawlersCount:"бійців", stat3v3Wins:"перемог 3х3", statSoloWins:"перемог соло", statDuoWins:"перемог дуо", statChampQual:"кваліфікація чемпіонату", wYes:"Так", wNo:"Ні", statWrRanked:"Вінрейт у Ranked", statWrAll:"Вінрейт (усі останні бої)", statWinsWord:"перемог", statLossesWord:"поразок", statDrawsWord:"нічиїх", statWinPctLabel:"{wr}% перемог", statCollectedRanked:"Зібрано {n} Ranked-матчів (3х3 з драфтом, без Showdown).", statCollectedAll:"Зібрано {n} останніх боїв (усі режими, без фільтра Ranked).", statHistoryNote:"Історія накопичується у твоєму браузері — заходь частіше, щоб зібрати більше.", statTopBrawlers:"Найкращі бійці", statTopMaps:"Найкращі карти", statTopModes:"Найкращі режими", statNoData:"Немає даних.", statRecentRanked:"Останні Ranked-матчі", statRecentAll:"Останні бої", statNoRecentData:"Немає даних про останні бої.", statWin:"Перемога", statLoss:"Поразка", statPlaceN:"Місце {n}", statDraw:"Нічия", minAgo:"{n} хв тому", hAgo:"{n} год тому", dAgo:"{n} дн тому", statLoadingFull:"Завантажуємо статистику…", statConnFail:"Не вдалося з'єднатися.", statErrCode:"Помилка {code}", statEmptyResp:"(порожня відповідь)", statBadResp:"Незрозуміла відповідь сервера.", ownedNeedTag:"Введи тег гравця."
+  });
+  Object.assign(TXT.en, {
+    statNoClub:"No club", statFormRecent:"Form (recent battles)", statLoadingDots:"Loading…", statFormRanked:"Form in Ranked", statFormAll:"Form (all recent battles, no Ranked filter)", statNoRankedMatches:"No real Ranked matches (3v3 with draft) among recent battles. Showdown doesn't count as Ranked. Play a few Ranked matches and stats will show up.", statTrophies:"trophies", statBestTrophies:"trophy record", statAccLevel:"account level", statBrawlersCount:"brawlers", stat3v3Wins:"3v3 wins", statSoloWins:"solo wins", statDuoWins:"duo wins", statChampQual:"championship qualified", wYes:"Yes", wNo:"No", statWrRanked:"Win rate in Ranked", statWrAll:"Win rate (all recent battles)", statWinsWord:"wins", statLossesWord:"losses", statDrawsWord:"draws", statWinPctLabel:"{wr}% wins", statCollectedRanked:"Collected {n} Ranked matches (3v3 with draft, no Showdown).", statCollectedAll:"Collected {n} recent battles (all modes, no Ranked filter).", statHistoryNote:"History builds up in your browser — check in more often to collect more.", statTopBrawlers:"Best brawlers", statTopMaps:"Best maps", statTopModes:"Best modes", statNoData:"No data.", statRecentRanked:"Recent Ranked matches", statRecentAll:"Recent battles", statNoRecentData:"No recent battle data.", statWin:"Victory", statLoss:"Defeat", statPlaceN:"Place {n}", statDraw:"Draw", minAgo:"{n}m ago", hAgo:"{n}h ago", dAgo:"{n}d ago", statLoadingFull:"Loading stats…", statConnFail:"Couldn't connect.", statErrCode:"Error {code}", statEmptyResp:"(empty response)", statBadResp:"Unclear server response.", ownedNeedTag:"Enter your player tag."
+  });
+  Object.assign(TXT.es, {
+    statNoClub:"Sin club", statFormRecent:"Forma (partidas recientes)", statLoadingDots:"Cargando…", statFormRanked:"Forma en Ranked", statFormAll:"Forma (todas las partidas recientes, sin filtro Ranked)", statNoRankedMatches:"No hay partidas Ranked reales (3c3 con draft) entre las recientes. Showdown no cuenta como Ranked. Juega algunas partidas Ranked y aparecerán las estadísticas.", statTrophies:"trofeos", statBestTrophies:"récord de trofeos", statAccLevel:"nivel de cuenta", statBrawlersCount:"brawlers", stat3v3Wins:"victorias 3c3", statSoloWins:"victorias solo", statDuoWins:"victorias dúo", statChampQual:"clasificado al campeonato", wYes:"Sí", wNo:"No", statWrRanked:"% de victorias en Ranked", statWrAll:"% de victorias (todas las partidas recientes)", statWinsWord:"victorias", statLossesWord:"derrotas", statDrawsWord:"empates", statWinPctLabel:"{wr}% de victorias", statCollectedRanked:"Se registraron {n} partidas Ranked (3c3 con draft, sin Showdown).", statCollectedAll:"Se registraron {n} partidas recientes (todos los modos, sin filtro Ranked).", statHistoryNote:"El historial se acumula en tu navegador — entra más seguido para reunir más.", statTopBrawlers:"Mejores brawlers", statTopMaps:"Mejores mapas", statTopModes:"Mejores modos", statNoData:"Sin datos.", statRecentRanked:"Partidas Ranked recientes", statRecentAll:"Partidas recientes", statNoRecentData:"No hay datos de partidas recientes.", statWin:"Victoria", statLoss:"Derrota", statPlaceN:"Puesto {n}", statDraw:"Empate", minAgo:"hace {n} min", hAgo:"hace {n} h", dAgo:"hace {n} d", statLoadingFull:"Cargando estadísticas…", statConnFail:"No se pudo conectar.", statErrCode:"Error {code}", statEmptyResp:"(respuesta vacía)", statBadResp:"Respuesta del servidor poco clara.", ownedNeedTag:"Introduce tu tag de jugador."
+  });
+  Object.assign(TXT.pt, {
+    statNoClub:"Sem clube", statFormRecent:"Forma (partidas recentes)", statLoadingDots:"Carregando…", statFormRanked:"Forma no Ranked", statFormAll:"Forma (todas as partidas recentes, sem filtro Ranked)", statNoRankedMatches:"Não há partidas Ranked reais (3x3 com draft) entre as recentes. Showdown não conta como Ranked. Jogue algumas partidas Ranked e as estatísticas vão aparecer.", statTrophies:"troféus", statBestTrophies:"recorde de troféus", statAccLevel:"nível da conta", statBrawlersCount:"brawlers", stat3v3Wins:"vitórias 3x3", statSoloWins:"vitórias solo", statDuoWins:"vitórias dupla", statChampQual:"classificado para o campeonato", wYes:"Sim", wNo:"Não", statWrRanked:"Taxa de vitórias no Ranked", statWrAll:"Taxa de vitórias (todas as partidas recentes)", statWinsWord:"vitórias", statLossesWord:"derrotas", statDrawsWord:"empates", statWinPctLabel:"{wr}% de vitórias", statCollectedRanked:"Coletadas {n} partidas Ranked (3x3 com draft, sem Showdown).", statCollectedAll:"Coletadas {n} partidas recentes (todos os modos, sem filtro Ranked).", statHistoryNote:"O histórico se acumula no seu navegador — entre com mais frequência para juntar mais.", statTopBrawlers:"Melhores brawlers", statTopMaps:"Melhores mapas", statTopModes:"Melhores modos", statNoData:"Sem dados.", statRecentRanked:"Partidas Ranked recentes", statRecentAll:"Partidas recentes", statNoRecentData:"Sem dados de partidas recentes.", statWin:"Vitória", statLoss:"Derrota", statPlaceN:"Posição {n}", statDraw:"Empate", minAgo:"há {n} min", hAgo:"há {n} h", dAgo:"há {n} d", statLoadingFull:"Carregando estatísticas…", statConnFail:"Não foi possível conectar.", statErrCode:"Erro {code}", statEmptyResp:"(resposta vazia)", statBadResp:"Resposta do servidor pouco clara.", ownedNeedTag:"Digite sua tag de jogador."
+  });
+  Object.assign(TXT.ru, {
+    statNoClub:"Без клуба", statFormRecent:"Форма (последние бои)", statLoadingDots:"Загружаем…", statFormRanked:"Форма в Ranked", statFormAll:"Форма (все последние бои, без фильтра Ranked)", statNoRankedMatches:"Среди последних боёв нет настоящих Ranked-матчей (3х3 с драфтом). Showdown не считается Ranked. Сыграй несколько матчей в Ranked — и статистика появится.", statTrophies:"трофеев", statBestTrophies:"рекорд трофеев", statAccLevel:"уровень аккаунта", statBrawlersCount:"бойцов", stat3v3Wins:"побед 3х3", statSoloWins:"побед соло", statDuoWins:"побед дуо", statChampQual:"квалификация чемпионата", wYes:"Да", wNo:"Нет", statWrRanked:"Винрейт в Ranked", statWrAll:"Винрейт (все последние бои)", statWinsWord:"побед", statLossesWord:"поражений", statDrawsWord:"ничьих", statWinPctLabel:"{wr}% побед", statCollectedRanked:"Собрано {n} Ranked-матчей (3х3 с драфтом, без Showdown).", statCollectedAll:"Собрано {n} последних боёв (все режимы, без фильтра Ranked).", statHistoryNote:"История копится в твоём браузере — заходи чаще, чтобы собрать больше.", statTopBrawlers:"Лучшие бойцы", statTopMaps:"Лучшие карты", statTopModes:"Лучшие режимы", statNoData:"Нет данных.", statRecentRanked:"Последние Ranked-матчи", statRecentAll:"Последние бои", statNoRecentData:"Нет данных о последних боях.", statWin:"Победа", statLoss:"Поражение", statPlaceN:"Место {n}", statDraw:"Ничья", minAgo:"{n} мин назад", hAgo:"{n} ч назад", dAgo:"{n} дн назад", statLoadingFull:"Загружаем статистику…", statConnFail:"Не удалось подключиться.", statErrCode:"Ошибка {code}", statEmptyResp:"(пустой ответ)", statBadResp:"Непонятный ответ сервера.", ownedNeedTag:"Введи тег игрока."
+  });
+  Object.assign(TXT.tr, {
+    statNoClub:"Kulüp yok", statFormRecent:"Form (son maçlar)", statLoadingDots:"Yükleniyor…", statFormRanked:"Ranked'te form", statFormAll:"Form (tüm son maçlar, Ranked filtresi yok)", statNoRankedMatches:"Son maçlar arasında gerçek Ranked maçı (draftlı 3v3) yok. Showdown Ranked sayılmaz. Birkaç Ranked maçı oyna, istatistikler görünecek.", statTrophies:"kupa", statBestTrophies:"kupa rekoru", statAccLevel:"hesap seviyesi", statBrawlersCount:"brawler", stat3v3Wins:"3v3 galibiyeti", statSoloWins:"solo galibiyeti", statDuoWins:"düo galibiyeti", statChampQual:"şampiyona kalifiyesi", wYes:"Evet", wNo:"Hayır", statWrRanked:"Ranked kazanma oranı", statWrAll:"Kazanma oranı (tüm son maçlar)", statWinsWord:"galibiyet", statLossesWord:"mağlubiyet", statDrawsWord:"berabere", statWinPctLabel:"%{wr} galibiyet", statCollectedRanked:"{n} Ranked maçı toplandı (draftlı 3v3, Showdown hariç).", statCollectedAll:"{n} son maç toplandı (tüm modlar, Ranked filtresi yok).", statHistoryNote:"Geçmiş tarayıcında birikir — daha fazla toplamak için sık gir.", statTopBrawlers:"En iyi brawler'lar", statTopMaps:"En iyi haritalar", statTopModes:"En iyi modlar", statNoData:"Veri yok.", statRecentRanked:"Son Ranked maçları", statRecentAll:"Son maçlar", statNoRecentData:"Son maçlar hakkında veri yok.", statWin:"Galibiyet", statLoss:"Mağlubiyet", statPlaceN:"{n}. sıra", statDraw:"Beraberlik", minAgo:"{n} dk önce", hAgo:"{n} sa önce", dAgo:"{n} gün önce", statLoadingFull:"İstatistikler yükleniyor…", statConnFail:"Bağlanılamadı.", statErrCode:"Hata {code}", statEmptyResp:"(boş yanıt)", statBadResp:"Belirsiz sunucu yanıtı.", ownedNeedTag:"Oyuncu etiketini gir."
+  });
+  Object.assign(TXT.ar, {
+    statNoClub:"بدون نادٍ", statFormRecent:"الأداء (آخر المعارك)", statLoadingDots:"جارٍ التحميل…", statFormRanked:"الأداء في Ranked", statFormAll:"الأداء (كل المعارك الأخيرة، بدون فلتر Ranked)", statNoRankedMatches:"لا توجد مباريات Ranked حقيقية (3ضد3 مع اختيار) بين المعارك الأخيرة. Showdown لا يُحتسب ضمن Ranked. العب بعض مباريات Ranked وستظهر الإحصائيات.", statTrophies:"كأس", statBestTrophies:"أعلى رصيد كؤوس", statAccLevel:"مستوى الحساب", statBrawlersCount:"شخصية", stat3v3Wins:"انتصارات 3ضد3", statSoloWins:"انتصارات فردية", statDuoWins:"انتصارات ثنائية", statChampQual:"التأهل للبطولة", wYes:"نعم", wNo:"لا", statWrRanked:"نسبة الفوز في Ranked", statWrAll:"نسبة الفوز (كل المعارك الأخيرة)", statWinsWord:"انتصارات", statLossesWord:"هزائم", statDrawsWord:"تعادلات", statWinPctLabel:"{wr}% فوز", statCollectedRanked:"تم جمع {n} مباراة Ranked (3ضد3 مع اختيار، بدون Showdown).", statCollectedAll:"تم جمع {n} معركة أخيرة (كل الأوضاع، بدون فلتر Ranked).", statHistoryNote:"يتراكم السجل في متصفحك — ادخل أكثر لجمع المزيد.", statTopBrawlers:"أفضل الشخصيات", statTopMaps:"أفضل الخرائط", statTopModes:"أفضل الأوضاع", statNoData:"لا توجد بيانات.", statRecentRanked:"أحدث مباريات Ranked", statRecentAll:"أحدث المعارك", statNoRecentData:"لا توجد بيانات عن المعارك الأخيرة.", statWin:"فوز", statLoss:"هزيمة", statPlaceN:"المركز {n}", statDraw:"تعادل", minAgo:"قبل {n} د", hAgo:"قبل {n} س", dAgo:"قبل {n} ي", statLoadingFull:"جارٍ تحميل الإحصائيات…", statConnFail:"تعذّر الاتصال.", statErrCode:"خطأ {code}", statEmptyResp:"(رد فارغ)", statBadResp:"رد غير واضح من الخادم.", ownedNeedTag:"أدخل تاغ اللاعب الخاص بك."
+  });
+  Object.assign(TXT.de, {
+    statNoClub:"Kein Club", statFormRecent:"Form (letzte Kämpfe)", statLoadingDots:"Lädt…", statFormRanked:"Form in Ranked", statFormAll:"Form (alle letzten Kämpfe, ohne Ranked-Filter)", statNoRankedMatches:"Unter den letzten Kämpfen sind keine echten Ranked-Matches (3v3 mit Draft). Showdown zählt nicht als Ranked. Spiel ein paar Ranked-Matches, dann erscheinen Statistiken.", statTrophies:"Trophäen", statBestTrophies:"Trophäenrekord", statAccLevel:"Kontostufe", statBrawlersCount:"Brawler", stat3v3Wins:"3v3-Siege", statSoloWins:"Solo-Siege", statDuoWins:"Duo-Siege", statChampQual:"Meisterschaft qualifiziert", wYes:"Ja", wNo:"Nein", statWrRanked:"Siegquote in Ranked", statWrAll:"Siegquote (alle letzten Kämpfe)", statWinsWord:"Siege", statLossesWord:"Niederlagen", statDrawsWord:"Unentschieden", statWinPctLabel:"{wr}% Siege", statCollectedRanked:"{n} Ranked-Matches gesammelt (3v3 mit Draft, ohne Showdown).", statCollectedAll:"{n} letzte Kämpfe gesammelt (alle Modi, ohne Ranked-Filter).", statHistoryNote:"Der Verlauf sammelt sich in deinem Browser — komm öfter vorbei, um mehr zu sammeln.", statTopBrawlers:"Beste Brawler", statTopMaps:"Beste Maps", statTopModes:"Beste Modi", statNoData:"Keine Daten.", statRecentRanked:"Letzte Ranked-Matches", statRecentAll:"Letzte Kämpfe", statNoRecentData:"Keine Daten zu letzten Kämpfen.", statWin:"Sieg", statLoss:"Niederlage", statPlaceN:"Platz {n}", statDraw:"Unentschieden", minAgo:"vor {n} Min", hAgo:"vor {n} Std", dAgo:"vor {n} Tg", statLoadingFull:"Statistiken werden geladen…", statConnFail:"Verbindung fehlgeschlagen.", statErrCode:"Fehler {code}", statEmptyResp:"(leere Antwort)", statBadResp:"Unklare Serverantwort.", ownedNeedTag:"Gib deinen Spieler-Tag ein."
   });
 
   const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
                     "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a",
-                    "hStatsHeadT2","hStatsIntro2"];
+                    "hStatsHeadT2","hStatsIntro2",
+                    "pDraftT","pDraftD","pTierT","pTierD","pStratT","pStratD","pStratSoon","pStatsT","pStatsD",
+                    "hTierT2","hTierIntro","tierBack","statsBack"];
   TXT.uk.wNext="Далі"; TXT.uk.wStart="Почати"; TXT.en.wNext="Next"; TXT.en.wStart="Start";
+  TXT.es.wNext="Siguiente"; TXT.es.wStart="Empezar"; TXT.pt.wNext="Próximo"; TXT.pt.wStart="Começar";
+  TXT.ru.wNext="Далее"; TXT.ru.wStart="Начать"; TXT.tr.wNext="İleri"; TXT.tr.wStart="Başla";
+  TXT.ar.wNext="التالي"; TXT.ar.wStart="ابدأ"; TXT.de.wNext="Weiter"; TXT.de.wStart="Start";
   TXT.uk.tDraft="Драфт"; TXT.uk.tHow="Як працює"; TXT.uk.tFaq="FAQ"; TXT.uk.tStats="Моя статистика";
   TXT.en.tDraft="Draft"; TXT.en.tHow="How it works"; TXT.en.tFaq="FAQ"; TXT.en.tStats="My Stats";
+  TXT.es.tDraft="Draft"; TXT.es.tHow="Cómo funciona"; TXT.es.tFaq="FAQ"; TXT.es.tStats="Mis estadísticas";
+  TXT.pt.tDraft="Draft"; TXT.pt.tHow="Como funciona"; TXT.pt.tFaq="FAQ"; TXT.pt.tStats="Minhas estatísticas";
+  TXT.ru.tDraft="Драфт"; TXT.ru.tHow="Как это работает"; TXT.ru.tFaq="FAQ"; TXT.ru.tStats="Моя статистика";
+  TXT.tr.tDraft="Draft"; TXT.tr.tHow="Nasıl çalışır"; TXT.tr.tFaq="FAQ"; TXT.tr.tStats="İstatistiklerim";
+  TXT.ar.tDraft="الدرافت"; TXT.ar.tHow="كيف يعمل"; TXT.ar.tFaq="FAQ"; TXT.ar.tStats="إحصائياتي";
+  TXT.de.tDraft="Draft"; TXT.de.tHow="So funktioniert's"; TXT.de.tFaq="FAQ"; TXT.de.tStats="Meine Statistiken";
   let started = false;   // чи вже заходив у драфт цього сеансу
   function refreshHome(){
     HOME_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = t(id); });
@@ -2578,7 +2753,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===name));
   }
   function hideAllViews(){
-    ["home","wizard","draftview","howview","faqview","statsview"].forEach(id=>{ $id(id).style.display="none"; });
+    ["home","wizard","draftview","howview","faqview","statsview","tierview"].forEach(id=>{ $id(id).style.display="none"; });
   }
   function reveal(rootSel){
     const els = document.querySelectorAll(rootSel + " .howcard, " + rootSel + " .faq");
@@ -2825,10 +3000,10 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   async function lookupTag(){
     const raw = ($id("tagInput").value || "").trim();
     const box = $id("statsBox");
-    if(!raw){ box.innerHTML = `<div class="statsErr">Введи тег гравця.</div>`; return; }
+    if(!raw){ box.innerHTML = `<div class="statsErr">${t("ownedNeedTag")}</div>`; return; }
     const tag = raw.replace(/^#/, "").toUpperCase();
 
-    box.innerHTML = `<div class="statsLoading">Завантажуємо статистику…</div>`;
+    box.innerHTML = `<div class="statsLoading">${t("statLoadingFull")}</div>`;
     $id("tagLookup").disabled = true;
 
     let res, text;
@@ -2840,7 +3015,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       // Фільтр "своїх" бійців при цьому не блокуємо назавжди — довіряємо тому, що вже
       // збережено з минулого разу, а не залишаємо застосунок без фільтра до кінця сесії.
       ownedBrawlersFresh = true;
-      box.innerHTML = `<div class="statsErr"><b>Не вдалося з'єднатися.</b><br>${esc(netErr.message || netErr)}</div>`;
+      box.innerHTML = `<div class="statsErr"><b>${t("statConnFail")}</b><br>${esc(netErr.message || netErr)}</div>`;
       $id("tagLookup").disabled = false;
       return;
     }
@@ -2853,8 +3028,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       // ГОЛОВНЕ: завжди показуємо точний текст/код помилки на сторінці, нічого не ховаємо
       const reason = (data && (data.reason || data.message || data.error)) || null;
       box.innerHTML = `<div class="statsErr">
-        <b>Помилка ${res.status}</b>${reason ? " — " + esc(reason) : ""}
-        <div class="statsRaw">${esc(text || "(порожня відповідь)")}</div>
+        <b>${t("statErrCode",{code:res.status})}</b>${reason ? " — " + esc(reason) : ""}
+        <div class="statsRaw">${esc(text || t("statEmptyResp"))}</div>
       </div>`;
       $id("tagLookup").disabled = false;
       return;
@@ -2862,7 +3037,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
     if(!data){
       ownedBrawlersFresh = true;
-      box.innerHTML = `<div class="statsErr"><b>Незрозуміла відповідь сервера.</b><div class="statsRaw">${esc(text)}</div></div>`;
+      box.innerHTML = `<div class="statsErr"><b>${t("statBadResp")}</b><div class="statsRaw">${esc(text)}</div></div>`;
       $id("tagLookup").disabled = false;
       return;
     }
@@ -2933,10 +3108,10 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     if(!m) return s;
     const d = new Date(Date.UTC(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +m[6]));
     const diffMin = Math.max(1, Math.round((Date.now() - d.getTime())/60000));
-    if(diffMin < 60) return `${diffMin} хв тому`;
+    if(diffMin < 60) return t("minAgo",{n:diffMin});
     const diffH = Math.round(diffMin/60);
-    if(diffH < 24) return `${diffH} год тому`;
-    return `${Math.round(diffH/24)} дн тому`;
+    if(diffH < 24) return t("hAgo",{n:diffH});
+    return t("dAgo",{n:Math.round(diffH/24)});
   }
 
   // людські назви режимів (API дає camelCase)
@@ -2967,12 +3142,12 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
     const club = d.club && d.club.name
       ? `<div class="statsClub">🏰 ${esc(d.club.name)}</div>`
-      : `<div class="statsClub statsClubNone">Без клубу</div>`;
+      : `<div class="statsClub statsClubNone">${t("statNoClub")}</div>`;
 
     // ---- вінрейт і топи з останніх боїв ----
     let winrateHtml = "", topsHtml = "", battlesHtml = "";
     if(battles === null){
-      winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма (останні бої)</div><div class="statsLoading">Завантажуємо…</div>`;
+      winrateHtml = `<div class="qslabel" style="margin-top:20px">${t("statFormRecent")}</div><div class="statsLoading">${t("statLoadingDots")}</div>`;
     } else if(Array.isArray(battles) && battles.length){
       // Справжній Ranked (колишня Power League) — це ЛИШЕ типи 'soloRanked'/'teamRanked',
       // завжди випадковий 3х3-режим із драфтом. Showdown API позначає типом 'ranked' (без Solo/Team),
@@ -2982,23 +3157,23 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
         return ty === "soloRanked" || ty === "teamRanked";
       };
       const ranked = onlyTeamRanked ? battles.filter(isTrueRanked) : battles.slice();
-      const sectionTitle = onlyTeamRanked ? "Форма в Ranked" : "Форма (усі останні бої, без фільтра Ranked)";
+      const sectionTitle = onlyTeamRanked ? t("statFormRanked") : t("statFormAll");
       if(!ranked.length){
         winrateHtml = `<div class="qslabel" style="margin-top:20px">${sectionTitle}</div>`+
-          `<div class="statsErr">Серед останніх боїв немає справжніх Ranked-матчів (3х3 з драфтом). Showdown до Ranked не належить. Зіграй кілька матчів у Ranked — і статистика зʼявиться.</div>`;
+          `<div class="statsErr">${t("statNoRankedMatches")}</div>`;
         box.innerHTML = `
           <div class="statsCard">
             <div class="statsName">${esc(d.name || "")} <span class="statsTag">#${esc((d.tag||"").replace(/^#/,""))}</span></div>
             ${club}
             <div class="statgrid">
-              <div class="statcard sc-tro"><div class="scIcon">🏆</div><div class="statnum">${d.trophies ?? "—"}</div><div class="statlbl">трофеїв</div></div>
-              <div class="statcard sc-best"><div class="scIcon">👑</div><div class="statnum">${d.highestTrophies ?? "—"}</div><div class="statlbl">рекорд трофеїв</div></div>
-              <div class="statcard sc-lvl"><div class="scIcon">⭐</div><div class="statnum">${d.expLevel ?? "—"}</div><div class="statlbl">рівень акаунта</div></div>
-              <div class="statcard sc-brw"><div class="scIcon">🥊</div><div class="statnum">${(d.brawlers||[]).length}</div><div class="statlbl">бійців</div></div>
-              <div class="statcard sc-3v3"><div class="scIcon">⚔️</div><div class="statnum">${d["3vs3Victories"] ?? "—"}</div><div class="statlbl">перемог 3х3</div></div>
-              <div class="statcard sc-solo"><div class="scIcon">🎯</div><div class="statnum">${d.soloVictories ?? "—"}</div><div class="statlbl">перемог соло</div></div>
-              <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">перемог дуо</div></div>
-              <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? "Так" : "Ні"}</div><div class="statlbl">кваліфікація чемпіонату</div></div>
+              <div class="statcard sc-tro"><div class="scIcon">🏆</div><div class="statnum">${d.trophies ?? "—"}</div><div class="statlbl">${t("statTrophies")}</div></div>
+              <div class="statcard sc-best"><div class="scIcon">👑</div><div class="statnum">${d.highestTrophies ?? "—"}</div><div class="statlbl">${t("statBestTrophies")}</div></div>
+              <div class="statcard sc-lvl"><div class="scIcon">⭐</div><div class="statnum">${d.expLevel ?? "—"}</div><div class="statlbl">${t("statAccLevel")}</div></div>
+              <div class="statcard sc-brw"><div class="scIcon">🥊</div><div class="statnum">${(d.brawlers||[]).length}</div><div class="statlbl">${t("statBrawlersCount")}</div></div>
+              <div class="statcard sc-3v3"><div class="scIcon">⚔️</div><div class="statnum">${d["3vs3Victories"] ?? "—"}</div><div class="statlbl">${t("stat3v3Wins")}</div></div>
+              <div class="statcard sc-solo"><div class="scIcon">🎯</div><div class="statnum">${d.soloVictories ?? "—"}</div><div class="statlbl">${t("statSoloWins")}</div></div>
+              <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">${t("statDuoWins")}</div></div>
+              <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? t("wYes") : t("wNo")}</div><div class="statlbl">${t("statChampQual")}</div></div>
             </div>
             ${toggleHtml()}
             ${winrateHtml}
@@ -3028,21 +3203,21 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       const wr = total ? Math.round(wins/(wins+losses||1)*100) : 0;
 
       winrateHtml = `
-        <div class="qslabel" style="margin-top:20px">${onlyTeamRanked ? "Вінрейт у Ranked" : "Вінрейт (усі останні бої)"}</div>
-        <div class="wrBar"><span class="wrFill" style="width:${wr}%"></span><span class="wrText">${wr}% перемог</span></div>
+        <div class="qslabel" style="margin-top:20px">${onlyTeamRanked ? t("statWrRanked") : t("statWrAll")}</div>
+        <div class="wrBar"><span class="wrFill" style="width:${wr}%"></span><span class="wrText">${t("statWinPctLabel",{wr})}</span></div>
         <div class="wrLegend">
-          <span class="wrWin">✅ ${wins} перемог</span>
-          <span class="wrLose">❌ ${losses} поразок</span>
-          ${draws?`<span class="wrDraw">➖ ${draws} нічиїх</span>`:""}
+          <span class="wrWin">✅ ${wins} ${t("statWinsWord")}</span>
+          <span class="wrLose">❌ ${losses} ${t("statLossesWord")}</span>
+          ${draws?`<span class="wrDraw">➖ ${draws} ${t("statDrawsWord")}</span>`:""}
         </div>
         <div class="wrNote">${onlyTeamRanked
-          ? `Зібрано ${total} Ranked-матчів (3х3 з драфтом, без Showdown).`
-          : `Зібрано ${total} останніх боїв (усі режими, без фільтра Ranked).`} Історія накопичується у твоєму браузері — заходь частіше, щоб зібрати більше.</div>`;
+          ? t("statCollectedRanked",{n:total})
+          : t("statCollectedAll",{n:total})} ${t("statHistoryNote")}</div>`;
 
       const topList = (obj, kind, portrait) => {
         const arr = Object.entries(obj).map(([k,v])=>({k, w:v.w, t:v.t, wr: v.t?Math.round(v.w/v.t*100):0}))
           .sort((a,b)=>b.t-a.t || b.wr-a.wr).slice(0,3);
-        if(!arr.length) return `<div class="statsErr">Немає даних.</div>`;
+        if(!arr.length) return `<div class="statsErr">${t("statNoData")}</div>`;
         return arr.map(x=>{
           const label = portrait ? x.k : (kind==="mode" ? modeLabel(x.k) : x.k);
           let src = null;
@@ -3057,16 +3232,16 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
 
       topsHtml = `
         <div class="topsGrid">
-          <div class="topsCol"><div class="topsTitle">Найкращі бійці</div>${topList(bw, "brawler", true)}</div>
-          <div class="topsCol"><div class="topsTitle">Найкращі карти</div>${topList(mp, "map", false)}</div>
-          <div class="topsCol"><div class="topsTitle">Найкращі режими</div>${topList(md, "mode", false)}</div>
+          <div class="topsCol"><div class="topsTitle">${t("statTopBrawlers")}</div>${topList(bw, "brawler", true)}</div>
+          <div class="topsCol"><div class="topsTitle">${t("statTopMaps")}</div>${topList(mp, "map", false)}</div>
+          <div class="topsCol"><div class="topsTitle">${t("statTopModes")}</div>${topList(md, "mode", false)}</div>
         </div>`;
 
       const rows = src.slice(0,10).map(it=>{
         const o = battleOutcome(it);
         const trophyChange = it.battle && typeof it.battle.trophyChange === "number" ? it.battle.trophyChange : null;
         const cls = o==="victory" ? "bWin" : o==="defeat" ? "bLose" : "bDraw";
-        const label = o==="victory" ? "Перемога" : o==="defeat" ? "Поразка" : (it.battle && it.battle.rank ? `Місце ${it.battle.rank}` : "Нічия");
+        const label = o==="victory" ? t("statWin") : o==="defeat" ? t("statLoss") : (it.battle && it.battle.rank ? t("statPlaceN",{n:it.battle.rank}) : t("statDraw"));
         return `<div class="battleRow ${cls}">
           <span class="bMode">${esc(modeLabel(it.event && it.event.mode))}</span>
           <span class="bMap">${esc((it.event && it.event.map) || "")}</span>
@@ -3075,9 +3250,9 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
           <span class="bTime">${fmtBattleTime(it.battleTime)}</span>
         </div>`;
       }).join("");
-      battlesHtml = `<div class="qslabel" style="margin-top:20px">${onlyTeamRanked ? "Останні Ranked-матчі" : "Останні бої"}</div><div class="battleList">${rows}</div>`;
+      battlesHtml = `<div class="qslabel" style="margin-top:20px">${onlyTeamRanked ? t("statRecentRanked") : t("statRecentAll")}</div><div class="battleList">${rows}</div>`;
     } else if(Array.isArray(battles)){
-      winrateHtml = `<div class="qslabel" style="margin-top:20px">Форма (останні бої)</div><div class="statsErr">Немає даних про останні бої.</div>`;
+      winrateHtml = `<div class="qslabel" style="margin-top:20px">${t("statFormRecent")}</div><div class="statsErr">${t("statNoRecentData")}</div>`;
     }
 
     box.innerHTML = `
@@ -3085,14 +3260,14 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
         <div class="statsName">${esc(d.name || "")} <span class="statsTag">#${esc((d.tag||"").replace(/^#/,""))}</span></div>
         ${club}
         <div class="statgrid">
-          <div class="statcard sc-tro"><div class="scIcon">🏆</div><div class="statnum">${d.trophies ?? "—"}</div><div class="statlbl">трофеїв</div></div>
-          <div class="statcard sc-best"><div class="scIcon">👑</div><div class="statnum">${d.highestTrophies ?? "—"}</div><div class="statlbl">рекорд трофеїв</div></div>
-          <div class="statcard sc-lvl"><div class="scIcon">⭐</div><div class="statnum">${d.expLevel ?? "—"}</div><div class="statlbl">рівень акаунта</div></div>
-          <div class="statcard sc-brw"><div class="scIcon">🥊</div><div class="statnum">${(d.brawlers||[]).length}</div><div class="statlbl">бійців</div></div>
-          <div class="statcard sc-3v3"><div class="scIcon">⚔️</div><div class="statnum">${d["3vs3Victories"] ?? "—"}</div><div class="statlbl">перемог 3х3</div></div>
-          <div class="statcard sc-solo"><div class="scIcon">🎯</div><div class="statnum">${d.soloVictories ?? "—"}</div><div class="statlbl">перемог соло</div></div>
-          <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">перемог дуо</div></div>
-          <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? "Так" : "Ні"}</div><div class="statlbl">кваліфікація чемпіонату</div></div>
+          <div class="statcard sc-tro"><div class="scIcon">🏆</div><div class="statnum">${d.trophies ?? "—"}</div><div class="statlbl">${t("statTrophies")}</div></div>
+          <div class="statcard sc-best"><div class="scIcon">👑</div><div class="statnum">${d.highestTrophies ?? "—"}</div><div class="statlbl">${t("statBestTrophies")}</div></div>
+          <div class="statcard sc-lvl"><div class="scIcon">⭐</div><div class="statnum">${d.expLevel ?? "—"}</div><div class="statlbl">${t("statAccLevel")}</div></div>
+          <div class="statcard sc-brw"><div class="scIcon">🥊</div><div class="statnum">${(d.brawlers||[]).length}</div><div class="statlbl">${t("statBrawlersCount")}</div></div>
+          <div class="statcard sc-3v3"><div class="scIcon">⚔️</div><div class="statnum">${d["3vs3Victories"] ?? "—"}</div><div class="statlbl">${t("stat3v3Wins")}</div></div>
+          <div class="statcard sc-solo"><div class="scIcon">🎯</div><div class="statnum">${d.soloVictories ?? "—"}</div><div class="statlbl">${t("statSoloWins")}</div></div>
+          <div class="statcard sc-duo"><div class="scIcon">🤝</div><div class="statnum">${d.duoVictories ?? "—"}</div><div class="statlbl">${t("statDuoWins")}</div></div>
+          <div class="statcard sc-cup"><div class="scIcon">🏅</div><div class="statnum">${d.isQualifiedFromChampionshipChallenge ? t("wYes") : t("wNo")}</div><div class="statlbl">${t("statChampQual")}</div></div>
         </div>
         ${Array.isArray(battles) ? toggleHtml() : ""}
         ${winrateHtml}
@@ -3131,9 +3306,8 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     await lookupTag();
     $id("tagModalGo").disabled = false;
     closeTagModal();
-    // одразу показуємо профіль людини, як і просили — прокручуємо до статистики
-    const box = $id("statsBox");
-    if(box) box.scrollIntoView({behavior:"smooth", block:"start"});
+    // одразу показуємо профіль людини, як і просили — відкриваємо екран статистики
+    openStatsView();
   };
   $id("tagModalInput").addEventListener("keydown", e=>{ if(e.key==="Enter") $id("tagModalGo").click(); });
 
@@ -3213,6 +3387,61 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   // головний екран: кнопка старту (розумна — продовжує драфт, якщо він уже почався)
   $id("startbtn").onclick=()=>{ started ? wFinish() : wOpen(0); };
 
+  // ---- плитки навігації на головній ----
+  $id("pillarDraft").onclick=()=>{ started ? wFinish() : wOpen(0); };
+  $id("pillarStats").onclick=()=> openStatsView();
+  $id("statsBack").onclick=()=> setTab("draft");
+  function openStatsView(){
+    hideAllViews();
+    $id("statsview").style.display="";
+    setTabBtn(null);
+    window.scrollTo(0,0);
+    const inp = $id("tagInput"); if(inp) setTimeout(()=>inp.focus(), 350);
+  }
+  $id("pillarStrat").onclick=()=>{
+    const d = $id("pStratD");
+    if(d){ const was=d.textContent; d.textContent=t("pStratComing"); setTimeout(()=>{ d.textContent=was; },2200); }
+  };
+  $id("pillarTier").onclick=()=> openTierList();
+  $id("tierBack").onclick=()=> setTab("draft");
+
+  // ---- Тір-лист: окремий екран з повним списком бійців за тіром ----
+  let cachedTiers = null;
+  async function openTierList(){
+    hideAllViews();
+    $id("tierview").style.display="";
+    setTabBtn(null);
+    window.scrollTo(0,0);
+    if(cachedTiers){ renderTierList(cachedTiers); return; }
+    const box = $id("tierBox");
+    box.innerHTML = `<div class="statsLoading">${t("tierLoading")}</div>`;
+    try{
+      const res = await fetch(`${WORKER_URL}/tierlist`);
+      const data = await res.json();
+      if(!res.ok || data.error) throw new Error(data.error || "bad response");
+      cachedTiers = data.tiers;
+      renderTierList(cachedTiers);
+    } catch(e){
+      box.innerHTML = `<div class="statsErr">${t("tierLoadErr")}</div>`;
+    }
+  }
+  // перемальовує вже завантажений тір-лист новою мовою — без нового запиту до сервера
+  // і без примусового переходу на цей екран, якщо людина зараз десь-інде на сайті
+  function rerenderTierListIfLoaded(){ if(cachedTiers) renderTierList(cachedTiers); }
+  function renderTierList(tiers){
+    const box = $id("tierBox");
+    const order = ["S","A","B","C","D","F"];
+    box.innerHTML = order.filter(t=>tiers[t] && tiers[t].length).map(tk=>{
+      const rows = tiers[tk].map(b=>{
+        const port = window.brawlerPortrait ? (window.brawlerPortrait(b.name)||"") : "";
+        const img = port ? `<img class="tierPort" src="${port}" alt="" loading="lazy" onerror="this.remove()">` : "";
+        const roles = (b.roles||[]).map(ROLE).join(", ");
+        return `<div class="tierRow">${img}<span class="tierName">${b.name}</span><span class="tierRoles">${roles}</span></div>`;
+      }).join("");
+      return `<div class="tierGroup"><div class="tierHead tier${tk}"><span class="tierLetter">${tk}</span><span class="tierLabel">${tk}-TIER</span></div><div class="tierRows">${rows}</div></div>`;
+    }).join("");
+  }
+
   // ---- персональна статистика (зберігається локально на пристрої) ----
   const SKEY = "draftStats";
   function loadStats(){
@@ -3255,8 +3484,14 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   const brand = document.getElementById("brand");
   if(brand){ brand.onclick=showHome; }
 
-  // зміна мови оновлює і зведення, і головний екран
-  $id("langmenu").addEventListener("click",()=>setTimeout(()=>{ updateChip(); refreshHome(); },60));
+  // зміна мови оновлює і зведення, і головний екран, і вже відкриту картку статистики
+  // (вона будується один раз як готовий HTML, а не через HOME_IDS — інакше лишалась
+  // би старою мовою, поки людина не натисне "Показати" ще раз)
+  $id("langmenu").addEventListener("click",()=>setTimeout(()=>{
+    updateChip(); refreshHome();
+    if(lastPlayerData) renderStatsCard(lastPlayerData, lastMergedBattles);
+    rerenderTierListIfLoaded();
+  },60));
 
   refreshHome();
   wShow(0);
