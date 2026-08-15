@@ -1,5 +1,5 @@
 /* Драфт-асистент — service worker */
-const VERSION = 'draft-v44';
+const VERSION = 'draft-v45';
 const SHELL = VERSION + '-shell';
 const RUNTIME = VERSION + '-runtime';
 
