@@ -525,6 +525,11 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 }
 .gBestBoxT{ font-family:Unbounded,sans-serif; font-weight:900; font-size:12px; letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px }
 .gBestBoxText{ font-size:14px; line-height:1.4; font-weight:800 }
+.gBestBoxImgs{ display:flex; flex-wrap:wrap; gap:10px; margin-top:2px }
+.gBestImg{
+  width:52px; height:52px; border-radius:14px; object-fit:contain; background:#fff3;
+  border:2px solid #3A1500; flex:0 0 auto;
+}
 
 /* зоряні сили / гаджети: іконка + назва + короткий опис в один рядок */
 .gMoveList{ display:flex; flex-direction:column; gap:8px }
@@ -1269,10 +1274,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 </style>
 <script data-goatcounter="https://xailyx.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
-<!-- Google AdSense: коли отримаєш свій Publisher ID (ca-pub-XXXXXXXXXX з adsense.google.com),
-     розкоментуй рядок нижче і встав СВІЙ ID замість ca-pub-XXXXXXXXXXXXXXXX.
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
--->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8410483469589362" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="bgfx" aria-hidden="true"><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -3686,6 +3688,19 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     return `<div class="gSec"><div class="gSecT">${esc(t(labelKey))}</div><div class="gSecText">${esc(fallbackText)}</div></div>`;
   }
 
+  // Для блоку «Найкраща збірка» — беремо ЖИВІ картинки гаджетів/зоряних сил з API
+  // (той самий kit, що й для секцій нижче), а не текст. Співставляємо за назвою:
+  // якщо назва зоряної сили/гаджета зустрічається у bestBuildText — це той самий
+  // алгоритм пошуку "isBest", що вже використовується в renderKitSection нижче.
+  function bestBuildImages(kit, bestText){
+    if(!kit || !bestText) return [];
+    const lowerBest = bestText.toLowerCase();
+    const out = [];
+    (kit.starPowers||[]).forEach(sp=>{ if(sp.name && lowerBest.includes(String(sp.name).toLowerCase())) out.push(sp); });
+    (kit.gadgets||[]).forEach(gd=>{ if(gd.name && lowerBest.includes(String(gd.name).toLowerCase())) out.push(gd); });
+    return out;
+  }
+
   function renderGuideDetail(name){
     const g = GUIDES[name];
     const box = $id("gDetailBox");
@@ -3705,9 +3720,20 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     let html = `<div class="gDetailTop">${portImg}<div><div class="gDetailName">${esc(name)}</div><div class="gDetailSub">${esc(subBits.join(" · "))}</div></div></div>`;
 
     // «Найкраща збірка» — одразу нагорі, великим блоком: це те, що людина хоче
-    // побачити першим, не гортаючи весь текст.
+    // побачити першим, не гортаючи весь текст. Показуємо КАРТИНКИ гаджета(ів)/зоряної
+    // сили з живого API, без тексту. Якщо API ще не підвантажився (офлайн/перше
+    // завантаження) — тимчасово показуємо текст, щоб блок не був порожнім; щойно
+    // API прийде, rerenderStratIfOpen() перемалює цей екран уже з картинками.
     if(g.bestBuildText){
-      html += `<div class="gBestBox"><div class="gBestBoxT">★ ${esc(t("gBestBuild"))}</div><div class="gBestBoxText">${esc(g.bestBuildText)}</div></div>`;
+      const bestItems = bestBuildImages(kit, g.bestBuildText);
+      if(bestItems.length){
+        const imgs = bestItems.map(it=>
+          it.imageUrl ? `<img class="gBestImg" src="${it.imageUrl}" alt="${esc(it.name)}" title="${esc(it.name)}" loading="lazy" onerror="this.remove()">` : ""
+        ).join("");
+        html += `<div class="gBestBox"><div class="gBestBoxT">★ ${esc(t("gBestBuild"))}</div><div class="gBestBoxImgs">${imgs}</div></div>`;
+      } else {
+        html += `<div class="gBestBox"><div class="gBestBoxT">★ ${esc(t("gBestBuild"))}</div><div class="gBestBoxText">${esc(g.bestBuildText)}</div></div>`;
+      }
     }
 
     const sec = (labelKey, text, moveName) => {
