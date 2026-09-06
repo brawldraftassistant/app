@@ -631,17 +631,26 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 #modes button::after, #maps button::after{ content:"›"; opacity:.55; font-size:24px; margin-inline-start:auto }
 [dir=rtl] #modes button::after, [dir=rtl] #maps button::after{ content:"‹" }
 #maps button .tag ~ ::after{ margin-inline-start:8px }
+/* сегментний перемикач: два рівні сегменти, ніколи не переносяться */
 #rank, #first{
+  display:flex; flex-wrap:nowrap; width:100%;
   background:var(--panel); border:3px solid var(--edge); border-radius:17px;
-  padding:4px; box-shadow:0 5px 0 var(--edge); overflow:hidden;
+  padding:4px; box-shadow:0 5px 0 var(--edge);
 }
 #rank button, #first button{
-  font-size:16px; padding:13px 16px; border:none; box-shadow:none;
-  border-radius:13px; background:transparent;
+  flex:1 1 0; min-width:0;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  font-size:15.5px; line-height:1.15; padding:12px 8px; text-align:center;
+  border:none; box-shadow:none; border-radius:13px; background:transparent;
 }
+#rank button > span, #first button > span{ min-width:0 }
 #rank button:active, #first button:active{ transform:none; box-shadow:none }
 #rank button.on{ background:#7B8CFF; color:#140A32 }
 #first button.on{ background:var(--ally); color:#08111F }
+@media (min-width:760px){
+  #rank, #first{ display:inline-flex; width:auto }
+  #rank button, #first button{ flex:0 0 auto; font-size:16px; padding:13px 20px }
+}
 .mlab{ display:flex; align-items:center; gap:13px }
 .micon{ width:34px; height:34px; display:grid; place-items:center; flex:0 0 auto; position:relative }
 .micon svg{ width:28px; height:28px; display:block }
@@ -1113,7 +1122,8 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 /* ---------- іконки рангу і першого піка в майстрі ---------- */
 .rankbtn, .firstbtn{ display:flex; align-items:center; gap:12px; text-align:left; padding:14px 16px }
-.rankico{ width:34px; height:34px; object-fit:contain; flex:0 0 auto; filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)) }
+.rankico{ width:30px; height:30px; object-fit:contain; flex:0 0 auto; filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)) }
+@media (min-width:760px){ .rankico{ width:34px; height:34px } }
 .firstemoji{ font-size:28px; line-height:1; flex:0 0 auto }
 .chipRank img{ width:18px; height:18px; object-fit:contain; vertical-align:-3px; margin-inline-end:4px }
 
