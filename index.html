@@ -461,8 +461,8 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 .pillar:nth-child(2) .pIcon{ background:var(--mint) }
 .pillar:nth-child(3) .pIcon{ background:var(--grape) }
 .pillar:nth-child(4) .pIcon{ background:var(--berry) }
-.pillar .pTitle{ font-family:Unbounded,sans-serif; font-weight:900; font-size:15px; margin-bottom:4px }
-.pillar .pDesc{ color:var(--muted); font-size:12.5px; line-height:1.4; font-weight:700 }
+.pillar .pTitle{ display:block; font-family:Unbounded,sans-serif; font-weight:900; font-size:15px; margin-bottom:4px }
+.pillar .pDesc{ display:block; color:var(--muted); font-size:12.5px; line-height:1.4; font-weight:700 }
 .pillar .pSoon{
   position:absolute; top:12px; right:12px; font-size:9.5px; font-weight:900; letter-spacing:.06em;
   text-transform:uppercase; color:#3A1500; background:var(--sun); border:2px solid var(--edge);
@@ -636,6 +636,16 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
   border:3px solid var(--edge); box-shadow:0 3px 0 var(--edge);
 }
 .wnav{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:20px }
+/* ---------- майстер драфту: не розповзатися на широкому екрані ---------- */
+@media (min-width:760px){
+  #wizard{ max-width:720px; margin:0 auto; padding-bottom:40px }
+  #wizard .wstep h2{ text-align:center }
+  #wizard .row{ display:flex; justify-content:center }
+  .wnav{ max-width:720px; margin:28px auto 0 }
+}
+@media (min-width:1200px){
+  #wizard,.wnav{ max-width:820px }
+}
 #wback,#wskip{ min-width:64px; padding:13px 20px; font-size:19px; border-radius:999px }
 #wskip{ background:var(--grad); color:#3A1500; box-shadow:0 5px 0 #8A5A00, inset 0 2px 0 rgba(255,255,255,.55) }
 .wdots{ display:flex; gap:9px }
@@ -1278,6 +1288,61 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <script data-goatcounter="https://xailyx.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8410483469589362" crossorigin="anonymous"></script>
+<style>
+/* ---------- картка тега на головному екрані ---------- */
+.tagCard{
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--panel2); border:3px solid var(--edge); border-radius:18px;
+  box-shadow:0 6px 0 var(--edge); padding:14px 14px 13px; margin-bottom:12px;
+  transform:rotate(-.4deg);
+}
+.tagCardIco{
+  flex:none; width:42px; height:42px; border-radius:14px; display:grid; place-items:center;
+  background:var(--mint); border:3px solid var(--edge); font-size:20px; line-height:1;
+}
+.tagCardBody{flex:1 1 auto; min-width:0}
+.tagCardTitle{
+  font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-size:13px;
+  text-transform:uppercase; color:#fff; text-shadow:1.5px 1.5px 0 var(--edge);
+  margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.tagCardDesc{color:var(--muted); font-size:12.5px; font-weight:700; line-height:1.4; margin-bottom:9px}
+.tagCardRow{display:flex; gap:7px}
+.tagCardRow input{
+  flex:1 1 auto; min-width:0; font-family:Manrope,system-ui,sans-serif;
+  font-weight:800; font-size:14px; color:var(--text);
+  background:var(--ink); border:3px solid var(--edge); border-radius:13px;
+  padding:9px 11px; box-shadow:inset 0 2px 0 rgba(0,0,0,.25);
+}
+.tagCardRow input::placeholder{color:var(--muted); opacity:.6}
+.tagCardRow button{
+  flex:none; font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-size:12px;
+  text-transform:uppercase; color:#3A1D00;
+  background:linear-gradient(180deg,#FFD230 0%,#FF9F1C 100%);
+  border:3px solid var(--edge); border-radius:13px; box-shadow:0 4px 0 #8A5A00;
+  padding:9px 15px; cursor:pointer;
+  transition:transform .07s, box-shadow .07s, filter .15s;
+}
+.tagCardRow button:hover{filter:brightness(1.1)}
+.tagCardRow button:active{transform:translateY(3px); box-shadow:0 1px 0 #8A5A00}
+.tagCardChange{
+  font-family:Manrope,system-ui,sans-serif; font-weight:900; font-size:12px;
+  color:var(--signal); background:transparent; border:none; box-shadow:none;
+  padding:0; cursor:pointer; text-decoration:underline;
+}
+.tagCardMsg{color:var(--enemy); font-size:12px; font-weight:800; margin-top:7px}
+[dir=rtl] .tagCard{transform:rotate(.4deg)}
+@media (min-width:760px){
+  .tagCard{max-width:1200px; margin:34px auto 12px; padding:16px 20px; align-items:center}
+  .tagCardBody{display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+  .tagCardTexts{flex:1 1 220px; min-width:0}
+  .tagCardTitle{font-size:14px; margin-bottom:2px}
+  .tagCardDesc{margin-bottom:0; font-size:13px}
+  .tagCardRow{flex:0 0 auto; width:340px}
+  .tagCardIco{width:46px; height:46px; font-size:22px}
+  #tcOn,.tagCardMsg{flex:0 0 auto; margin-top:0}
+}
+</style>
 </head>
 <body>
 <div class="bgfx" aria-hidden="true"><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -1352,6 +1417,24 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     </div>
   </div>
 
+  <div class="tagCard" id="tagCard">
+    <div class="tagCardIco">🎯</div>
+    <div class="tagCardBody">
+      <div class="tagCardTexts">
+        <div class="tagCardTitle" id="tcTitle">Твій тег</div>
+        <div class="tagCardDesc" id="tcDesc">Радимо тільки твоїх бійців + статистика</div>
+      </div>
+      <div class="tagCardRow" id="tcRow">
+        <input type="text" id="tcInput" placeholder="#2PP0LYJ8" autocomplete="off" autocapitalize="characters">
+        <button type="button" id="tcGo">Готово</button>
+      </div>
+      <div id="tcOn" style="display:none">
+        <button type="button" class="tagCardChange" id="tcChange">Змінити</button>
+      </div>
+      <div class="tagCardMsg" id="tcMsg"></div>
+    </div>
+  </div>
+
   <div class="pillars" id="pillars">
     <button type="button" class="pillar" id="pillarDraft">
       <span class="pIcon">🧠</span>
@@ -1374,6 +1457,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <span class="pDesc" id="pStatsD">Трофеї, вінрейт і найкращі бійці за твоїм тегом</span>
     </button>
   </div>
+
 <!-- Місце під банер: коли будеш готовий, розкоментуй, встав СВІЙ ca-pub-XXXXXXXXXXXXXXXX
      (той самий, що вгорі в <head>) і data-ad-slot (створюється в AdSense → Ads → By ad unit → Display ads).
 <div class="adSlot">
@@ -2795,6 +2879,14 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
   Object.assign(TXT.de, {
     hStatsHeadT2:"Brawl Stars Statistiken", hStatsIntro2:"Gib deinen Spieler-Tag ein — wir zeigen Trophäen, Siegquote und deine besten Brawler.", tagShow:"Anzeigen"
   , rTripleControl:"Der Gegner ist komplett Control — Assassinen sind hier sehr stark", rTriangle:"Schlägt {n} über das DPS/HP-Dreieck", rTriangleBy:"{n} schlägt uns über das DPS/HP-Dreieck", rWallbreaker:"Der Gegner hat einen Wandbrecher — Wände schützen dich nicht mehr", rWallbreakerTank:"Der Gegner hat einen Wandbrecher — Büsche sind weg, dein Vorgehen liegt offen", rWallbreakerRisk:"Der Gegner hat noch Picks übrig — könnte einen Wandbrecher bringen und die Büsche räumen", rStyleBurstClosed:"Burst-Schaden aus nächster Nähe ist auf geschlossenen Karten stark", rStyleFixedClosed:"Fixer Fernschaden funktioniert auf geschlossenen Karten schlechter", rStyleFixedMid:"Fixer Fernschaden ist auf mittelgroßen Karten stark", rStyleBurstMid:"Burst-Schaden aus nächster Nähe funktioniert auf mittelgroßen Karten schlechter", draftBestPick:"Stärkster Pick:", draftWorstPick:"Schwächster Pick:", draftExplainTeaser:"Ranked+ erklärt jeden Pick — warum er gut oder schlecht ist", loading:"Berechne…", networkError:"Verbindung zum Server fehlgeschlagen. Prüfe deine Internetverbindung und versuche es erneut.", rarity1:"Standard", rarity2:"Selten", rarity3:"Extra Selten", rarity4:"Episch", rarity5:"Mythisch", rarity6:"Legendär", rarity7:"Ultra-Legendär", hEyebrow:"RANKED HUB", hTitle:"Alles für<br>Brawl Stars Ranked", hTag:"Draft, Tierlist, Strategien und Statistiken — alles an einem Ort. Für Anfänger und Profis.", hC1:"105 Brawler", hC2:"6 Modi", hC3:"Funktioniert offline", hStart:"Draft starten", hContinue:"Draft fortsetzen", hHowT:"So funktioniert's", hH1t:"Modus und Karte wählen", hH1d:"Jede Empfehlung ist genau auf die Karte abgestimmt, nicht auf eine generische Tierlist.", hH2t:"Picks und Bans eingeben", hH2d:"Trage die Picks beider Teams in der echten 1-2-2-1-1-2-Draftreihenfolge ein.", hH3t:"Den besten Pick bekommen", hH3d:"Der Assistent wägt Konter, Rollen und Kartentyp ab — und erklärt, warum.", hStatsT:"Deine Statistiken", stDraftsL:"Drafts", stModeL:"Lieblingsmodus", stStreakL:"Tage in Folge", stBansL:"Bans berechnet", hFaqT:"Häufige Fragen", ownedHintTitle:"🎯 Ohne deinen Tag könnten wir einen Brawler vorschlagen, den du noch gar nicht hast", ownedIntro:"Gib deinen Tag ein — wir empfehlen dann nur Brawler, die du wirklich besitzt.", ownedTagBtn:"Laden", tagModalTitle:"Gib deinen Tag ein!", tagModalDesc:"Damit wir Drafts passend zu deinen ausgebauten Brawlern erstellen können!", tagModalGo:"Meine Statistiken zeigen", tagModalSkip:"Überspringen", ownedToggleLabel:"Nur meine Brawler empfehlen", ownedError:"Laden fehlgeschlagen — prüfe den Tag.", ownedLoaded:"{n} voll ausgebaute Brawler gefunden (Stufe 11, Sternkraft und Gadget) — Empfehlungen kommen jetzt nur noch von diesen.", ownedZero:"Tag geladen, aber kein Brawler ist voll ausgebaut (Stufe 11 + Sternkraft + Gadget) — Empfehlung erfolgt wie gewohnt.", ownedFallbackNote:"Keiner deiner Brawler passt gut zu diesem Pick — wir zeigen stattdessen alle.", pickShort:"Pick {n}", myPickLabel:"WELCHER PICK IST DEINER?", hF1q:"Ist es kostenlos?", hF1a:"Ja, komplett kostenlos — die volle App, keine Registrierung nötig.", hF2q:"Funktioniert es offline?", hF2a:"Ja — nach dem ersten Start läuft die App vollständig offline.", hF3q:"Woher kommen die Brawler-Daten?", hF3a:"Datenbank und Logik sind unsere eigenen und werden bei jedem Meta-Patch aktualisiert. Die Porträts stammen aus der offenen Brawlify-Fan-API.", hF4q:"Ist das eine offizielle Supercell-App?", hF4a:"Nein, das ist ein Fan-Projekt ohne Verbindung zu Supercell.", pDraftT:"Draft-Assistent", pDraftD:"Pick für Pick: Tipps abgestimmt auf Karte, Bans und beide Team-Compositions", pTierT:"Tierlist", pTierD:"Alle Brawler in einer Liste: S/A/B/C/D/F und ihre Rolle", pStratT:"Strategien & Guides", pStratD:"Rollen, Konter, wie man einen Draft liest — von den Grundlagen bis zum Profi-Level", pStratSoon:"Bald", pStatsT:"Meine Statistiken", pStatsD:"Trophäen, Winrate und beste Brawler zu deinem Tag", hTierT2:"Tierlist", hTierIntro:"Alle Brawler nach Stärke im aktuellen Ranked-Meta gruppiert. Dieselbe Berechnung wie im Draft-Assistenten.", tierBack:"← Startseite", pStratComing:"Wir schreiben die ersten Guides — schau bald wieder vorbei 👀", tierLoading:"Tierlist wird geladen…", tierLoadErr:"Tierlist konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.", statsBack:"← Startseite"});
+Object.assign(TXT.uk,{tcTitle:"Твій тег", tcDesc:"Радимо тільки твоїх бійців + статистика", tcGo:"Готово", tcChange:"Змінити", tcSaved:"Рекомендації під твоїх бійців"});
+Object.assign(TXT.en,{tcTitle:"Your tag", tcDesc:"We suggest only brawlers you own + stats", tcGo:"Done", tcChange:"Change", tcSaved:"Suggestions matched to your brawlers"});
+Object.assign(TXT.es,{tcTitle:"Tu tag", tcDesc:"Solo brawlers que tienes + estadísticas", tcGo:"Listo", tcChange:"Cambiar", tcSaved:"Sugerencias según tus brawlers"});
+Object.assign(TXT.pt,{tcTitle:"Sua tag", tcDesc:"Só brawlers que você tem + estatísticas", tcGo:"Pronto", tcChange:"Trocar", tcSaved:"Sugestões com base nos seus brawlers"});
+Object.assign(TXT.ru,{tcTitle:"Твой тег", tcDesc:"Советуем только твоих бойцов + статистика", tcGo:"Готово", tcChange:"Изменить", tcSaved:"Рекомендации под твоих бойцов"});
+Object.assign(TXT.tr,{tcTitle:"Etiketin", tcDesc:"Sadece sahip olduğun brawler'lar + istatistik", tcGo:"Tamam", tcChange:"Değiştir", tcSaved:"Brawler'larına göre öneriler"});
+Object.assign(TXT.ar,{tcTitle:"تاغك", tcDesc:"نقترح شخصياتك فقط + إحصائيات", tcGo:"تم", tcChange:"تغيير", tcSaved:"اقتراحات حسب شخصياتك"});
+Object.assign(TXT.de,{tcTitle:"Dein Tag", tcDesc:"Nur deine Brawler + Statistik", tcGo:"Fertig", tcChange:"Ändern", tcSaved:"Vorschläge passend zu deinen Brawlern"});
 
 
   // Статистика гравця (профіль/винрейт/історія боїв) — раніше жорстко захардкоджена
@@ -2911,6 +3003,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     const ol = document.getElementById("ownedToggleLabel"); if(ol) ol.textContent = t("ownedToggleLabel");
     const os = document.getElementById("ownedStatus");
     if(os && typeof ownedBrawlers !== "undefined" && ownedBrawlers && ownedBrawlers.length) os.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
+    try{ if(window.renderTagCard) window.renderTagCard(); }catch(e){}
   }
 
   /* --- вкладки --- */
@@ -3222,6 +3315,7 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
       try{
         localStorage.setItem("ownedBrawlers", JSON.stringify(matched));
         localStorage.setItem("playerTag", tag);
+        try{ if(window.renderTagCard) window.renderTagCard(); }catch(e){}
       } catch(e){}
       if(typeof refreshOwnedUI === "function") refreshOwnedUI();
       // Перемальовуємо рекомендацію: без цього стара (ще з попереднього візиту чи до
@@ -3475,6 +3569,47 @@ setSides(); applyLang(); drawLangs(); drawRank(); applyBlind(); drawFirst(); dra
     openStatsView();
   };
   $id("tagModalInput").addEventListener("keydown", e=>{ if(e.key==="Enter") $id("tagModalGo").click(); });
+
+  /* --- картка тега на головному екрані --- */
+  function renderTagCard(){
+    const card = $id("tagCard"); if(!card) return;
+    let saved = null;
+    try{ saved = localStorage.getItem("playerTag"); }catch(e){}
+    $id("tcGo").textContent     = t("tcGo");
+    $id("tcChange").textContent = t("tcChange");
+    if(saved){
+      $id("tcTitle").textContent = "#" + saved;
+      $id("tcDesc").textContent  = t("tcSaved");
+      $id("tcRow").style.display = "none";
+      $id("tcOn").style.display  = "";
+    } else {
+      $id("tcTitle").textContent = t("tcTitle");
+      $id("tcDesc").textContent  = t("tcDesc");
+      $id("tcRow").style.display = "flex";
+      $id("tcOn").style.display  = "none";
+    }
+    $id("tcMsg").textContent = "";
+  }
+  window.renderTagCard = renderTagCard;
+
+  async function tcSubmit(){
+    const raw = ($id("tcInput").value || "").trim();
+    if(!raw){ $id("tcMsg").textContent = t("ownedNeedTag"); return; }
+    $id("tcGo").disabled = true;
+    $id("tcMsg").textContent = t("loading");
+    $id("tagInput").value = raw;
+    await lookupTag();
+    $id("tcGo").disabled = false;
+    renderTagCard();
+  }
+  $id("tcGo").onclick = tcSubmit;
+  $id("tcInput").addEventListener("keydown", e=>{ if(e.key==="Enter") tcSubmit(); });
+  $id("tcChange").onclick = ()=>{
+    try{ localStorage.removeItem("playerTag"); }catch(e){}
+    renderTagCard();
+    $id("tcInput").focus();
+  };
+  renderTagCard();
 
   try{
     const savedTag = localStorage.getItem("playerTag");
