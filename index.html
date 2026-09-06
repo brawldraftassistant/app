@@ -735,8 +735,26 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%}
 .pickpanel{ background:#3A2088; border:4px solid var(--edge); border-radius:24px; box-shadow:0 10px 0 var(--edge), 0 30px 60px rgba(0,0,0,.55) }
 input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radius:14px; color:#fff; font-family:Manrope,sans-serif; font-weight:800 }
-#installbar{ background:#3A2088; border:3px solid var(--edge); border-radius:20px; box-shadow:0 6px 0 var(--edge) }
-#installbtn{ background:var(--grad); color:#3A1500; box-shadow:0 4px 0 #8A5A00 }
+#installbar{
+  background:linear-gradient(180deg,#FFD230 0%,#FF9F1C 100%); color:#3A1D00;
+  border:4px solid var(--edge); border-radius:20px; padding:13px 14px;
+  box-shadow:0 8px 0 var(--edge), 0 0 0 4px rgba(255,210,48,.28), 0 22px 46px rgba(0,0,0,.6);
+  animation:barPulse 2.2s ease-in-out .8s infinite;
+}
+@keyframes barPulse{
+  0%,100%{ box-shadow:0 8px 0 var(--edge), 0 0 0 4px rgba(255,210,48,.28), 0 22px 46px rgba(0,0,0,.6) }
+  50%    { box-shadow:0 8px 0 var(--edge), 0 0 0 9px rgba(255,210,48,.12), 0 22px 46px rgba(0,0,0,.6) }
+}
+#installbar .txt b{ color:#2A1500; font-size:13px; font-weight:900; margin-bottom:3px }
+#installbar .txt span{ color:#5A3A05; font-size:12.5px; font-weight:800 }
+#installbtn{
+  background:var(--edge); color:#FFD230; border:3px solid var(--edge);
+  box-shadow:0 4px 0 rgba(0,0,0,.35); font-weight:900;
+}
+#installclose{
+  background:rgba(22,11,59,.14); color:#3A1D00; border:3px solid var(--edge);
+  box-shadow:none; font-weight:900;
+}
 #netbadge{ background:var(--grad); color:#3A1500; border:3px solid var(--edge); box-shadow:0 4px 0 #8A5A00 }
 
 /* ---------- широкий екран: контент не «губиться» ---------- */
@@ -1242,9 +1260,10 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     radial-gradient(circle at 92% 55%, rgba(255,255,255,.4) 0 2.5px, transparent 3.5px);
 }
 .subClose{
-  position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:10px;
-  background:var(--panel2); color:#fff; font-size:15px; box-shadow:0 3px 0 var(--edge); z-index:2;
+  position:absolute; top:16px; right:16px; width:30px; height:30px; border-radius:10px;
+  background:var(--panel2); color:#fff; font-size:14px; box-shadow:0 3px 0 var(--edge); z-index:2;
 }
+[dir=rtl] .subClose{ right:auto; left:16px }
 .subLockIcon{ font-size:46px; margin-bottom:6px; position:relative; z-index:1 }
 .subCard h2{
   font-family:Unbounded,sans-serif; font-weight:900; font-style:italic; font-size:27px;
@@ -1335,7 +1354,11 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .tagCardDesc{color:var(--muted); font-size:12.5px; font-weight:700; line-height:1.4; margin-bottom:9px}
-.tagCardRow{display:flex; gap:7px}
+.tagCardRow{display:flex; gap:8px; margin-top:2px}
+@media (max-width:759px){
+  /* витягуємо рядок під іконку, щоб кнопка не тулилась до рамки */
+  .tagCardRow{ margin-inline-start:calc(-1 * (42px + 12px)) }
+}
 .tagCardRow input{
   flex:1 1 auto; min-width:0; font-family:Manrope,system-ui,sans-serif;
   font-weight:800; font-size:14px; color:var(--text);
@@ -1345,10 +1368,10 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 .tagCardRow input::placeholder{color:var(--muted); opacity:.6}
 .tagCardRow button{
   flex:none; font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-size:12px;
-  text-transform:uppercase; color:#3A1D00;
+  text-transform:uppercase; color:#3A1D00; white-space:nowrap;
   background:linear-gradient(180deg,#FFD230 0%,#FF9F1C 100%);
   border:3px solid var(--edge); border-radius:13px; box-shadow:0 4px 0 #8A5A00;
-  padding:9px 15px; cursor:pointer;
+  padding:9px 14px; cursor:pointer;
   transition:transform .07s, box-shadow .07s, filter .15s;
 }
 .tagCardRow button:hover{filter:brightness(1.1)}
