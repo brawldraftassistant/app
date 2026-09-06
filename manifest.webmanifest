@@ -1,14 +1,14 @@
 {
-  "name": "Драфт-асистент — Brawl Stars Ranked",
-  "short_name": "Драфт",
-  "description": "Офлайн-помічник для драфту в Brawl Stars Ranked: підказує пік за ролями, тіром, картою і банами.",
+  "name": "Smart Draft",
+  "short_name": "Smart Draft",
+  "description": "Draft helper for Brawl Stars Ranked: pick suggestions by role, tier, map and bans. Works offline.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#241155",
   "theme_color": "#2E1670",
-  "lang": "uk",
+  "lang": "en",
   "dir": "ltr",
   "categories": [
     "games",
