@@ -2922,6 +2922,14 @@ Object.assign(TXT.ru,{instTitle:"Установи приложение", instDes
 Object.assign(TXT.tr,{instTitle:"Uygulamayı yükle", instDesc:"Çevrimdışı çalışır, tarayıcı çubuğu yok", instBtn:"Yükle", iosTitle:"Ana ekrana ekle", iosDesc:"Paylaş ⬆ → Ana Ekrana Ekle"});
 Object.assign(TXT.ar,{instTitle:"ثبّت التطبيق", instDesc:"يعمل دون إنترنت، بلا شريط المتصفح", instBtn:"تثبيت", iosTitle:"أضِفه إلى الشاشة الرئيسية", iosDesc:"مشاركة ⬆ ← إضافة إلى الشاشة الرئيسية"});
 Object.assign(TXT.de,{instTitle:"App installieren", instDesc:"Funktioniert offline, ohne Browserleiste", instBtn:"Installieren", iosTitle:"Zum Home-Bildschirm hinzufügen", iosDesc:"Teilen ⬆ → Zum Home-Bildschirm"});
+Object.assign(TXT.uk,{oibTitle:"Відкрий у справжньому браузері", oibDesc:"Тоді зможеш додати на головний екран", oibBtn:"Відкрити", oibHow:"Натисни ⋯ вгорі → «Відкрити в браузері»", oibCopied:"Посилання скопійовано", oibCopy:"Копіювати"});
+Object.assign(TXT.en,{oibTitle:"Open in a real browser", oibDesc:"Then you can add it to your home screen", oibBtn:"Open", oibHow:"Tap ⋯ at the top → Open in browser", oibCopied:"Link copied", oibCopy:"Copy link"});
+Object.assign(TXT.es,{oibTitle:"Ábrelo en un navegador real", oibDesc:"Así podrás añadirlo a la pantalla de inicio", oibBtn:"Abrir", oibHow:"Toca ⋯ arriba → Abrir en el navegador", oibCopied:"Enlace copiado", oibCopy:"Copiar enlace"});
+Object.assign(TXT.pt,{oibTitle:"Abra em um navegador de verdade", oibDesc:"Assim você pode adicionar à tela de início", oibBtn:"Abrir", oibHow:"Toque em ⋯ no topo → Abrir no navegador", oibCopied:"Link copiado", oibCopy:"Copiar link"});
+Object.assign(TXT.ru,{oibTitle:"Открой в настоящем браузере", oibDesc:"Тогда сможешь добавить на главный экран", oibBtn:"Открыть", oibHow:"Нажми ⋯ вверху → «Открыть в браузере»", oibCopied:"Ссылка скопирована", oibCopy:"Копировать"});
+Object.assign(TXT.tr,{oibTitle:"Gerçek bir tarayıcıda aç", oibDesc:"Böylece ana ekrana ekleyebilirsin", oibBtn:"Aç", oibHow:"Yukarıdaki ⋯ → Tarayıcıda aç", oibCopied:"Bağlantı kopyalandı", oibCopy:"Bağlantıyı kopyala"});
+Object.assign(TXT.ar,{oibTitle:"افتحه في متصفح حقيقي", oibDesc:"عندها يمكنك إضافته إلى الشاشة الرئيسية", oibBtn:"افتح", oibHow:"اضغط ⋯ في الأعلى ← افتح في المتصفح", oibCopied:"تم نسخ الرابط", oibCopy:"انسخ الرابط"});
+Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann kannst du sie zum Home-Bildschirm hinzufügen", oibBtn:"Öffnen", oibHow:"Tippe oben auf ⋯ → Im Browser öffnen", oibCopied:"Link kopiert", oibCopy:"Link kopieren"});
 
 
   // Статистика гравця (профіль/винрейт/історія боїв) — раніше жорстко захардкоджена
@@ -4218,6 +4226,38 @@ Object.assign(TXT.de,{instTitle:"App installieren", instDesc:"Funktioniert offli
 
   /* iOS ніколи не надсилає beforeinstallprompt — там встановлення тільки вручну,
      тож показуємо власну підказку з кроками. */
+  /* Вбудовані браузери соцмереж (TikTok, Instagram, Facebook…) не мають пункту
+     «На початковий екран», тому спершу треба вибратись у справжній браузер. */
+  function inAppBrowser(){
+    var ua = navigator.userAgent || "";
+    return /TikTok|BytedanceWebview|musical_ly|Instagram|FBAN|FBAV|FB_IAB|Snapchat|Line\/|Twitter|Pinterest|OKApp|VKAndroidApp/i.test(ua);
+  }
+
+  function escapeToBrowser(){
+    var url = location.href;
+    var android = /Android/i.test(navigator.userAgent);
+    if(android){
+      // Android дозволяє передати сторінку системному браузеру через intent://
+      var noScheme = url.replace(/^https?:\/\//, "");
+      location.href = "intent://" + noScheme +
+        "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" +
+        encodeURIComponent(url) + ";end";
+      return;
+    }
+    // На iOS такого способу немає — копіюємо посилання, щоб його можна було вставити
+    var msg = document.getElementById("instDesc");
+    function done(){ msg.textContent = t("oibCopied"); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done, function(){});
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = url; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  }
+
   function paintInstallBar(){
     var standalone = window.matchMedia("(display-mode: standalone)").matches
                      || window.navigator.standalone === true;
@@ -4226,6 +4266,20 @@ Object.assign(TXT.de,{instTitle:"App installieren", instDesc:"Funktioniert offli
     var title = document.getElementById("instTitle");
     var desc  = document.getElementById("instDesc");
     var btn   = document.getElementById("installbtn");
+
+    if(inAppBrowser() && !standalone){
+      var android = /Android/i.test(navigator.userAgent);
+      title.textContent = t("oibTitle");
+      desc.textContent  = android ? t("oibDesc") : t("oibHow");
+      // на iOS кнопки немає — там і так треба тиснути ⋯ вгорі, тож лишаємо саму підказку
+      btn.textContent   = t("oibBtn");
+      btn.style.display = android ? "" : "none";
+      btn.dataset.mode  = android ? "escape" : "";
+      if(sessionStorage.getItem("hideInstall") !== "1") bar.classList.add("show");
+      return;
+    }
+    btn.dataset.mode = "";
+
     if(iOS && !standalone){
       title.textContent = t("iosTitle");
       desc.textContent  = t("iosDesc");
@@ -4242,6 +4296,7 @@ Object.assign(TXT.de,{instTitle:"App installieren", instDesc:"Funktioniert offli
   window.paintInstallBar = paintInstallBar;
   paintInstallBar();
   document.getElementById("installbtn").onclick = function(){
+    if(this.dataset.mode === "escape"){ escapeToBrowser(); return; }
     if(!deferred) return;
     deferred.prompt();
     deferred.userChoice.finally(function(){ deferred = null; bar.classList.remove("show"); });
