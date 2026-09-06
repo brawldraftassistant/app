@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="Offline draft assistant for Brawl Stars Ranked: pick suggestions by role, tier, map and bans.">
-<meta name="theme-color" content="#0B0F1A">
+<meta name="theme-color" content="#2E1670">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,8 +32,10 @@
   --radius:10px;
 }
 *{box-sizing:border-box}
+html{ -webkit-text-size-adjust:100%; overscroll-behavior:none; background:var(--ink) }
 body{
   margin:0; background:var(--ink); color:var(--text);
+  overscroll-behavior:none; touch-action:manipulation;
   font-family:Manrope,system-ui,sans-serif; font-size:15px; line-height:1.45;
   padding:16px 14px 60px; max-width:760px; margin:0 auto;
 }
@@ -375,8 +377,14 @@ button.on{
 button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 
 /* ---------- шапка з вкладками ---------- */
+button,.pillar,.tabs button,.langbtn,.slot,.chip{
+  -webkit-touch-callout:none; -webkit-user-select:none; user-select:none;
+}
+@media (display-mode: standalone){
+  body{ padding-top:calc(10px + env(safe-area-inset-top)) }
+}
 .appbar{
-  position:sticky; top:8px; z-index:50;
+  position:sticky; top:calc(8px + env(safe-area-inset-top)); z-index:50;
   display:flex; align-items:center; gap:10px; flex-wrap:wrap;
   margin:8px 0 16px; padding:10px 14px 12px;
   background:#2E1670; border:3px solid var(--edge); border-radius:20px;
@@ -1640,7 +1648,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 <div id="netbadge">Офлайн — працює</div>
 <div id="installbar">
-  <div class="txt"><b>Install Draft Assistant</b><span>Works offline, no browser bar</span></div>
+  <div class="txt"><b id="instTitle">Install Draft Assistant</b><span id="instDesc">Works offline, no browser bar</span></div>
   <button id="installbtn">Install</button>
   <button id="installclose" aria-label="Приховати">✕</button>
 </div>
@@ -2889,6 +2897,14 @@ Object.assign(TXT.ru,{tcTitle:"Твой тег", tcDesc:"Советуем тол
 Object.assign(TXT.tr,{tcTitle:"Etiketin", tcDesc:"Sadece sahip olduğun brawler'lar + istatistik", tcGo:"Tamam", tcChange:"Değiştir", tcSaved:"Brawler'larına göre öneriler"});
 Object.assign(TXT.ar,{tcTitle:"تاغك", tcDesc:"نقترح شخصياتك فقط + إحصائيات", tcGo:"تم", tcChange:"تغيير", tcSaved:"اقتراحات حسب شخصياتك"});
 Object.assign(TXT.de,{tcTitle:"Dein Tag", tcDesc:"Nur deine Brawler + Statistik", tcGo:"Fertig", tcChange:"Ändern", tcSaved:"Vorschläge passend zu deinen Brawlern"});
+Object.assign(TXT.uk,{instTitle:"Встанови застосунок", instDesc:"Працює офлайн, без рядка браузера", instBtn:"Встановити", iosTitle:"Додай на головний екран", iosDesc:"Поділитись ⬆ → «На початковий екран»"});
+Object.assign(TXT.en,{instTitle:"Install Draft Assistant", instDesc:"Works offline, no browser bar", instBtn:"Install", iosTitle:"Add to your home screen", iosDesc:"Share ⬆ → Add to Home Screen"});
+Object.assign(TXT.es,{instTitle:"Instala la app", instDesc:"Funciona sin conexión, sin barra del navegador", instBtn:"Instalar", iosTitle:"Añádela a tu pantalla de inicio", iosDesc:"Compartir ⬆ → Añadir a inicio"});
+Object.assign(TXT.pt,{instTitle:"Instale o app", instDesc:"Funciona offline, sem barra do navegador", instBtn:"Instalar", iosTitle:"Adicione à tela de início", iosDesc:"Compartilhar ⬆ → Adicionar à Tela de Início"});
+Object.assign(TXT.ru,{instTitle:"Установи приложение", instDesc:"Работает офлайн, без строки браузера", instBtn:"Установить", iosTitle:"Добавь на главный экран", iosDesc:"Поделиться ⬆ → «На экран Домой»"});
+Object.assign(TXT.tr,{instTitle:"Uygulamayı yükle", instDesc:"Çevrimdışı çalışır, tarayıcı çubuğu yok", instBtn:"Yükle", iosTitle:"Ana ekrana ekle", iosDesc:"Paylaş ⬆ → Ana Ekrana Ekle"});
+Object.assign(TXT.ar,{instTitle:"ثبّت التطبيق", instDesc:"يعمل دون إنترنت، بلا شريط المتصفح", instBtn:"تثبيت", iosTitle:"أضِفه إلى الشاشة الرئيسية", iosDesc:"مشاركة ⬆ ← إضافة إلى الشاشة الرئيسية"});
+Object.assign(TXT.de,{instTitle:"App installieren", instDesc:"Funktioniert offline, ohne Browserleiste", instBtn:"Installieren", iosTitle:"Zum Home-Bildschirm hinzufügen", iosDesc:"Teilen ⬆ → Zum Home-Bildschirm"});
 
 
   // Статистика гравця (профіль/винрейт/історія боїв) — раніше жорстко захардкоджена
@@ -3006,6 +3022,7 @@ Object.assign(TXT.de,{tcTitle:"Dein Tag", tcDesc:"Nur deine Brawler + Statistik"
     const os = document.getElementById("ownedStatus");
     if(os && typeof ownedBrawlers !== "undefined" && ownedBrawlers && ownedBrawlers.length) os.textContent = t("ownedLoaded",{n:ownedBrawlers.length});
     try{ if(window.renderTagCard) window.renderTagCard(); }catch(e){}
+    try{ if(window.paintInstallBar) window.paintInstallBar(); }catch(e){}
   }
 
   /* --- вкладки --- */
@@ -4181,6 +4198,32 @@ Object.assign(TXT.de,{tcTitle:"Dein Tag", tcDesc:"Nur deine Brawler + Statistik"
     e.preventDefault(); deferred = e;
     if(sessionStorage.getItem("hideInstall") !== "1") bar.classList.add("show");
   });
+
+  /* iOS ніколи не надсилає beforeinstallprompt — там встановлення тільки вручну,
+     тож показуємо власну підказку з кроками. */
+  function paintInstallBar(){
+    var standalone = window.matchMedia("(display-mode: standalone)").matches
+                     || window.navigator.standalone === true;
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+              || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var title = document.getElementById("instTitle");
+    var desc  = document.getElementById("instDesc");
+    var btn   = document.getElementById("installbtn");
+    if(iOS && !standalone){
+      title.textContent = t("iosTitle");
+      desc.textContent  = t("iosDesc");
+      btn.style.display = "none";
+      if(sessionStorage.getItem("hideInstall") !== "1") bar.classList.add("show");
+    } else {
+      title.textContent = t("instTitle");
+      desc.textContent  = t("instDesc");
+      btn.textContent   = t("instBtn");
+      btn.style.display = "";
+      if(standalone) bar.classList.remove("show");
+    }
+  }
+  window.paintInstallBar = paintInstallBar;
+  paintInstallBar();
   document.getElementById("installbtn").onclick = function(){
     if(!deferred) return;
     deferred.prompt();
