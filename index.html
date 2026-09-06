@@ -3592,14 +3592,14 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   function openTagModal(){
     $id("tagModal").style.display = "flex";
     document.documentElement.classList.add("modal-open");
-    $id("tagModalInput").focus();
+    if(!("ontouchstart" in window)) $id("tagModalInput").focus();
   }
   function closeTagModal(){
     $id("tagModal").style.display = "none";
     document.documentElement.classList.remove("modal-open");
   }
-  $id("tagModalClose").onclick = ()=>{ try{ localStorage.setItem("tagPromptSkipped","1"); }catch(e){} closeTagModal(); };
-  $id("tagModalSkip").onclick = ()=>{ try{ localStorage.setItem("tagPromptSkipped","1"); }catch(e){} closeTagModal(); };
+  $id("tagModalClose").onclick = ()=>{ closeTagModal(); };
+  $id("tagModalSkip").onclick  = ()=>{ closeTagModal(); };
   $id("tagModalGo").onclick = async ()=>{
     const raw = ($id("tagModalInput").value || "").trim();
     if(!raw){ $id("tagModalMsg").textContent = t("ownedNeedTag"); return; }
@@ -3655,14 +3655,13 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   };
   renderTagCard();
 
-  try{
-    const savedTag = localStorage.getItem("playerTag");
-    if(savedTag){
-      $id("tagInput").value = "#"+savedTag; lookupTag();
-    } else if(localStorage.getItem("tagPromptSkipped") !== "1"){
-      openTagModal();
-    }
-  } catch(e){}
+  let savedTag = null;
+  try{ savedTag = localStorage.getItem("playerTag"); }catch(e){}
+  if(savedTag){
+    try{ $id("tagInput").value = "#"+savedTag; lookupTag(); }catch(e){}
+  } else {
+    openTagModal();
+  }
   const steps=[...document.querySelectorAll(".wstep")];
   const dots=[...document.querySelectorAll("#wdots i")];
   let wi=0;
