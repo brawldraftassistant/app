@@ -376,11 +376,11 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 
 /* ---------- шапка з вкладками ---------- */
 .appbar{
-  position:sticky; top:0; z-index:50;
+  position:sticky; top:8px; z-index:50;
   display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-  margin-inline:calc(50% - 50vw); padding:10px calc(50vw - 50% + 14px) 0;
-  background:#2E1670; border-bottom:4px solid var(--edge);
-  box-shadow:0 6px 0 rgba(0,0,0,.22);
+  margin:8px 0 16px; padding:10px 14px 12px;
+  background:#2E1670; border:3px solid var(--edge); border-radius:20px;
+  box-shadow:0 6px 0 var(--edge);
 }
 .brand{ display:flex; align-items:center; gap:9px; cursor:pointer; flex:1 1 auto; min-width:0 }
 .logodot{
@@ -389,7 +389,7 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 }
 .tabs{
   order:3; flex:1 0 100%; display:flex; gap:6px; justify-content:flex-start;
-  overflow-x:auto; scrollbar-width:none; padding-bottom:8px; margin-top:4px;
+  overflow-x:auto; scrollbar-width:none; padding-bottom:2px; margin-top:6px;
 }
 .tabs::-webkit-scrollbar{ display:none }
 .tabs button{
@@ -639,8 +639,10 @@ button:focus-visible{ outline:3px solid #fff; outline-offset:3px }
 /* ---------- майстер драфту: не розповзатися на широкому екрані ---------- */
 @media (min-width:760px){
   #wizard{ max-width:720px; margin:0 auto; padding-bottom:40px }
-  #wizard .wstep h2{ text-align:center }
-  #wizard .row{ display:flex; justify-content:center }
+  #wizard .wstep h2{ text-align:center; justify-content:center }   /* h2 — flex, тому text-align сам не центрує */
+  #wizard .wstep{ text-align:center }        /* центрує inline-flex #rank/#first, не ламаючи їх ширину */
+  #wizard .row{ justify-content:center }
+  #wizard #maps button{ text-align:start }
   .wnav{ max-width:720px; margin:28px auto 0 }
 }
 @media (min-width:1200px){
