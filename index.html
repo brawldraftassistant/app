@@ -1379,9 +1379,16 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   box-shadow:none;
   padding:9px 16px; cursor:pointer;
   transition:transform .07s, filter .15s;
+  /* iOS Safari інколи домальовує заокруглений елемент лише після першого repaint —
+     примусово створюємо йому власний композитний шар одразу при завантаженні */
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
+  will-change:transform;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
 }
 .tagCardRow button:hover{filter:brightness(1.1)}
-.tagCardRow button:active{transform:translateY(2px); filter:brightness(.94)}
+.tagCardRow button:active{transform:translateY(2px) translateZ(0); filter:brightness(.94)}
 .tagCardChange{
   font-family:Manrope,system-ui,sans-serif; font-weight:900; font-size:12px;
   color:var(--signal); background:transparent; border:none; box-shadow:none;
