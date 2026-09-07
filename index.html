@@ -1369,15 +1369,19 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 }
 .tagCardRow input::placeholder{color:var(--muted); opacity:.6}
 .tagCardRow button{
-  flex:none; font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-size:12px;
+  flex:none; align-self:stretch;
+  font-family:Unbounded,system-ui,sans-serif; font-weight:900; font-size:12px;
   text-transform:uppercase; color:#3A1D00; white-space:nowrap;
   background:linear-gradient(180deg,#FFD230 0%,#FF9F1C 100%);
-  border:3px solid var(--edge); border-radius:13px; box-shadow:0 4px 0 #8A5A00;
-  padding:9px 14px; cursor:pointer;
-  transition:transform .07s, box-shadow .07s, filter .15s;
+  background-clip:padding-box;
+  border:3px solid var(--edge); border-radius:13px;
+  /* без зміщеної box-shadow: на iOS вона малюється окремим шаром і «з'їжджає» вбік */
+  box-shadow:none;
+  padding:9px 16px; cursor:pointer;
+  transition:transform .07s, filter .15s;
 }
 .tagCardRow button:hover{filter:brightness(1.1)}
-.tagCardRow button:active{transform:translateY(3px); box-shadow:0 1px 0 #8A5A00}
+.tagCardRow button:active{transform:translateY(2px); filter:brightness(.94)}
 .tagCardChange{
   font-family:Manrope,system-ui,sans-serif; font-weight:900; font-size:12px;
   color:var(--signal); background:transparent; border:none; box-shadow:none;
