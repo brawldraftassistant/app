@@ -482,6 +482,19 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
   border:2px solid var(--edge); border-radius:999px; padding:3px 8px; transform:rotate(3deg);
   box-shadow:0 0 12px rgba(255,138,61,.35);
 }
+.coffeeBtn{
+  position:absolute; top:0; right:0; z-index:2;
+  display:flex; align-items:center; gap:7px; padding:9px 15px; border-radius:999px;
+  border:2.5px solid var(--edge); background:linear-gradient(100deg,#FFD75E,#FF9F1C); color:#3A1500;
+  font-family:Unbounded,sans-serif; font-weight:800; font-size:11.5px; text-decoration:none;
+  box-shadow:0 3px 0 var(--edge); transition:transform .12s ease; white-space:nowrap;
+}
+.coffeeBtn:hover{ transform:translateY(-1px) }
+.coffeeBtn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--edge) }
+.coffeeIco{ font-size:14px }
+@media (max-width:480px){
+  .coffeeBtn{ position:static; width:max-content; margin:0 0 14px }
+}
 .pillar .pSoon{
   position:absolute; top:12px; right:12px; font-size:9.5px; font-weight:900; letter-spacing:.06em;
   text-transform:uppercase; color:#3A1500; background:var(--sun); border:2px solid var(--edge);
@@ -1481,6 +1494,10 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div id="home">
   <div class="hero">
     <div class="orb o1"></div><div class="orb o2"></div>
+    <a class="coffeeBtn" id="coffeeBtn" href="https://www.buymeacoffee.com/smartdraftassistant"
+       target="_blank" rel="noopener noreferrer">
+      <span class="coffeeIco">☕</span><span id="coffeeTxt">Пригости кавою</span>
+    </a>
     <div class="heroin">
       <div class="eyebrow" id="hEyebrow">RANKED HUB</div>
       <div class="herotitle" id="hTitle">Все для<br>Brawl Stars Ranked</div>
@@ -3014,8 +3031,11 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
                     "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a",
                     "hStatsHeadT2","hStatsIntro2",
-                    "pDraftT","pDraftD","pTierT","pTierD","pTierNew","pStratT","pStratD","pStatsT","pStatsD",
+                    "pDraftT","pDraftD","pTierT","pTierD","pTierNew","coffeeTxt","pStratT","pStratD","pStatsT","pStatsD",
                     "hTierT2","hTierIntro","tierBack","statsBack"];
+  TXT.uk.coffeeTxt="Пригости кавою"; TXT.en.coffeeTxt="Buy me a coffee"; TXT.es.coffeeTxt="Invítame un café";
+  TXT.pt.coffeeTxt="Pague um café"; TXT.ru.coffeeTxt="Угости кофе"; TXT.tr.coffeeTxt="Bana kahve ısmarla";
+  TXT.ar.coffeeTxt="اشترِ لي قهوة"; TXT.de.coffeeTxt="Spendier mir einen Kaffee";
   TXT.uk.pTierNew="Вересень"; TXT.en.pTierNew="September"; TXT.es.pTierNew="Septiembre";
   TXT.pt.pTierNew="Setembro"; TXT.ru.pTierNew="Сентябрь"; TXT.tr.pTierNew="Eylül";
   TXT.ar.pTierNew="سبتمبر"; TXT.de.pTierNew="September";
