@@ -36,7 +36,7 @@
 html{ -webkit-text-size-adjust:100%; overscroll-behavior:none; background:var(--ink) }
 body{
   margin:0; background:var(--ink); color:var(--text);
-  overscroll-behavior:none; touch-action:manipulation;
+  touch-action:manipulation;
   font-family:Manrope,system-ui,sans-serif; font-size:15px; line-height:1.45;
   padding:16px 14px 60px; max-width:760px; margin:0 auto;
 }
@@ -310,13 +310,13 @@ body{padding-top:calc(16px + env(safe-area-inset-top)); padding-bottom:calc(60px
 /* Фон живе на html, а body ПРОЗОРИЙ — інакше суцільний фон body малюється
    лише всередині колонки max-width і на широкому екрані видно «шов» по боках. */
 html{
-  overflow-x:hidden;
+  overflow-x:hidden; overflow-x:clip;
   background:
     radial-gradient(70% 50% at 50% -8%, #5B32C9 0%, #3A1E86 45%, #241155 100%)
     fixed #241155;
 }
 body{
-  overflow-x:hidden;
+  overflow-x:hidden; overflow-x:clip;
   background:transparent; color:var(--text);
   font-family:Manrope,system-ui,sans-serif; font-weight:700; font-size:16px;
 }
@@ -1867,7 +1867,7 @@ const BINFO = {
 "Byron":{t:"A",roles:["support"]},
 "Meeple":{t:"A",roles:["control"]},
 "Colt":{t:"B",roles:["dmg","control"],buffie:true},
-"Shade":{t:"S+",roles:["assassin"]},
+"Shade":{t:"S+",roles:["assassin"], buffie:true},
 "Penny":{t:"C",roles:["control"]},
 "Stu":{t:"A",roles:["assassin"]},
 "Gene":{t:"A",roles:["control","support"]},
@@ -1890,21 +1890,21 @@ const BINFO = {
 "Carl":{t:"B",roles:["control"]},
 "Alli":{t:"C",roles:["assassin"]},
 "Belle":{t:"B",roles:["sniper"]},
-"Gus":{t:"S+",roles:["support"]},
+"Gus":{t:"S+",roles:["support"], buffie:true},
 "Moe":{t:"B",roles:["antitank","control"]},
 "Fang":{t:"D",roles:["assassin"]},
 "Nani":{t:"D",roles:["sniper","antitank"]},
 "Lily":{t:"D",roles:["assassin"]},
 "Tara":{t:"C",roles:["control"]},
 "Bibi":{t:"C",roles:["assassin","tank"],buffie:true},
-"Poco":{t:"S",roles:["support"]},
+"Poco":{t:"S",roles:["support"], buffie:true},
 "Ash":{t:"B",roles:["tank","antitank"]},
 "Lola":{t:"C",roles:["control","antitank"]},
 "Mandy":{t:"D",roles:["sniper"]},
 "Emz":{t:"A",roles:["control","antitank"],buffie:true},
 "Finx":{t:"B",roles:["control","antitank"]},
 "Bea":{t:"D",roles:["sniper","antitank"]},
-"Amber":{t:"S+",roles:["control"]},
+"Amber":{t:"S+",roles:["control"], buffie:true},
 "Bo":{t:"C",roles:["control"],buffie:true},
 "Rico":{t:"S",roles:["antitank","control"],buffie:true},
 "Willow":{t:"C",roles:["thrower","antitank"]},
@@ -1938,12 +1938,12 @@ const BINFO = {
 "Ziggy":{t:"F",roles:["thrower"]},
 "Buzz":{t:"B",roles:["tank","assassin"]},
 "Jae-Yong":{t:"B",roles:["support"]},
-"Bull":{t:"C",roles:["tank","dmg","antitank"]},
+"Bull":{t:"C",roles:["tank","dmg","antitank"], buffie:true},
 "Jessie":{t:"C",roles:["control"]},
-"El Primo":{t:"S+",roles:["tank"]},
+"El Primo":{t:"S+",roles:["tank"], buffie:true},
 "Sam":{t:"F",roles:["tank"]},
 "Grom":{t:"F",roles:["thrower"]},
-"Chuck":{t:"A",roles:["dmg"]},
+"Chuck":{t:"A",roles:["dmg"], buffie:true},
 "Mr. P":{t:"F",roles:["control"]},
 "Jacky":{t:"F",roles:["tank"]},
 "Rosa":{t:"F",roles:["tank"]},
