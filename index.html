@@ -2826,10 +2826,13 @@ function matchOwnedNames(apiBrawlers){
     // ДЛЯ БІЙЦЯ З УСІМА БАФФІ, тож 3 з 3 — це рівно його тір, а менше — трохи нижче.
     // Якщо API поле не віддав — нічого не рахуємо, боєць іде за чистим тіром.
     const buffieExists = !!(BINFO[ourName] && BINFO[ourName].buffie);
+    // ВАЖЛИВО: рахуємо ТІЛЬКИ якщо поле — справжній масив відкритих баффі.
+    // Раніше будь-яке правдиве значення (об'єкт, число, рядок) зараховувалось як
+    // одне баффі, і людині з нулем показувало "1 з 3". Якщо формат не той —
+    // вважаємо, що даних нема: ні числа, ні штрафу, боєць іде за чистим тіром.
     const bfField = apiB.buffies ?? apiB.buffie ?? apiB.buffs;
-    if(buffieExists && bfField !== undefined){
-      const cnt = Array.isArray(bfField) ? bfField.length : (bfField ? 1 : 0);
-      buffieCounts[ourName] = Math.max(0, Math.min(3, cnt));
+    if(buffieExists && Array.isArray(bfField)){
+      buffieCounts[ourName] = Math.max(0, Math.min(3, bfField.length));
     }
     if(power >= 11 && hasHypercharge) full.push(ourName);
     else if(power >= 9) partial.push(ourName);
