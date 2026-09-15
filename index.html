@@ -3573,6 +3573,25 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   function renderStatsCard(d, battles){
     const box = $id("statsBox");
 
+    // ТИМЧАСОВА ДІАГНОСТИКА: показуємо, які саме поля API віддає по бійцю.
+    // Треба, щоб зрозуміти, чи є там дані про баффі і в якому вигляді.
+    // Після з'ясування цей блок прибрати.
+    let dbgHtml = "";
+    try{
+      const arr = d && Array.isArray(d.brawlers) ? d.brawlers : [];
+      const sample = arr.find(x => String(x.name||"").toUpperCase()==="GUS") || arr[0];
+      if(sample){
+        const fields = Object.keys(sample).map(k=>{
+          const v = sample[k];
+          const kind = Array.isArray(v) ? ("масив["+v.length+"]") : (v===null ? "null" : typeof v);
+          return k+": "+kind;
+        }).join(" · ");
+        dbgHtml = `<div style="margin-top:14px;padding:10px 12px;border:2px dashed #FFD75E;border-radius:12px;
+          font-size:11px;line-height:1.5;color:#FFD75E;word-break:break-word">
+          <b>Діагностика API</b> (тимчасово)<br>боєць: ${esc(String(sample.name||"?"))}<br>${esc(fields)}</div>`;
+      }
+    }catch(e){}
+
     const club = d.club && d.club.name
       ? `<div class="statsClub">🏰 ${esc(d.club.name)}</div>`
       : `<div class="statsClub statsClubNone">${t("statNoClub")}</div>`;
@@ -3610,6 +3629,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
             </div>
             ${toggleHtml()}
             ${winrateHtml}
+            ${dbgHtml}
           </div>`;
         wireToggle();
         return;
