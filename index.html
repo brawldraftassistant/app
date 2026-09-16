@@ -4394,7 +4394,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
      Тому Воркер збирає власні з боїв тих, хто вводив тег, і віддає агрегат.
      Показуємо лише коли вибірка достатня, і завжди пишемо її розмір,
      щоб було видно, наскільки числу можна вірити. */
-  const MST_MIN_SAMPLE = 30;      // менше — цифри ще нічого не означають
+  const MST_MIN_SAMPLE = 400;     // під поріг у 100 ігор на бійця потрібна велика вибірка
   let mstLastKey = "";
   async function loadMapStats(){
     const box = $id("mapStats"); if(!box) return;
@@ -4409,7 +4409,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
       if(!r.ok) return;
       const d = await r.json();
       if(!d || !Array.isArray(d.rows) || (d.sample||0) < MST_MIN_SAMPLE) return;
-      const top = d.rows.filter(x=>x.games >= 3).slice(0,6);
+      const top = d.rows.slice(0,6);   // Воркер уже відсіяв усіх, хто має менше 100 ігор
       if(!top.length) return;
       box.innerHTML = `
         <div class="mstHead">
