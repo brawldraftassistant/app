@@ -468,14 +468,81 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
   font-size:22px; line-height:1; margin-bottom:10px; display:grid; place-items:center;
   width:44px; height:44px; border-radius:14px; border:3px solid var(--edge);
 }
-.pillar:nth-child(1) .pIcon{ background:var(--sun) }
-.pillar:nth-child(2) .pIcon{ background:var(--mint) }
-.pillar:nth-child(3) .pIcon{ background:var(--grape) }
-.pillar:nth-child(4) .pIcon{ background:var(--berry) }
-.pillar .pTitle{ display:block; font-family:Unbounded,sans-serif; font-weight:900; font-size:15px; margin-bottom:4px }
-.pillar .pDesc{ display:block; color:var(--muted); font-size:12.5px; line-height:1.4; font-weight:700 }
-/* Позначка місяця, за який актуальний тір-лист. Осінні кольори; текст —
-   ключ pTierNew у словнику, тому перекладається разом з рештою інтерфейсу. */
+
+
+
+
+/* ============ ПЛИТКИ ГОЛОВНОЇ ============
+   Стиль самої гри: суцільний соковитий колір, товстий темний контур,
+   пузаті мультяшні форми. Без сіток, смуг і кіберпанкових текстур.
+   Кожна плитка — свій колір і свій предмет: картки піків, п'єдестал,
+   мішень, стовпчики зі стрілкою, книга, кубок.
+   Колір іконки прив'язаний до id, а не до порядку — інакше додавання
+   нової плитки перетасовує кольори всім наступним. */
+.pillar{
+  overflow:hidden; isolation:isolate; padding:16px 15px 15px;
+  min-height:122px; display:flex; flex-direction:column; justify-content:flex-start;
+}
+.pillar::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:46%;
+  z-index:0; pointer-events:none; border-radius:15px 15px 40% 40%/15px 15px 22px 22px;
+}
+.pillar::after{
+  content:""; position:absolute; right:-10px; bottom:-6px; width:112px; height:94px;
+  z-index:1; background-repeat:no-repeat; background-size:contain;
+  background-position:right bottom; pointer-events:none;
+  transition:transform .16s ease;
+}
+.pillar:hover::after{ transform:translateY(-4px) rotate(-3deg) scale(1.06) }
+.pillar .pIcon{ position:relative; z-index:3; box-shadow:0 3px 0 var(--edge) }
+.pillar .pTitle{
+  position:relative; z-index:3; font-size:16px; line-height:1.15;
+  text-shadow:0 2px 0 rgba(10,4,40,.45); max-width:64%; margin:0;
+}
+@media (prefers-reduced-motion:reduce){ .pillar::after{ transition:none } }
+
+
+#pillarDraft{ background:#2E5BD8 }
+#pillarDraft::before{ background:#4A7DF0 }
+#pillarDraft::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='120'%20viewBox='0%200%20150%20120'%3E%3Cg%20stroke='%23160B3B'%20stroke-width='6'%20stroke-linejoin='round'%20stroke-linecap='round'%3E%3Crect%20x='12'%20y='34'%20width='38'%20height='56'%20rx='11'%20fill='%232D8CFF'%20transform='rotate(-7%2031%2062)'/%3E%3Crect%20x='54'%20y='26'%20width='40'%20height='60'%20rx='11'%20fill='%23FF4D6D'/%3E%3Crect%20x='98'%20y='34'%20width='38'%20height='56'%20rx='11'%20fill='%232D8CFF'%20transform='rotate(7%20117%2062)'/%3E%3C/g%3E%3C/svg%3E") }
+#pillarDraft .pIcon{ background:#FFB020 }
+#pillarDraft:hover{ box-shadow:0 9px 0 var(--edge) }
+
+
+#pillarTier{ background:#D9821A }
+#pillarTier::before{ background:#F2A43A }
+#pillarTier::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='120'%20viewBox='0%200%20150%20120'%3E%3Cg%20stroke='%23160B3B'%20stroke-width='6'%20stroke-linejoin='round'%20stroke-linecap='round'%3E%3Crect%20x='10'%20y='66'%20width='40'%20height='44'%20rx='9'%20fill='%23C0C8E8'/%3E%3Crect%20x='55'%20y='44'%20width='40'%20height='66'%20rx='9'%20fill='%23FFD230'/%3E%3Crect%20x='100'%20y='78'%20width='40'%20height='32'%20rx='9'%20fill='%23E89B4A'/%3E%3Cpath%20d='M75%204l9%2019%2021%203-15%2015%204%2021-19-10-19%2010%204-21-15-15%2021-3z'%20fill='%23FFE27A'/%3E%3C/g%3E%3C/svg%3E") }
+#pillarTier .pIcon{ background:#FF3D8B }
+#pillarTier:hover{ box-shadow:0 9px 0 var(--edge) }
+
+
+#pillarTrain{ background:#16A879 }
+#pillarTrain::before{ background:#23C795 }
+#pillarTrain::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='120'%20viewBox='0%200%20150%20120'%3E%3Cg%20stroke='%23160B3B'%20stroke-width='6'%20stroke-linejoin='round'%20stroke-linecap='round'%3E%3Ccircle%20cx='66'%20cy='62'%20r='48'%20fill='%23FF4D6D'/%3E%3Ccircle%20cx='66'%20cy='62'%20r='31'%20fill='%23FFF3D6'/%3E%3Ccircle%20cx='66'%20cy='62'%20r='14'%20fill='%23FF4D6D'/%3E%3Cpath%20d='M120%2016L74%2058'%20stroke-width='9'/%3E%3Cpath%20d='M112%208l26%204-4%2026z'%20fill='%23FFD230'/%3E%3C/g%3E%3C/svg%3E") }
+#pillarTrain .pIcon{ background:#FFD230 }
+#pillarTrain:hover{ box-shadow:0 9px 0 var(--edge) }
+
+
+#pillarUpg{ background:#7A35CC }
+#pillarUpg::before{ background:#9B55E8 }
+#pillarUpg::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='120'%20viewBox='0%200%20150%20120'%3E%3Cg%20stroke='%23160B3B'%20stroke-width='6'%20stroke-linejoin='round'%20stroke-linecap='round'%3E%3Crect%20x='14'%20y='74'%20width='30'%20height='36'%20rx='8'%20fill='%238B5CF6'/%3E%3Crect%20x='50'%20y='56'%20width='30'%20height='54'%20rx='8'%20fill='%23A855F7'/%3E%3Crect%20x='86'%20y='34'%20width='30'%20height='76'%20rx='8'%20fill='%23C77DFF'/%3E%3Cpath%20d='M74%2030l26-26%2026%2026h-16v24h-20V30z'%20fill='%23FFD230'/%3E%3C/g%3E%3C/svg%3E") }
+#pillarUpg .pIcon{ background:#FFD230 }
+#pillarUpg:hover{ box-shadow:0 9px 0 var(--edge) }
+
+
+#pillarStrat{ background:#1B7FB8 }
+#pillarStrat::before{ background:#2A9BD6 }
+#pillarStrat::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='120'%20viewBox='0%200%20150%20120'%3E%3Cg%20stroke='%23160B3B'%20stroke-width='6'%20stroke-linejoin='round'%20stroke-linecap='round'%3E%3Cpath%20d='M12%2030c22-10%2044-10%2062%200v72c-18-10-40-10-62%200z'%20fill='%2338B6FF'/%3E%3Cpath%20d='M136%2030c-22-10-44-10-62%200v72c18-10%2040-10%2062%200z'%20fill='%231E6FD9'/%3E%3Cpath%20d='M74%2030v72'%20stroke-width='7'/%3E%3Cpath%20d='M26%2050h34M26%2066h34M88%2050h34M88%2066h34'%20stroke-width='5'%20opacity='.65'/%3E%3C/g%3E%3C/svg%3E") }
+#pillarStrat .pIcon{ background:#FFB020 }
+#pillarStrat:hover{ box-shadow:0 9px 0 var(--edge) }
+
+
+#pillarStats{ background:#C2356B }
+#pillarStats::before{ background:#E04D86 }
+#pillarStats::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='150'%20height='120'%20viewBox='0%200%20150%20120'%3E%3Cg%20stroke='%23160B3B'%20stroke-width='6'%20stroke-linejoin='round'%20stroke-linecap='round'%3E%3Crect%20x='12'%20y='68'%20width='28'%20height='42'%20rx='8'%20fill='%23FF4D8D'/%3E%3Crect%20x='46'%20y='46'%20width='28'%20height='64'%20rx='8'%20fill='%23FF8A3D'/%3E%3Crect%20x='80'%20y='24'%20width='28'%20height='86'%20rx='8'%20fill='%23FFD230'/%3E%3Cpath%20d='M118%2020h26v14a13%2013%200%200%201-26%200z'%20fill='%23FFE27A'/%3E%3Cpath%20d='M131%2048v16M120%2070h22'%20stroke-width='7'/%3E%3C/g%3E%3C/svg%3E") }
+#pillarStats .pIcon{ background:#FFD230 }
+#pillarStats:hover{ box-shadow:0 9px 0 var(--edge) }
+
 .pillar .pNew{
   position:absolute; top:12px; right:12px; font-size:9.5px; font-weight:900; letter-spacing:.06em;
   text-transform:uppercase; color:#3A1500; background:linear-gradient(100deg,#FFD75E,#FF8A3D);
@@ -505,6 +572,14 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 /* ---------- Тір-лист (окремий екран) ---------- */
 .tierSec{ padding-top:20px }
 /* --- статистика карти, зібрана з боїв користувачів --- */
+.shareBtn{
+  display:inline-flex; align-items:center; gap:7px; margin:0 0 12px; padding:9px 16px;
+  border-radius:999px; border:2.5px solid var(--edge); background:var(--panel2); color:var(--text);
+  font-family:Unbounded,sans-serif; font-weight:800; font-size:12px; cursor:pointer;
+  box-shadow:0 3px 0 var(--edge); transition:transform .12s ease;
+}
+.shareBtn:hover{ transform:translateY(-1px) }
+.shareBtn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--edge) }
 .mstBox{ margin:10px 0 14px; padding:11px 14px; background:var(--panel2);
   border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge) }
 .mstHead{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px }
@@ -520,6 +595,30 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 .mstG{ flex:0 0 46px; text-align:right; font-size:10.5px; color:var(--muted); font-weight:800 }
 
 /* --- екран "Кого прокачувати" --- */
+/* --- тренажер драфту --- */
+.trHead{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px }
+.trMap{ font-family:Unbounded,sans-serif; font-weight:900; font-size:13px }
+.trScore{ margin-left:auto; font-family:Unbounded,sans-serif; font-weight:900; font-size:12px; color:var(--muted) }
+.trBoard{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:5px; margin-bottom:12px }
+.trSlot{ padding:7px 3px; border-radius:11px; border:2.5px solid var(--edge); text-align:center;
+  font-size:10px; font-weight:800; min-height:56px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:3px; overflow:hidden }
+.trSlot.ally{ background:#2B49C9 } .trSlot.enemy{ background:#B8265B }
+.trSlot.me{ outline:3px solid var(--sun); outline-offset:1px }
+.trSlot .tn{ font-size:9.5px; line-height:1.1; word-break:break-word }
+.trPick{ display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:6px; margin-top:6px }
+.trOpt{ padding:9px 8px; border-radius:12px; border:2.5px solid var(--edge); background:var(--panel2);
+  font-weight:800; font-size:12px; cursor:pointer; text-align:left }
+.trOpt:hover{ transform:translateY(-1px) }
+.trRes{ margin-top:12px; padding:11px 14px; border-radius:14px; border:3px solid var(--edge) }
+.trRes.ok{ background:linear-gradient(160deg,#2FBF71,#1E8C52); color:#06240F }
+.trRes.no{ background:linear-gradient(160deg,#FFD75E,#FF9F1C); color:#3A1500 }
+.trResT{ font-family:Unbounded,sans-serif; font-weight:900; font-size:12.5px; margin-bottom:5px }
+.trWhy{ font-size:12px; font-weight:700; line-height:1.45 }
+.trNext{ margin-top:12px; padding:11px 20px; border-radius:999px; border:3px solid var(--edge);
+  background:linear-gradient(100deg,#FFD75E,#FF9F1C); color:#3A1500;
+  font-family:Unbounded,sans-serif; font-weight:900; font-size:13px; cursor:pointer;
+  box-shadow:0 4px 0 var(--edge) }
 .upgRow{
   display:flex; align-items:center; gap:12px; margin-bottom:10px; padding:11px 14px;
   background:var(--panel2); border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge);
@@ -1563,28 +1662,27 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     <button type="button" class="pillar" id="pillarDraft">
       <span class="pIcon">🧠</span>
       <span class="pTitle" id="pDraftT">Драфт-асистент</span>
-      <span class="pDesc" id="pDraftD">Пік за піком: підказки під карту, бани й склад обох команд</span>
     </button>
     <button type="button" class="pillar" id="pillarTier">
       <span class="pNew" id="pTierNew">Вересень</span>
       <span class="pIcon">🏆</span>
       <span class="pTitle" id="pTierT">Тір-лист</span>
-      <span class="pDesc" id="pTierD">Усі бійці одним списком: S/A/B/C/D/F і роль кожного</span>
+    </button>
+    <button type="button" class="pillar" id="pillarTrain">
+      <span class="pIcon">🎯</span>
+      <span class="pTitle" id="pTrainT">Тренажер драфту</span>
     </button>
     <button type="button" class="pillar" id="pillarUpg">
       <span class="pIcon">⬆️</span>
       <span class="pTitle" id="pUpgT">Кого прокачувати</span>
-      <span class="pDesc" id="pUpgD">За твоїм тегом: хто з сильних бійців ще не готовий і чого саме бракує</span>
     </button>
     <button type="button" class="pillar" id="pillarStrat">
       <span class="pIcon">📚</span>
       <span class="pTitle" id="pStratT">Стратегії й гайди</span>
-      <span class="pDesc" id="pStratD">Ролі, контри, як читати драфт — від основ до просунутого</span>
     </button>
     <button type="button" class="pillar" id="pillarStats">
       <span class="pIcon">📊</span>
       <span class="pTitle" id="pStatsT">Моя статистика</span>
-      <span class="pDesc" id="pStatsD">Трофеї, вінрейт і найкращі бійці за твоїм тегом</span>
     </button>
   </div>
 
@@ -1643,6 +1741,17 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
     </div>
     <p class="tierIntro" id="hTierIntro">Усі бійці, згруповані за силою в поточній меті Ranked. Той самий підрахунок, що й у драфт-асистенті.</p>
     <div id="tierBox"></div>
+  </section>
+</div>
+
+<div id="trainview" style="display:none">
+  <section class="tierSec">
+    <div class="tierTop">
+      <h2 id="trTitle">Тренажер драфту</h2>
+      <button type="button" class="tierBack" id="trBack">← На головну</button>
+    </div>
+    <p class="tierIntro" id="trIntro">Реальні ситуації з пулів карт. Обери бійця на свій слот — і подивись, що порадив би асистент і чому.</p>
+    <div id="trBox"></div>
   </section>
 </div>
 
@@ -1710,6 +1819,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 <div id="draftview" style="display:none">
 <div class="setchip" id="setchip"></div>
 <div id="mapStats" class="mstBox" style="display:none"></div>
+<button type="button" class="shareBtn" id="shareDraft">🔗 Поділитися</button>
 <div id="blk-bans"><h2 id="h-bans">Who to ban</h2>
 <div class="row" id="bans"></div>
 <div class="quick" id="quickbans"><button class="bq top" onclick="doBan(&#39;Meeple&#39;)"><span class="num">1</span><span>Meeple</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Sirius&#39;)"><span class="num">2</span><span>Sirius</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Starr Nova&#39;)"><span class="num">3</span><span>Starr Nova</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Damian&#39;)"><span>Damian</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Mortis&#39;)"><span>Mortis</span><span class="bt s">S</span><span class="bz">⚡</span></button><button class="bq alt" onclick="doBan(&#39;Edgar&#39;)"><span>Edgar</span><span class="bt s">S</span><span class="bz">⚡</span></button><div class="banhelp">Tap a brawler to ban</div><button class="addban" onclick="openPicker(&#39;ban&#39;)">+ Ban</button></div></div>
@@ -2728,7 +2838,10 @@ async function showRecs(){
       ${NOTE_TR[r.name]?`<div class="why" style="color:var(--muted)"><span style="opacity:0">+</span>${noteFor(r.name)}</div>`:""}
     </div>`;
   });
-  if(res.alts && res.alts.length && !blind && !res.__myPick){
+  // Альтернативи показуємо ЗАВЖДИ, коли вони є. Раніше вони ховались на
+  // даймонді й нижче (blind) — але це просто інші варіанти власного піку,
+  // ніякої інформації про ворога вони не розкривають.
+  if(res.alts && res.alts.length && !res.__myPick){
     html+=`<h2 style="margin:20px 0 8px">${t("alts",{job:(res.job||[]).map(ROLE).join(" / ")})}</h2><div class="alts">`;
     res.alts.forEach(r=>{
       const info = bInfo(r.name);
@@ -3135,11 +3248,155 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
                     "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a",
                     "hStatsHeadT2","hStatsIntro2",
-                    "pDraftT","pDraftD","pTierT","pTierD","pTierNew","coffeeTxt","pUpgT","pUpgD","uTitle","uIntro","pStratT","pStratD","pStatsT","pStatsD",
+                    "pDraftT","pDraftD","pTierT","pTierD","pTierNew","coffeeTxt","shareDraft","pUpgT","pUpgD","uTitle","uIntro","pTrainT","pTrainD","trTitle","trIntro","trBack","pStratT","pStratD","pStatsT","pStatsD",
                     "hTierT2","hTierIntro","tierBack","statsBack","upgBack"];
   TXT.uk.coffeeTxt="Пригости кавою"; TXT.en.coffeeTxt="Buy me a coffee"; TXT.es.coffeeTxt="Invítame un café";
   TXT.pt.coffeeTxt="Pague um café"; TXT.ru.coffeeTxt="Угости кофе"; TXT.tr.coffeeTxt="Bana kahve ısmarla";
   TXT.ar.coffeeTxt="اشترِ لي قهوة"; TXT.de.coffeeTxt="Spendier mir einen Kaffee";
+  TXT.uk.pTrainT="Тренажер драфту";
+  TXT.uk.pTrainD="Розбирай реальні ситуації й перевіряй себе проти асистента";
+  TXT.uk.trTitle="Тренажер драфту";
+  TXT.uk.trIntro="Реальні ситуації з пулів карт. Обери бійця на свій слот — і подивись, що порадив би асистент і чому.";
+  TXT.uk.trLoading="Готуємо ситуацію…";
+  TXT.uk.trChecking="Перевіряємо…";
+  TXT.uk.trFail="Не вдалось завантажити ситуацію.";
+  TXT.uk.trRetry="Спробувати ще";
+  TXT.uk.trNext="Наступна ситуація";
+  TXT.uk.trAsk="Твій пік — слот {n}. Кого береш?";
+  TXT.uk.trScore="{a} з {b}";
+  TXT.uk.trGood="Правильно";
+  TXT.uk.trBad="{n} — не найкращий вибір";
+  TXT.uk.trBest="Асистент радить: {x}";
+  TXT.uk.trBack = TXT.uk.tierBack;
+  TXT.en.pTrainT="Draft trainer";
+  TXT.en.pTrainD="Work through real situations and test yourself against the assistant";
+  TXT.en.trTitle="Draft trainer";
+  TXT.en.trIntro="Real situations from map pools. Pick for your slot, then see what the assistant would choose and why.";
+  TXT.en.trLoading="Preparing a situation…";
+  TXT.en.trChecking="Checking…";
+  TXT.en.trFail="Couldn't load a situation.";
+  TXT.en.trRetry="Try again";
+  TXT.en.trNext="Next situation";
+  TXT.en.trAsk="Your pick — slot {n}. Who do you take?";
+  TXT.en.trScore="{a} of {b}";
+  TXT.en.trGood="Correct";
+  TXT.en.trBad="{n} isn't the best choice";
+  TXT.en.trBest="The assistant picks: {x}";
+  TXT.en.trBack = TXT.en.tierBack;
+  TXT.es.pTrainT="Entrenador de draft";
+  TXT.es.pTrainD="Resuelve situaciones reales y ponte a prueba frente al asistente";
+  TXT.es.trTitle="Entrenador de draft";
+  TXT.es.trIntro="Situaciones reales de los pools de cada mapa. Elige para tu slot y mira qué elegiría el asistente y por qué.";
+  TXT.es.trLoading="Preparando situación…";
+  TXT.es.trChecking="Comprobando…";
+  TXT.es.trFail="No se pudo cargar la situación.";
+  TXT.es.trRetry="Reintentar";
+  TXT.es.trNext="Siguiente situación";
+  TXT.es.trAsk="Tu pick — slot {n}. ¿A quién eliges?";
+  TXT.es.trScore="{a} de {b}";
+  TXT.es.trGood="Correcto";
+  TXT.es.trBad="{n} no es la mejor opción";
+  TXT.es.trBest="El asistente elige: {x}";
+  TXT.es.trBack = TXT.es.tierBack;
+  TXT.pt.pTrainT="Treinador de draft";
+  TXT.pt.pTrainD="Resolva situações reais e teste-se contra o assistente";
+  TXT.pt.trTitle="Treinador de draft";
+  TXT.pt.trIntro="Situações reais dos pools de cada mapa. Escolha para o seu slot e veja o que o assistente escolheria e por quê.";
+  TXT.pt.trLoading="Preparando situação…";
+  TXT.pt.trChecking="Verificando…";
+  TXT.pt.trFail="Não foi possível carregar a situação.";
+  TXT.pt.trRetry="Tentar de novo";
+  TXT.pt.trNext="Próxima situação";
+  TXT.pt.trAsk="Sua escolha — slot {n}. Quem você pega?";
+  TXT.pt.trScore="{a} de {b}";
+  TXT.pt.trGood="Correto";
+  TXT.pt.trBad="{n} não é a melhor escolha";
+  TXT.pt.trBest="O assistente escolhe: {x}";
+  TXT.pt.trBack = TXT.pt.tierBack;
+  TXT.ru.pTrainT="Тренажёр драфта";
+  TXT.ru.pTrainD="Разбирай реальные ситуации и проверяй себя против ассистента";
+  TXT.ru.trTitle="Тренажёр драфта";
+  TXT.ru.trIntro="Реальные ситуации из пулов карт. Выбери бойца на свой слот — и посмотри, что посоветовал бы ассистент и почему.";
+  TXT.ru.trLoading="Готовим ситуацию…";
+  TXT.ru.trChecking="Проверяем…";
+  TXT.ru.trFail="Не удалось загрузить ситуацию.";
+  TXT.ru.trRetry="Попробовать ещё";
+  TXT.ru.trNext="Следующая ситуация";
+  TXT.ru.trAsk="Твой пик — слот {n}. Кого берёшь?";
+  TXT.ru.trScore="{a} из {b}";
+  TXT.ru.trGood="Верно";
+  TXT.ru.trBad="{n} — не лучший выбор";
+  TXT.ru.trBest="Ассистент советует: {x}";
+  TXT.ru.trBack = TXT.ru.tierBack;
+  TXT.tr.pTrainT="Draft antrenörü";
+  TXT.tr.pTrainD="Gerçek durumları çöz ve kendini asistana karşı test et";
+  TXT.tr.trTitle="Draft antrenörü";
+  TXT.tr.trIntro="Harita havuzlarından gerçek durumlar. Kendi slotun için seç ve asistanın ne seçeceğini gör.";
+  TXT.tr.trLoading="Durum hazırlanıyor…";
+  TXT.tr.trChecking="Kontrol ediliyor…";
+  TXT.tr.trFail="Durum yüklenemedi.";
+  TXT.tr.trRetry="Tekrar dene";
+  TXT.tr.trNext="Sonraki durum";
+  TXT.tr.trAsk="Senin seçimin — slot {n}. Kimi alıyorsun?";
+  TXT.tr.trScore="{b} üzerinden {a}";
+  TXT.tr.trGood="Doğru";
+  TXT.tr.trBad="{n} en iyi seçim değil";
+  TXT.tr.trBest="Asistan şunu seçiyor: {x}";
+  TXT.tr.trBack = TXT.tr.tierBack;
+  TXT.ar.pTrainT="مدرّب الدرافت";
+  TXT.ar.pTrainD="حلّ مواقف حقيقية واختبر نفسك أمام المساعد";
+  TXT.ar.trTitle="مدرّب الدرافت";
+  TXT.ar.trIntro="مواقف حقيقية من قوائم كل خريطة. اختر لخانتك ثم شاهد ما سيختاره المساعد ولماذا.";
+  TXT.ar.trLoading="نحضّر موقفًا…";
+  TXT.ar.trChecking="نتحقق…";
+  TXT.ar.trFail="تعذّر تحميل الموقف.";
+  TXT.ar.trRetry="حاول مجددًا";
+  TXT.ar.trNext="الموقف التالي";
+  TXT.ar.trAsk="اختيارك — الخانة {n}. من تختار؟";
+  TXT.ar.trScore="{a} من {b}";
+  TXT.ar.trGood="صحيح";
+  TXT.ar.trBad="{n} ليس الخيار الأفضل";
+  TXT.ar.trBest="المساعد يختار: {x}";
+  TXT.ar.trBack = TXT.ar.tierBack;
+  TXT.de.pTrainT="Draft-Trainer";
+  TXT.de.pTrainD="Arbeite echte Situationen durch und miss dich mit dem Assistenten";
+  TXT.de.trTitle="Draft-Trainer";
+  TXT.de.trIntro="Echte Situationen aus den Karten-Pools. Wähle für deinen Slot und sieh, was der Assistent nehmen würde und warum.";
+  TXT.de.trLoading="Situation wird vorbereitet…";
+  TXT.de.trChecking="Wird geprüft…";
+  TXT.de.trFail="Situation konnte nicht geladen werden.";
+  TXT.de.trRetry="Erneut versuchen";
+  TXT.de.trNext="Nächste Situation";
+  TXT.de.trAsk="Dein Pick — Slot {n}. Wen nimmst du?";
+  TXT.de.trScore="{a} von {b}";
+  TXT.de.trGood="Richtig";
+  TXT.de.trBad="{n} ist nicht die beste Wahl";
+  TXT.de.trBest="Der Assistent wählt: {x}";
+  TXT.de.trBack = TXT.de.tierBack;
+  TXT.uk.shareDraft="🔗 Поділитися";
+  TXT.uk.shareDone="✓ Скопійовано";
+  TXT.uk.shareCopy="Скопіюй посилання:";
+  TXT.en.shareDraft="🔗 Share draft";
+  TXT.en.shareDone="✓ Copied";
+  TXT.en.shareCopy="Copy the link:";
+  TXT.es.shareDraft="🔗 Compartir";
+  TXT.es.shareDone="✓ Copiado";
+  TXT.es.shareCopy="Copia el enlace:";
+  TXT.pt.shareDraft="🔗 Compartilhar";
+  TXT.pt.shareDone="✓ Copiado";
+  TXT.pt.shareCopy="Copie o link:";
+  TXT.ru.shareDraft="🔗 Поделиться";
+  TXT.ru.shareDone="✓ Скопировано";
+  TXT.ru.shareCopy="Скопируй ссылку:";
+  TXT.tr.shareDraft="🔗 Paylaş";
+  TXT.tr.shareDone="✓ Kopyalandı";
+  TXT.tr.shareCopy="Bağlantıyı kopyala:";
+  TXT.ar.shareDraft="🔗 مشاركة";
+  TXT.ar.shareDone="✓ تم النسخ";
+  TXT.ar.shareCopy="انسخ الرابط:";
+  TXT.de.shareDraft="🔗 Teilen";
+  TXT.de.shareDone="✓ Kopiert";
+  TXT.de.shareCopy="Link kopieren:";
   TXT.uk.mstTitle="Вінрейти на цій карті";
   TXT.uk.mstSample="вибірка: {n} боїв";
   TXT.uk.mstGames="{n} ігор";
@@ -3370,7 +3627,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===name));
   }
   function hideAllViews(){
-    ["home","wizard","draftview","howview","faqview","statsview","tierview","stratview","upgview"].forEach(id=>{ $id(id).style.display="none"; });
+    ["home","wizard","draftview","howview","faqview","statsview","tierview","stratview","upgview","trainview"].forEach(id=>{ $id(id).style.display="none"; });
   }
   function reveal(rootSel){
     const els = document.querySelectorAll(rootSel + " .howcard, " + rootSel + " .faq");
@@ -4013,7 +4270,11 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     hideAllViews();
     $id("home").style.display="";
     setTabBtn("draft");
-    refreshHome(); window.scrollTo(0,0);
+    refreshHome();
+
+  // Посилання з драфтом відкриваємо ОСТАННІМ: refreshHome() вище повертає
+  // на головну, тож раніше наш екран одразу перекривався.
+  window.scrollTo(0,0);
   }
 
   function updateChip(){
@@ -4075,8 +4336,12 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   onTrustedClick("pillarStrat", openStratList);
   onTrustedClick("pillarTier", openTierList);
   onTrustedClick("pillarUpg", openUpgradeList);
+  onTrustedClick("pillarTrain", openTrainer);
+  // посилання з драфтом відкриваємо одразу після того, як усе прив'язано
   $id("tierBack").onclick=()=> setTab("draft");
   $id("upgBack").onclick=()=> setTab("draft");
+  $id("trBack").onclick=()=> setTab("draft");
+  { const sb=$id("shareDraft"); if(sb) sb.onclick=()=>shareDraft(sb); }
   $id("stratBack").onclick=()=> setTab("draft");
   $id("gDetailBack").onclick=()=> showStratList();
 
@@ -4427,6 +4692,165 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     }catch(e){ /* статистика не критична — мовчки пропускаємо */ }
   }
 
+
+  /* ============ ПОДІЛИТИСЯ ДРАФТОМ ============
+     Стан драфта пакуємо в саме посилання — жодного сервера й жодних баз.
+     Хто відкриє таке посилання, побачить рівно той самий драфт. */
+  function encodeDraft(){
+    const p = {
+      m: mode, i: mapIdx, f: weFirst ? 1 : 0, b: blind ? 1 : 0,
+      p: picks.map(x => x || ""), x: bans.slice()
+    };
+    try { return btoa(unescape(encodeURIComponent(JSON.stringify(p)))).replace(/=+$/,""); }
+    catch(e){ return ""; }
+  }
+  function decodeDraft(code){
+    try {
+      const p = JSON.parse(decodeURIComponent(escape(atob(code))));
+      if(!p || !MAP_NAMES[p.m] || !MAP_NAMES[p.m][p.i]) return false;
+      mode = p.m; mapIdx = p.i; map = MAP_NAMES[mode][mapIdx];
+      weFirst = !!p.f; blind = !!p.b;
+      // ВАЖЛИВО: міняємо масиви НА МІСЦІ, а не перезаписуємо. Решта коду тримає
+      // посилання на ці самі масиви, і після заміни посилання бачила б старі дані.
+      const np = Array.isArray(p.p) ? p.p : [];
+      for(let k = 0; k < 6; k++) picks[k] = np[k] || null;
+      bans.length = 0;
+      (Array.isArray(p.x) ? p.x : []).forEach(n => { if(BINFO[n]) bans.push(n); });
+      return true;
+    } catch(e){ return false; }
+  }
+  async function shareDraft(btn){
+    const code = encodeDraft(); if(!code) return;
+    const url = location.origin + location.pathname + "#d=" + code;
+    const done = () => {
+      const old = btn.textContent;
+      btn.textContent = t("shareDone");
+      setTimeout(() => { btn.textContent = old; }, 1800);
+    };
+    try {
+      if(navigator.share){ await navigator.share({ title: "Smart Draft", url }); return; }
+      await navigator.clipboard.writeText(url); done();
+    } catch(e){
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = url; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+        document.body.removeChild(ta); done();
+      } catch(e2){ prompt(t("shareCopy"), url); }
+    }
+  }
+  // Якщо зайшли за посиланням із драфтом — одразу його відкриваємо.
+  function tryOpenSharedDraft(){
+    const m = /[#&]d=([A-Za-z0-9+/]+)/.exec(location.hash || "");
+    if(!m) return false;
+    if(!decodeDraft(m[1])) return false;
+    history.replaceState(null, "", location.pathname + location.search);
+    hideAllViews();
+    $id("draftview").style.display = "";
+    started = true; setTabBtn("draft");
+    // той самий набір перемальовувань, що й при звичайному старті застосунку
+    setSides(); applyBlind(); drawFirst(); drawModes(); drawMaps();
+    drawBoard(); drawBans(); drawQuickBans(); updateChip(); render();
+    try{ loadMapStats(); }catch(e){}
+    window.scrollTo(0,0);
+    return true;
+  }
+
+
+  /* ============ ТРЕНАЖЕР ДРАФТУ ============
+     Ситуацію генерує Воркер із пулів конкретної карти (не навмання).
+     Після вибору звіряємо з тим, що порадив би асистент у цій самій позиції. */
+  let trState = null, trRight = 0, trTotal = 0;
+
+  // onclick у розмітці бачить лише window, тому виносимо туди явно
+  window.trLoad = async function trLoad(){
+    const box = $id("trBox");
+    box.innerHTML = `<p class="tierIntro">${esc(t("trLoading"))}</p>`;
+    try{
+      const r = await fetch(`${WORKER_URL}/trainer`);
+      trState = await r.json();
+      if(!trState || trState.error) throw 0;
+      trRender();
+    }catch(e){
+      box.innerHTML = `<p class="tierIntro">${esc(t("trFail"))}</p>
+        <button class="trNext" onclick="trLoad()">${esc(t("trRetry"))}</button>`;
+    }
+  };
+
+  function trRender(){
+    const s = trState, box = $id("trBox");
+    const OURS = s.weFirst ? [0,3,4] : [1,2,5];
+    const board = s.picks.map((n,i)=>{
+      const mine = OURS.includes(i);
+      const cls = "trSlot " + (mine ? "ally" : "enemy") + (i===s.slot ? " me" : "");
+      const body = n ? `<span class="tn">${esc(n)}</span>` : (i===s.slot ? "?" : "—");
+      return `<div class="${cls}"><span>${i+1}</span>${body}</div>`;
+    }).join("");
+
+    // варіанти: беремо з пулу карти, перемішуємо, показуємо 6
+    const opts = trOptions();
+    box.innerHTML = `
+      <div class="trHead">
+        <span class="trMap">${esc(s.map)}</span>
+        <span class="tag t-${esc(s.mapType||"mid")}">${esc(s.mode)}</span>
+        <span class="trScore">${esc(t("trScore",{a:trRight,b:trTotal}))}</span>
+      </div>
+      <div class="trBoard">${board}</div>
+      <div class="qslabel">${esc(t("trAsk",{n:s.slot+1}))}</div>
+      <div class="trPick">${opts.map(n=>
+        `<button class="trOpt" onclick="trAnswer('${n.replace(/'/g,"\\'")}')">${esc(n)} ${badges(bInfo(n))}</button>`
+      ).join("")}</div>`;
+  }
+
+  function trOptions(){
+    const s = trState;
+    const used = s.picks.filter(Boolean);
+    const all = Object.keys(BINFO).filter(n => !used.includes(n));
+    // перемішуємо і беремо 6 — серед них має бути і сильний варіант, і слабші
+    for(let i=all.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [all[i],all[j]]=[all[j],all[i]]; }
+    const ord = {"S+":0,"S":1,"A":2,"B":3,"C":4,"D":5,"F":6};
+    const strong = all.filter(n => ord[BINFO[n].t] <= 2).slice(0,3);
+    const rest   = all.filter(n => !strong.includes(n)).slice(0,3);
+    const opts = strong.concat(rest);
+    for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; }
+    return opts;
+  }
+
+  window.trAnswer = async function(name){
+    const s = trState;
+    trTotal++;
+    const box = $id("trBox");
+    box.insertAdjacentHTML("beforeend", `<p class="tierIntro">${esc(t("trChecking"))}</p>`);
+    let best = null, why = [];
+    try{
+      const r = await apiCall({ type:"recommend", mode:s.mode, mapIdx:s.mapIdx,
+        picks:s.picks, bans:[], weFirst:s.weFirst, forceSlot:s.slot });
+      if(r && r.list && r.list.length){ best = r.list; why = r.list[0].why || []; }
+    }catch(e){}
+    const names = best ? best.map(x=>x.name) : [];
+    const ok = names.includes(name);
+    if(ok) trRight++;
+    const whyTxt = why.slice(0,3).map(w => reasonText(w)).filter(Boolean).join(" · ");
+    trRender();
+    $id("trBox").insertAdjacentHTML("beforeend", `
+      <div class="trRes ${ok?"ok":"no"}">
+        <div class="trResT">${esc(ok ? t("trGood") : t("trBad",{n:name}))}</div>
+        <div class="trWhy">${esc(t("trBest",{x:names.join(", ")||"—"}))}${whyTxt?" — "+esc(whyTxt):""}</div>
+      </div>
+      <button class="trNext" onclick="trLoad()">${esc(t("trNext"))}</button>`);
+  };
+
+  function reasonText(w){
+    try{ return t(w[0], w[1] || undefined); }catch(e){ return ""; }
+  }
+
+  function openTrainer(){
+    hideAllViews();
+    $id("trainview").style.display="";
+    setTabBtn(null); window.scrollTo(0,0);
+    trLoad();
+  }
+
   async function openTierList(){
     hideAllViews();
     $id("tierview").style.display="";
@@ -4511,6 +4935,10 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   $id("home").style.display="";
   setTabBtn("draft");
   refreshHome();
+
+  // Посилання з драфтом відкриваємо ОСТАННІМ: refreshHome() вище показує
+  // головну, тож раніше наш екран одразу перекривався нею.
+  try{ tryOpenSharedDraft(); }catch(e){}
   wShow(0);
 })();
 
