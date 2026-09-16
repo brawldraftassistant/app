@@ -504,6 +504,36 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 
 /* ---------- Тір-лист (окремий екран) ---------- */
 .tierSec{ padding-top:20px }
+/* --- статистика карти, зібрана з боїв користувачів --- */
+.mstBox{ margin:10px 0 14px; padding:11px 14px; background:var(--panel2);
+  border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge) }
+.mstHead{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px }
+.mstTitle{ font-family:Unbounded,sans-serif; font-weight:900; font-size:11.5px;
+  letter-spacing:.05em; text-transform:uppercase }
+.mstSample{ font-size:10.5px; font-weight:800; color:var(--muted) }
+.mstRows{ display:flex; flex-direction:column; gap:5px }
+.mstRow{ display:flex; align-items:center; gap:9px; font-size:12px; font-weight:800 }
+.mstName{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mstBar{ flex:0 0 66px; height:7px; border-radius:99px; background:rgba(255,255,255,.12); overflow:hidden }
+.mstFill{ display:block; height:100%; background:linear-gradient(90deg,#FFD75E,#FF8A3D) }
+.mstWr{ flex:0 0 46px; text-align:right; font-family:Unbounded,sans-serif; font-weight:900; font-size:11.5px }
+.mstG{ flex:0 0 46px; text-align:right; font-size:10.5px; color:var(--muted); font-weight:800 }
+
+/* --- екран "Кого прокачувати" --- */
+.upgRow{
+  display:flex; align-items:center; gap:12px; margin-bottom:10px; padding:11px 14px;
+  background:var(--panel2); border:3px solid var(--edge); border-radius:16px; box-shadow:0 4px 0 var(--edge);
+}
+.upgPort{ display:block; width:46px; height:46px; border-radius:12px; object-fit:cover;
+  border:2px solid var(--edge); background:var(--panel); flex:0 0 auto }
+.upgBody{ flex:1 1 auto; min-width:0 }
+.upgHead{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px }
+.upgName{ font-family:Unbounded,sans-serif; font-weight:800; font-size:13px }
+.upgMiss{ display:flex; flex-wrap:wrap; gap:5px }
+.upgChip{ font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:999px;
+  background:rgba(255,107,107,.18); color:#FF9F9F; border:1.5px solid rgba(255,107,107,.35) }
+.upgProg{ font-family:Unbounded,sans-serif; font-weight:900; font-size:13px; color:var(--muted); flex:0 0 auto }
+
 .tierTop{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap }
 .tierBack{
   font-size:13px; font-weight:900; padding:8px 14px; border-radius:999px; border:3px solid var(--edge);
@@ -1541,6 +1571,11 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
       <span class="pTitle" id="pTierT">Тір-лист</span>
       <span class="pDesc" id="pTierD">Усі бійці одним списком: S/A/B/C/D/F і роль кожного</span>
     </button>
+    <button type="button" class="pillar" id="pillarUpg">
+      <span class="pIcon">⬆️</span>
+      <span class="pTitle" id="pUpgT">Кого прокачувати</span>
+      <span class="pDesc" id="pUpgD">За твоїм тегом: хто з сильних бійців ще не готовий і чого саме бракує</span>
+    </button>
     <button type="button" class="pillar" id="pillarStrat">
       <span class="pIcon">📚</span>
       <span class="pTitle" id="pStratT">Стратегії й гайди</span>
@@ -1611,6 +1646,17 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
   </section>
 </div>
 
+<div id="upgview" style="display:none">
+  <section class="tierSec">
+    <div class="tierTop">
+      <h2 id="uTitle">Кого прокачувати</h2>
+      <button type="button" class="tierBack" id="upgBack">← На головну</button>
+    </div>
+    <p class="tierIntro" id="uIntro">Беремо найсильніших бійців мети й дивимось, чого їм бракує до повного білда: 11 сила, гаджет, зоряна сила, гіперзаряд і баффі.</p>
+    <div id="upgBox"></div>
+  </section>
+</div>
+
 <div id="stratview" style="display:none">
   <section class="tierSec">
     <div class="tierTop">
@@ -1663,6 +1709,7 @@ input[type=text]{ background:#2E1670; border:3px solid var(--edge); border-radiu
 
 <div id="draftview" style="display:none">
 <div class="setchip" id="setchip"></div>
+<div id="mapStats" class="mstBox" style="display:none"></div>
 <div id="blk-bans"><h2 id="h-bans">Who to ban</h2>
 <div class="row" id="bans"></div>
 <div class="quick" id="quickbans"><button class="bq top" onclick="doBan(&#39;Meeple&#39;)"><span class="num">1</span><span>Meeple</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Sirius&#39;)"><span class="num">2</span><span>Sirius</span><span class="bt">A</span></button><button class="bq top" onclick="doBan(&#39;Starr Nova&#39;)"><span class="num">3</span><span>Starr Nova</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Damian&#39;)"><span>Damian</span><span class="bt s">S</span></button><button class="bq alt" onclick="doBan(&#39;Mortis&#39;)"><span>Mortis</span><span class="bt s">S</span><span class="bz">⚡</span></button><button class="bq alt" onclick="doBan(&#39;Edgar&#39;)"><span>Edgar</span><span class="bt s">S</span><span class="bz">⚡</span></button><div class="banhelp">Tap a brawler to ban</div><button class="addban" onclick="openPicker(&#39;ban&#39;)">+ Ban</button></div></div>
@@ -1976,6 +2023,9 @@ let mode="Brawl Ball", mapIdx=0, map=MAP_NAMES[mode][0], picks=[null,null,null,n
 // функції — інакше apiCall() (нижче в цьому ж блоці) не бачив би їх, бо значення
 // присвоюються пізніше, в іншому <script>-блоці, всередині окремого IIFE.
 const WORKER_URL = "https://draft-assistant-api.xailyx.workers.dev";
+// Назви режимів у battlelog Supercell пишуться інакше, ніж у нас на екрані.
+const MODE_API = { "Brawl Ball":"brawlBall", "Gem Grab":"gemGrab", "Heist":"heist",
+                   "Bounty":"bounty", "Knockout":"knockout", "Hot Zone":"hotZone" };
 let subCode = "";
 
 function bInfo(name){ return BINFO[name] || {roles:[], t:"?", buffie:false}; }
@@ -3085,11 +3135,147 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   const HOME_IDS = ["hEyebrow","hTag","hC1","hC2","hC3","hHowT","hH1t","hH1d","hH2t","hH2d","hH3t","hH3d",
                     "hStatsT","stDraftsL","stModeL","stStreakL","stBansL","hFaqT","hF1q","hF1a","hF2q","hF2a","hF3q","hF3a","hF4q","hF4a",
                     "hStatsHeadT2","hStatsIntro2",
-                    "pDraftT","pDraftD","pTierT","pTierD","pTierNew","coffeeTxt","pStratT","pStratD","pStatsT","pStatsD",
-                    "hTierT2","hTierIntro","tierBack","statsBack"];
+                    "pDraftT","pDraftD","pTierT","pTierD","pTierNew","coffeeTxt","pUpgT","pUpgD","uTitle","uIntro","pStratT","pStratD","pStatsT","pStatsD",
+                    "hTierT2","hTierIntro","tierBack","statsBack","upgBack"];
   TXT.uk.coffeeTxt="Пригости кавою"; TXT.en.coffeeTxt="Buy me a coffee"; TXT.es.coffeeTxt="Invítame un café";
   TXT.pt.coffeeTxt="Pague um café"; TXT.ru.coffeeTxt="Угости кофе"; TXT.tr.coffeeTxt="Bana kahve ısmarla";
   TXT.ar.coffeeTxt="اشترِ لي قهوة"; TXT.de.coffeeTxt="Spendier mir einen Kaffee";
+  TXT.uk.mstTitle="Вінрейти на цій карті";
+  TXT.uk.mstSample="вибірка: {n} боїв";
+  TXT.uk.mstGames="{n} ігор";
+  TXT.en.mstTitle="Win rates on this map";
+  TXT.en.mstSample="sample: {n} battles";
+  TXT.en.mstGames="{n} games";
+  TXT.es.mstTitle="Win rate en este mapa";
+  TXT.es.mstSample="muestra: {n} batallas";
+  TXT.es.mstGames="{n} partidas";
+  TXT.pt.mstTitle="Taxa de vitória neste mapa";
+  TXT.pt.mstSample="amostra: {n} batalhas";
+  TXT.pt.mstGames="{n} partidas";
+  TXT.ru.mstTitle="Винрейты на этой карте";
+  TXT.ru.mstSample="выборка: {n} боёв";
+  TXT.ru.mstGames="{n} игр";
+  TXT.tr.mstTitle="Bu haritadaki kazanma oranı";
+  TXT.tr.mstSample="örneklem: {n} maç";
+  TXT.tr.mstGames="{n} maç";
+  TXT.ar.mstTitle="نسب الفوز في هذه الخريطة";
+  TXT.ar.mstSample="العينة: {n} معركة";
+  TXT.ar.mstGames="{n} مباراة";
+  TXT.de.mstTitle="Siegraten auf dieser Karte";
+  TXT.de.mstSample="Stichprobe: {n} Kämpfe";
+  TXT.de.mstGames="{n} Spiele";
+  TXT.uk.upgBack = TXT.uk.tierBack;
+  TXT.en.upgBack = TXT.en.tierBack;
+  TXT.es.upgBack = TXT.es.tierBack;
+  TXT.pt.upgBack = TXT.pt.tierBack;
+  TXT.ru.upgBack = TXT.ru.tierBack;
+  TXT.tr.upgBack = TXT.tr.tierBack;
+  TXT.ar.upgBack = TXT.ar.tierBack;
+  TXT.de.upgBack = TXT.de.tierBack;
+  TXT.uk.pUpgT="Кого прокачувати";
+  TXT.uk.pUpgD="За твоїм тегом: хто з сильних бійців ще не готовий і чого саме бракує";
+  TXT.uk.uTitle="Кого прокачувати";
+  TXT.uk.uIntro="Беремо найсильніших бійців мети й дивимось, чого їм бракує до повного білда.";
+  TXT.uk.uNeedTag="Спочатку введи свій тег на головній — без нього ми не знаємо, що в тебе прокачано.";
+  TXT.uk.uAllDone="У тебе прокачані всі сильні бійці мети. Нема чого додати.";
+  TXT.uk.uCount="Бійців, які варті прокачки: {n}";
+  TXT.uk.uMissOwn="ще не відкритий";
+  TXT.uk.uMissPower="до 11 сили";
+  TXT.uk.uMissGadget="гаджет";
+  TXT.uk.uMissStar="зоряна сила";
+  TXT.uk.uMissHyper="гіперзаряд";
+  TXT.uk.uMissBuffie="баффі {n}/3";
+  TXT.en.pUpgT="What to upgrade";
+  TXT.en.pUpgD="From your tag: which strong brawlers aren't ready yet and what's missing";
+  TXT.en.uTitle="What to upgrade";
+  TXT.en.uIntro="We take the strongest brawlers in the meta and check what they still need for a full build.";
+  TXT.en.uNeedTag="Enter your tag on the home screen first — without it we don't know what you've maxed.";
+  TXT.en.uAllDone="All the strong meta brawlers are maxed. Nothing to add.";
+  TXT.en.uCount="Brawlers worth upgrading: {n}";
+  TXT.en.uMissOwn="not unlocked";
+  TXT.en.uMissPower="to power 11";
+  TXT.en.uMissGadget="gadget";
+  TXT.en.uMissStar="star power";
+  TXT.en.uMissHyper="Hypercharge";
+  TXT.en.uMissBuffie="Buffies {n}/3";
+  TXT.es.pUpgT="Qué mejorar";
+  TXT.es.pUpgD="Con tu tag: qué brawlers fuertes aún no están listos y qué les falta";
+  TXT.es.uTitle="Qué mejorar";
+  TXT.es.uIntro="Tomamos los brawlers más fuertes del meta y vemos qué les falta para la build completa.";
+  TXT.es.uNeedTag="Primero introduce tu tag en la pantalla principal — sin él no sabemos qué tienes al máximo.";
+  TXT.es.uAllDone="Tienes al máximo todos los brawlers fuertes del meta.";
+  TXT.es.uCount="Brawlers que vale la pena mejorar: {n}";
+  TXT.es.uMissOwn="no desbloqueado";
+  TXT.es.uMissPower="a poder 11";
+  TXT.es.uMissGadget="gadget";
+  TXT.es.uMissStar="power point";
+  TXT.es.uMissHyper="Hipercarga";
+  TXT.es.uMissBuffie="Buffies {n}/3";
+  TXT.pt.pUpgT="O que evoluir";
+  TXT.pt.pUpgD="Pelo seu tag: quais brawlers fortes ainda não estão prontos e o que falta";
+  TXT.pt.uTitle="O que evoluir";
+  TXT.pt.uIntro="Pegamos os brawlers mais fortes do meta e vemos o que falta para a build completa.";
+  TXT.pt.uNeedTag="Primeiro coloque seu tag na tela inicial — sem ele não sabemos o que você tem no máximo.";
+  TXT.pt.uAllDone="Todos os brawlers fortes do meta já estão no máximo.";
+  TXT.pt.uCount="Brawlers que valem a pena evoluir: {n}";
+  TXT.pt.uMissOwn="não desbloqueado";
+  TXT.pt.uMissPower="até poder 11";
+  TXT.pt.uMissGadget="gadget";
+  TXT.pt.uMissStar="power point";
+  TXT.pt.uMissHyper="Hipercarga";
+  TXT.pt.uMissBuffie="Buffies {n}/3";
+  TXT.ru.pUpgT="Кого качать";
+  TXT.ru.pUpgD="По твоему тегу: кто из сильных бойцов ещё не готов и чего именно не хватает";
+  TXT.ru.uTitle="Кого качать";
+  TXT.ru.uIntro="Берём сильнейших бойцов меты и смотрим, чего им не хватает до полного билда.";
+  TXT.ru.uNeedTag="Сначала введи свой тег на главной — без него мы не знаем, что у тебя прокачано.";
+  TXT.ru.uAllDone="У тебя прокачаны все сильные бойцы меты. Добавить нечего.";
+  TXT.ru.uCount="Бойцов, которых стоит прокачать: {n}";
+  TXT.ru.uMissOwn="ещё не открыт";
+  TXT.ru.uMissPower="до 11 силы";
+  TXT.ru.uMissGadget="гаджет";
+  TXT.ru.uMissStar="звёздная сила";
+  TXT.ru.uMissHyper="гиперзаряд";
+  TXT.ru.uMissBuffie="баффи {n}/3";
+  TXT.tr.pUpgT="Neyi geliştirmeli";
+  TXT.tr.pUpgD="Etiketinden: hangi güçlü brawler'lar henüz hazır değil ve neyi eksik";
+  TXT.tr.uTitle="Neyi geliştirmeli";
+  TXT.tr.uIntro="Metanın en güçlü brawler'larını alıp tam build için neyi eksik olduğuna bakıyoruz.";
+  TXT.tr.uNeedTag="Önce ana ekranda etiketini gir — onsuz neyi maksladığını bilemeyiz.";
+  TXT.tr.uAllDone="Metanın tüm güçlü brawler'ları maks seviyede.";
+  TXT.tr.uCount="Geliştirmeye değer brawler: {n}";
+  TXT.tr.uMissOwn="açılmamış";
+  TXT.tr.uMissPower="güç 11'e";
+  TXT.tr.uMissGadget="gadget";
+  TXT.tr.uMissStar="yıldız gücü";
+  TXT.tr.uMissHyper="Hypercharge";
+  TXT.tr.uMissBuffie="Buffies {n}/3";
+  TXT.ar.pUpgT="مَن تطوّر";
+  TXT.ar.pUpgD="من وسمك: أي الشخصيات القوية ليست جاهزة بعد وما الذي ينقصها";
+  TXT.ar.uTitle="مَن تطوّر";
+  TXT.ar.uIntro="نأخذ أقوى شخصيات الميتا ونرى ما ينقصها للتطوير الكامل.";
+  TXT.ar.uNeedTag="أدخل وسمك في الشاشة الرئيسية أولاً — بدونه لا نعرف ما طوّرته.";
+  TXT.ar.uAllDone="كل شخصيات الميتا القوية مطوَّرة بالكامل.";
+  TXT.ar.uCount="شخصيات تستحق التطوير: {n}";
+  TXT.ar.uMissOwn="غير مفتوحة";
+  TXT.ar.uMissPower="إلى القوة 11";
+  TXT.ar.uMissGadget="أداة";
+  TXT.ar.uMissStar="قدرة نجمية";
+  TXT.ar.uMissHyper="شحن فائق";
+  TXT.ar.uMissBuffie="Buffies {n}/3";
+  TXT.de.pUpgT="Was ausbauen";
+  TXT.de.pUpgD="Aus deinem Tag: welche starken Brawler noch nicht bereit sind und was fehlt";
+  TXT.de.uTitle="Was ausbauen";
+  TXT.de.uIntro="Wir nehmen die stärksten Brawler des Metas und prüfen, was ihnen zum vollen Build fehlt.";
+  TXT.de.uNeedTag="Gib zuerst deinen Tag auf der Startseite ein — sonst wissen wir nicht, was du ausgebaut hast.";
+  TXT.de.uAllDone="Alle starken Meta-Brawler sind voll ausgebaut.";
+  TXT.de.uCount="Brawler, die sich lohnen: {n}";
+  TXT.de.uMissOwn="nicht freigeschaltet";
+  TXT.de.uMissPower="auf Stufe 11";
+  TXT.de.uMissGadget="Gadget";
+  TXT.de.uMissStar="Sternkraft";
+  TXT.de.uMissHyper="Hyperladung";
+  TXT.de.uMissBuffie="Buffies {n}/3";
   TXT.uk.pTierNew="Вересень"; TXT.en.pTierNew="September"; TXT.es.pTierNew="Septiembre";
   TXT.pt.pTierNew="Setembro"; TXT.ru.pTierNew="Сентябрь"; TXT.tr.pTierNew="Eylül";
   TXT.ar.pTierNew="سبتمبر"; TXT.de.pTierNew="September";
@@ -3184,7 +3370,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===name));
   }
   function hideAllViews(){
-    ["home","wizard","draftview","howview","faqview","statsview","tierview","stratview"].forEach(id=>{ $id(id).style.display="none"; });
+    ["home","wizard","draftview","howview","faqview","statsview","tierview","stratview","upgview"].forEach(id=>{ $id(id).style.display="none"; });
   }
   function reveal(rootSel){
     const els = document.querySelectorAll(rootSel + " .howcard, " + rootSel + " .faq");
@@ -3200,7 +3386,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     if(name==="how"){ $id("howview").style.display=""; reveal("#howview"); }
     else if(name==="faq"){ $id("faqview").style.display=""; reveal("#faqview"); }
     else { // draft: якщо драфт уже почато — одразу в нього, інакше герой-екран
-      if(started){ $id("draftview").style.display=""; updateChip(); }
+      if(started){ $id("draftview").style.display=""; updateChip(); try{ loadMapStats(); }catch(e){} }
       else { $id("home").style.display=""; refreshHome(); }
     }
     window.scrollTo(0,0);
@@ -3815,6 +4001,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     if(!started && typeof window.trackDraft === "function") window.trackDraft(mode);
     started = true; setTabBtn("draft");
     updateChip(); window.scrollTo(0,0);
+    try{ loadMapStats(); }catch(e){}
   }
   function wOpen(i){
     hideAllViews();
@@ -3887,7 +4074,9 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   }
   onTrustedClick("pillarStrat", openStratList);
   onTrustedClick("pillarTier", openTierList);
+  onTrustedClick("pillarUpg", openUpgradeList);
   $id("tierBack").onclick=()=> setTab("draft");
+  $id("upgBack").onclick=()=> setTab("draft");
   $id("stratBack").onclick=()=> setTab("draft");
   $id("gDetailBack").onclick=()=> showStratList();
 
@@ -4114,6 +4303,130 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     return out;
   }
   let cachedTiers = null;
+
+  /* ============ КОГО ПРОКАЧУВАТИ ============
+     Правило пріоритету від автора: усі S+ і S, та половина A.
+     Беремо цих бійців, дивимось стан за тегом і показуємо, чого бракує
+     до повного білда. Нічого нового з мережі не тягнемо — дані вже є. */
+  function upgradeCandidates(){
+    const order = { "S+":0, "S":1, "A":2 };
+    const list = Object.keys(BINFO)
+      .filter(n => order[BINFO[n].t] !== undefined)
+      .sort((a,b) => order[BINFO[a].t] - order[BINFO[b].t] || a.localeCompare(b));
+    // "половина A" — беремо першу половину A-тіру за алфавітом стабільно,
+    // щоб список не стрибав щоразу. Решта тірів іде повністю.
+    const aTier = list.filter(n => BINFO[n].t === "A");
+    const aKeep = new Set(aTier.slice(0, Math.ceil(aTier.length/2)));
+    return list.filter(n => BINFO[n].t !== "A" || aKeep.has(n));
+  }
+
+  function renderUpgradeList(){
+    const box = $id("upgBox");
+    const d = lastPlayerData;
+    if(!d || !Array.isArray(d.brawlers)){
+      box.innerHTML = `<p class="tierIntro">${esc(t("uNeedTag"))}</p>`;
+      return;
+    }
+    const byNorm = new Map();
+    d.brawlers.forEach(b => byNorm.set(normOwnedName(b.name), b));
+
+    const rows = [];
+    upgradeCandidates().forEach(name => {
+      const n = normOwnedName(name);
+      const api = byNorm.get(n) || byNorm.get(OWNED_NAME_ALIAS[n] || n);
+      const info = BINFO[name] || {};
+      const miss = [];
+      let have = 0, total = 4;
+
+      if(!api){ miss.push(t("uMissOwn")); }
+      else {
+        if((api.power||0) >= 11) have++; else miss.push(t("uMissPower"));
+        if(Array.isArray(api.gadgets) && api.gadgets.length) have++; else miss.push(t("uMissGadget"));
+        if(Array.isArray(api.starPowers) && api.starPowers.length) have++; else miss.push(t("uMissStar"));
+        const hc = api.hyperCharges ?? api.hypercharges;
+        if(Array.isArray(hc) ? hc.length >= 1 : hc === undefined) have++; else miss.push(t("uMissHyper"));
+        // баффі — окремо, вони не входять у "повний білд", лише в пріоритет
+        if(info.buffie){
+          const bf = api.buffies;
+          if(bf && typeof bf === "object" && !Array.isArray(bf)){
+            const cnt = Object.keys(bf).filter(k => bf[k] === true).length;
+            if(cnt < 3) miss.push(t("uMissBuffie", {n: cnt}));
+          }
+        }
+      }
+      if(!miss.length) return;                       // повністю готовий — не показуємо
+      rows.push({ name, t: info.t, miss, have, total, portrait: (window.brawlerPortrait ? brawlerPortrait(name) : "") });
+    });
+
+    if(!rows.length){
+      box.innerHTML = `<p class="tierIntro">${esc(t("uAllDone"))}</p>`;
+      return;
+    }
+    // спершу тір, далі ті, кому лишилось найменше — їх найдешевше дотягнути
+    const ord = { "S+":0, "S":1, "A":2 };
+    rows.sort((a,b) => ord[a.t]-ord[b.t] || (b.have-a.have) || a.name.localeCompare(b.name));
+
+    box.innerHTML = `<p class="gCount">${esc(t("uCount", {n: rows.length}))}</p>` + rows.map(r => `
+      <div class="upgRow">
+        ${r.portrait ? `<img class="upgPort" src="${r.portrait}" alt="" loading="lazy">` : `<span class="upgPort"></span>`}
+        <div class="upgBody">
+          <div class="upgHead">
+            <span class="upgName">${esc(r.name)}</span>
+            <span class="tier ${tierCls(r.t)}">${tierText(r.t)}</span>
+          </div>
+          <div class="upgMiss">${r.miss.map(m=>`<span class="upgChip">${esc(m)}</span>`).join("")}</div>
+        </div>
+        <div class="upgProg">${r.have}/${r.total}</div>
+      </div>`).join("");
+  }
+
+  function openUpgradeList(){
+    hideAllViews();
+    $id("upgview").style.display="";
+    setTabBtn(null);
+    window.scrollTo(0,0);
+    renderUpgradeList();
+  }
+
+
+  /* ============ СТАТИСТИКА КАРТИ ============
+     Зовнішніх вінрейтів по картах не існує — Brawlify віддає їх порожніми.
+     Тому Воркер збирає власні з боїв тих, хто вводив тег, і віддає агрегат.
+     Показуємо лише коли вибірка достатня, і завжди пишемо її розмір,
+     щоб було видно, наскільки числу можна вірити. */
+  const MST_MIN_SAMPLE = 30;      // менше — цифри ще нічого не означають
+  let mstLastKey = "";
+  async function loadMapStats(){
+    const box = $id("mapStats"); if(!box) return;
+    const m = mode, mp = (MAP_NAMES[mode] && MAP_NAMES[mode][mapIdx] || [])[0];
+    if(!m || !mp){ box.style.display="none"; return; }
+    const key = m + "|" + mp;
+    if(key === mstLastKey) return;          // та сама карта — не смикаємо сервер
+    mstLastKey = key;
+    box.style.display = "none";
+    try{
+      const r = await fetch(`${WORKER_URL}/mapstats?mode=${encodeURIComponent(MODE_API[m]||m)}&map=${encodeURIComponent(mp)}`);
+      if(!r.ok) return;
+      const d = await r.json();
+      if(!d || !Array.isArray(d.rows) || (d.sample||0) < MST_MIN_SAMPLE) return;
+      const top = d.rows.filter(x=>x.games >= 3).slice(0,6);
+      if(!top.length) return;
+      box.innerHTML = `
+        <div class="mstHead">
+          <span class="mstTitle">${esc(t("mstTitle"))}</span>
+          <span class="mstSample">${esc(t("mstSample",{n:d.sample}))}</span>
+        </div>
+        <div class="mstRows">${top.map(x=>`
+          <div class="mstRow">
+            <span class="mstName">${esc(x.name)}</span>
+            <span class="mstBar"><span class="mstFill" style="width:${Math.max(0,Math.min(100,x.wr))}%"></span></span>
+            <span class="mstWr">${x.wr}%</span>
+            <span class="mstG">${esc(t("mstGames",{n:x.games}))}</span>
+          </div>`).join("")}</div>`;
+      box.style.display = "";
+    }catch(e){ /* статистика не критична — мовчки пропускаємо */ }
+  }
+
   async function openTierList(){
     hideAllViews();
     $id("tierview").style.display="";
