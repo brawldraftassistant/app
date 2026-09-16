@@ -596,20 +596,57 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 
 /* --- екран "Кого прокачувати" --- */
 /* --- тренажер драфту --- */
-.trHead{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px }
-.trMap{ font-family:Unbounded,sans-serif; font-weight:900; font-size:13px }
+.trTop{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px }
+.trDiffs{ display:flex; gap:5px }
+.trDiff{ padding:6px 12px; border-radius:999px; border:2.5px solid var(--edge);
+  background:var(--panel2); color:var(--text); font-weight:800; font-size:11.5px; cursor:pointer }
+.trDiff.on{ background:linear-gradient(100deg,#FFD75E,#FF9F1C); color:#3A1500 }
 .trScore{ margin-left:auto; font-family:Unbounded,sans-serif; font-weight:900; font-size:12px; color:var(--muted) }
-.trBoard{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:5px; margin-bottom:12px }
-.trSlot{ padding:7px 3px; border-radius:11px; border:2.5px solid var(--edge); text-align:center;
-  font-size:10px; font-weight:800; min-height:56px; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:3px; overflow:hidden }
-.trSlot.ally{ background:#2B49C9 } .trSlot.enemy{ background:#B8265B }
-.trSlot.me{ outline:3px solid var(--sun); outline-offset:1px }
-.trSlot .tn{ font-size:9.5px; line-height:1.1; word-break:break-word }
-.trPick{ display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:6px; margin-top:6px }
-.trOpt{ padding:9px 8px; border-radius:12px; border:2.5px solid var(--edge); background:var(--panel2);
-  font-weight:800; font-size:12px; cursor:pointer; text-align:left }
-.trOpt:hover{ transform:translateY(-1px) }
+
+/* Арена: картинка карти на весь блок, вороги зверху (їхній спавн),
+   ми знизу (наш). Кожна сторона — три позиції: лівий фланг, центр, правий. */
+.trArena{
+  position:relative; border-radius:18px; border:3px solid var(--edge);
+  box-shadow:0 5px 0 var(--edge); overflow:hidden; padding:12px 10px;
+  background-size:cover; background-position:center; background-color:#1B0F45;
+  display:flex; flex-direction:column; gap:10px; min-height:250px;
+}
+.trArena::before{ content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(12,5,42,.78) 0%, rgba(12,5,42,.42) 45%, rgba(12,5,42,.78) 100%); }
+.trSide{ position:relative; z-index:1 }
+.trSideLbl{ display:block; font-size:10px; font-weight:900; letter-spacing:.07em;
+  text-transform:uppercase; margin-bottom:5px; opacity:.85 }
+.trSide.enemy .trSideLbl{ color:#FF9FB8 }
+.trSide.ally  .trSideLbl{ color:#9FD4FF; text-align:right }
+.trLane{ display:grid; grid-template-columns:repeat(3,1fr); gap:7px }
+.trUnit{ display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:6px 3px; border-radius:13px; border:2.5px solid var(--edge) }
+.trUnit.enemy{ background:rgba(184,38,91,.72) }
+.trUnit.ally{ background:rgba(43,73,201,.72) }
+.trUnit.me{ outline:3px solid var(--sun); outline-offset:1px }
+.trFace{ width:42px; height:42px; border-radius:11px; object-fit:cover;
+  border:2px solid var(--edge); background:var(--panel); display:block }
+.trFaceNo, .trFaceEmpty{ display:flex; align-items:center; justify-content:center;
+  font-family:Unbounded,sans-serif; font-weight:900; font-size:15px; color:var(--muted) }
+.trFaceEmpty{ background:rgba(255,255,255,.08); border-style:dashed }
+.trUnitName{ font-size:9.5px; font-weight:800; line-height:1.1; text-align:center;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100% }
+.trMapName{ position:relative; z-index:1; text-align:center; font-size:10.5px;
+  font-weight:800; color:#E7DEFF; opacity:.9 }
+
+.trAsk{ margin-top:12px }
+.trSearch{ width:100%; margin:8px 0; padding:11px 14px; border-radius:13px;
+  border:2.5px solid var(--edge); background:var(--panel2); color:var(--text);
+  font-weight:700; font-size:14px }
+.trPick{ display:grid; grid-template-columns:repeat(auto-fill,minmax(98px,1fr)); gap:7px;
+  max-height:340px; overflow-y:auto }
+.trOpt{ display:flex; flex-direction:column; align-items:center; gap:5px;
+  padding:9px 6px; border-radius:14px; border:2.5px solid var(--edge);
+  background:var(--panel2); cursor:pointer; transition:transform .12s ease }
+.trOpt:hover{ transform:translateY(-2px) }
+.trOpt .trFace{ width:46px; height:46px }
+.trOptName{ font-weight:800; font-size:11.5px; line-height:1.1; text-align:center }
+
 .trRes{ margin-top:12px; padding:11px 14px; border-radius:14px; border:3px solid var(--edge) }
 .trRes.ok{ background:linear-gradient(160deg,#2FBF71,#1E8C52); color:#06240F }
 .trRes.no{ background:linear-gradient(160deg,#FFD75E,#FF9F1C); color:#3A1500 }
@@ -3255,6 +3292,62 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   TXT.ar.coffeeTxt="اشترِ لي قهوة"; TXT.de.coffeeTxt="Spendier mir einen Kaffee";
   TXT.uk.pTrainT="Тренажер драфту";
   TXT.uk.pTrainD="Розбирай реальні ситуації й перевіряй себе проти асистента";
+  TXT.uk.trEasy="Легко";
+  TXT.uk.trMed="Середньо";
+  TXT.uk.trHard="Важко";
+  TXT.uk.trUs="Ми";
+  TXT.uk.trEnemy="Ворог";
+  TXT.uk.trYou="Твій пік";
+  TXT.uk.trSearch="Пошук за іменем…";
+  TXT.en.trEasy="Easy";
+  TXT.en.trMed="Medium";
+  TXT.en.trHard="Hard";
+  TXT.en.trUs="Us";
+  TXT.en.trEnemy="Enemy";
+  TXT.en.trYou="Your pick";
+  TXT.en.trSearch="Search by name…";
+  TXT.es.trEasy="Fácil";
+  TXT.es.trMed="Medio";
+  TXT.es.trHard="Difícil";
+  TXT.es.trUs="Nosotros";
+  TXT.es.trEnemy="Enemigo";
+  TXT.es.trYou="Tu pick";
+  TXT.es.trSearch="Buscar por nombre…";
+  TXT.pt.trEasy="Fácil";
+  TXT.pt.trMed="Médio";
+  TXT.pt.trHard="Difícil";
+  TXT.pt.trUs="Nós";
+  TXT.pt.trEnemy="Inimigo";
+  TXT.pt.trYou="Sua escolha";
+  TXT.pt.trSearch="Buscar por nome…";
+  TXT.ru.trEasy="Легко";
+  TXT.ru.trMed="Средне";
+  TXT.ru.trHard="Сложно";
+  TXT.ru.trUs="Мы";
+  TXT.ru.trEnemy="Враг";
+  TXT.ru.trYou="Твой пик";
+  TXT.ru.trSearch="Поиск по имени…";
+  TXT.tr.trEasy="Kolay";
+  TXT.tr.trMed="Orta";
+  TXT.tr.trHard="Zor";
+  TXT.tr.trUs="Biz";
+  TXT.tr.trEnemy="Rakip";
+  TXT.tr.trYou="Senin seçimin";
+  TXT.tr.trSearch="İsimle ara…";
+  TXT.ar.trEasy="سهل";
+  TXT.ar.trMed="متوسط";
+  TXT.ar.trHard="صعب";
+  TXT.ar.trUs="نحن";
+  TXT.ar.trEnemy="الخصم";
+  TXT.ar.trYou="اختيارك";
+  TXT.ar.trSearch="ابحث بالاسم…";
+  TXT.de.trEasy="Leicht";
+  TXT.de.trMed="Mittel";
+  TXT.de.trHard="Schwer";
+  TXT.de.trUs="Wir";
+  TXT.de.trEnemy="Gegner";
+  TXT.de.trYou="Dein Pick";
+  TXT.de.trSearch="Nach Namen suchen…";
   TXT.uk.trTitle="Тренажер драфту";
   TXT.uk.trIntro="Реальні ситуації з пулів карт. Обери бійця на свій слот — і подивись, що порадив би асистент і чому.";
   TXT.uk.trLoading="Готуємо ситуацію…";
@@ -4758,16 +4851,23 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
 
 
   /* ============ ТРЕНАЖЕР ДРАФТУ ============
-     Ситуацію генерує Воркер із пулів конкретної карти (не навмання).
-     Після вибору звіряємо з тим, що порадив би асистент у цій самій позиції. */
-  let trState = null, trRight = 0, trTotal = 0;
+     Ситуацію генерує Воркер із пулів карти й з дотриманням порядку драфту:
+     заповнені лише піки, що йдуть ДО твого. Правильні відповіді приходять
+     разом із варіантами, тому вони не можуть розійтись між собою. */
+  let trState = null, trRight = 0, trTotal = 0, trDiff = "easy", trAnswered = false;
+  try { trDiff = localStorage.getItem("trDiff") || "easy"; } catch(e){}
 
-  // onclick у розмітці бачить лише window, тому виносимо туди явно
+  window.trSetDiff = function(d){
+    trDiff = d; try{ localStorage.setItem("trDiff", d); }catch(e){}
+    trLoad();
+  };
+
   window.trLoad = async function trLoad(){
     const box = $id("trBox");
+    trAnswered = false;
     box.innerHTML = `<p class="tierIntro">${esc(t("trLoading"))}</p>`;
     try{
-      const r = await fetch(`${WORKER_URL}/trainer`);
+      const r = await fetch(`${WORKER_URL}/trainer?diff=${encodeURIComponent(trDiff)}`);
       trState = await r.json();
       if(!trState || trState.error) throw 0;
       trRender();
@@ -4777,72 +4877,103 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     }
   };
 
+  function trPortrait(n){
+    const u = window.brawlerPortrait ? brawlerPortrait(n) : null;
+    return u ? `<img class="trFace" src="${u}" alt="" loading="lazy">`
+             : `<span class="trFace trFaceNo">${esc((n||"?").slice(0,2))}</span>`;
+  }
+
+  // Ряд бійців однієї сторони: лівий фланг — центр — правий фланг
+  function trLane(slots, side){
+    return slots.map(i=>{
+      const n = trState.picks[i];
+      const me = i === trState.slot;
+      return `<div class="trUnit ${side}${me?" me":""}">
+        ${n ? trPortrait(n) : `<span class="trFace trFaceEmpty">${me?"?":""}</span>`}
+        <span class="trUnitName">${n ? esc(n) : (me ? esc(t("trYou")) : "")}</span>
+      </div>`;
+    }).join("");
+  }
+
   function trRender(){
     const s = trState, box = $id("trBox");
-    const OURS = s.weFirst ? [0,3,4] : [1,2,5];
-    const board = s.picks.map((n,i)=>{
-      const mine = OURS.includes(i);
-      const cls = "trSlot " + (mine ? "ally" : "enemy") + (i===s.slot ? " me" : "");
-      const body = n ? `<span class="tn">${esc(n)}</span>` : (i===s.slot ? "?" : "—");
-      return `<div class="${cls}"><span>${i+1}</span>${body}</div>`;
-    }).join("");
+    const OURS   = s.weFirst ? [0,3,4] : [1,2,5];
+    const THEIRS = s.weFirst ? [1,2,5] : [0,3,4];
+    const img = window.mapThumbnail ? mapThumbnail(s.map) : null;
 
-    // варіанти: беремо з пулу карти, перемішуємо, показуємо 6
-    const opts = trOptions();
+    const diffBtn = (d,lbl) => `<button class="trDiff${trDiff===d?" on":""}" onclick="trSetDiff('${d}')">${esc(lbl)}</button>`;
+
     box.innerHTML = `
-      <div class="trHead">
-        <span class="trMap">${esc(s.map)}</span>
-        <span class="tag t-${esc(s.mapType||"mid")}">${esc(s.mode)}</span>
+      <div class="trTop">
+        <div class="trDiffs">${diffBtn("easy",t("trEasy"))}${diffBtn("medium",t("trMed"))}${diffBtn("hard",t("trHard"))}</div>
         <span class="trScore">${esc(t("trScore",{a:trRight,b:trTotal}))}</span>
       </div>
-      <div class="trBoard">${board}</div>
-      <div class="qslabel">${esc(t("trAsk",{n:s.slot+1}))}</div>
-      <div class="trPick">${opts.map(n=>
-        `<button class="trOpt" onclick="trAnswer('${n.replace(/'/g,"\\'")}')">${esc(n)} ${badges(bInfo(n))}</button>`
-      ).join("")}</div>`;
+
+      <div class="trArena"${img?` style="background-image:url('${img}')"`:""}>
+        <div class="trSide enemy"><span class="trSideLbl">${esc(t("trEnemy"))}</span>
+          <div class="trLane">${trLane(THEIRS,"enemy")}</div></div>
+        <div class="trMapName">${esc(s.map)} · ${esc(s.mode)}</div>
+        <div class="trSide ally"><span class="trSideLbl">${esc(t("trUs"))}</span>
+          <div class="trLane">${trLane(OURS,"ally")}</div></div>
+      </div>
+
+      <div class="qslabel trAsk">${esc(t("trAsk",{n:s.slot+1}))}</div>
+      <div id="trPickWrap"></div>`;
+
+    trRenderOptions();
   }
 
-  function trOptions(){
-    const s = trState;
+  function trRenderOptions(){
+    const s = trState, wrap = $id("trPickWrap");
     const used = s.picks.filter(Boolean);
-    const all = Object.keys(BINFO).filter(n => !used.includes(n));
-    // перемішуємо і беремо 6 — серед них має бути і сильний варіант, і слабші
-    for(let i=all.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [all[i],all[j]]=[all[j],all[i]]; }
-    const ord = {"S+":0,"S":1,"A":2,"B":3,"C":4,"D":5,"F":6};
-    const strong = all.filter(n => ord[BINFO[n].t] <= 2).slice(0,3);
-    const rest   = all.filter(n => !strong.includes(n)).slice(0,3);
-    const opts = strong.concat(rest);
-    for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; }
-    return opts;
+    if(s.options){
+      wrap.innerHTML = `<div class="trPick">${s.options.map(trOptBtn).join("")}</div>`;
+    } else {
+      // важкий режим — усі бійці з пошуком
+      const all = Object.keys(BINFO).filter(n=>!used.includes(n)).sort();
+      wrap.innerHTML = `
+        <input type="text" class="trSearch" id="trSearch" placeholder="${esc(t("trSearch"))}" autocomplete="off">
+        <div class="trPick" id="trAll">${all.map(trOptBtn).join("")}</div>`;
+      const inp = $id("trSearch");
+      inp.oninput = () => {
+        const q = inp.value.trim().toLowerCase();
+        [...$id("trAll").children].forEach(el=>{
+          el.style.display = !q || el.dataset.n.toLowerCase().includes(q) ? "" : "none";
+        });
+      };
+    }
   }
 
-  window.trAnswer = async function(name){
+  function trOptBtn(n){
+    return `<button class="trOpt" data-n="${esc(n)}" onclick="trAnswer('${n.replace(/'/g,"\\'")}')">
+      ${trPortrait(n)}<span class="trOptName">${esc(n)}</span>
+      <span class="tier ${tierCls(BINFO[n].t)}">${tierText(BINFO[n].t)}</span></button>`;
+  }
+
+  window.trAnswer = function(name){
+    if(trAnswered) return;            // від повторних натисків
+    trAnswered = true;
     const s = trState;
     trTotal++;
-    const box = $id("trBox");
-    box.insertAdjacentHTML("beforeend", `<p class="tierIntro">${esc(t("trChecking"))}</p>`);
-    let best = null, why = [];
-    try{
-      const r = await apiCall({ type:"recommend", mode:s.mode, mapIdx:s.mapIdx,
-        picks:s.picks, bans:[], weFirst:s.weFirst, forceSlot:s.slot });
-      if(r && r.list && r.list.length){ best = r.list; why = r.list[0].why || []; }
-    }catch(e){}
-    const names = best ? best.map(x=>x.name) : [];
-    const ok = names.includes(name);
+    const ok = (s.answers || []).includes(name);
     if(ok) trRight++;
-    const whyTxt = why.slice(0,3).map(w => reasonText(w)).filter(Boolean).join(" · ");
+
+    // ставимо вибір на дошку, щоб було видно результат
+    s.picks[s.slot] = name;
     trRender();
+    $id("trPickWrap").innerHTML = "";
+
+    const whyTxt = (s.why || []).filter(w=>!w[2]).slice(0,3)
+      .map(w => { try{ return t(w[0], w[1] || undefined); }catch(e){ return ""; } })
+      .filter(Boolean).join(" · ");
+
     $id("trBox").insertAdjacentHTML("beforeend", `
       <div class="trRes ${ok?"ok":"no"}">
         <div class="trResT">${esc(ok ? t("trGood") : t("trBad",{n:name}))}</div>
-        <div class="trWhy">${esc(t("trBest",{x:names.join(", ")||"—"}))}${whyTxt?" — "+esc(whyTxt):""}</div>
+        <div class="trWhy">${esc(t("trBest",{x:(s.answers||[]).join(", ")||"—"}))}${whyTxt?" — "+esc(whyTxt):""}</div>
       </div>
       <button class="trNext" onclick="trLoad()">${esc(t("trNext"))}</button>`);
   };
-
-  function reasonText(w){
-    try{ return t(w[0], w[1] || undefined); }catch(e){ return ""; }
-  }
 
   function openTrainer(){
     hideAllViews();
