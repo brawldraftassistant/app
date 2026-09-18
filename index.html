@@ -697,11 +697,22 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 .trOpt .trFace{ width:46px; height:46px }
 .trOptName{ font-weight:800; font-size:11.5px; line-height:1.1; text-align:center }
 
-.trRes{ margin-top:12px; padding:11px 14px; border-radius:14px; border:3px solid var(--edge) }
-.trRes.ok{ background:linear-gradient(160deg,#2FBF71,#1E8C52); color:#06240F }
-.trRes.no{ background:linear-gradient(160deg,#FFD75E,#FF9F1C); color:#3A1500 }
-.trResT{ font-family:Unbounded,sans-serif; font-weight:900; font-size:12.5px; margin-bottom:5px }
-.trWhy{ font-size:12px; font-weight:700; line-height:1.45 }
+.trRes{ margin-top:12px; padding:13px 15px; border-radius:16px; border:3px solid var(--edge);
+  box-shadow:0 4px 0 var(--edge) }
+.trRes.ok{  background:linear-gradient(160deg,#2FBF71,#1B7A48); color:#04200D }
+.trRes.mid{ background:linear-gradient(160deg,#FFD75E,#FF9F1C); color:#3A1500 }
+.trRes.no{  background:linear-gradient(160deg,#FF7A8F,#C9203F); color:#2A0410 }
+.trResTop{ display:flex; align-items:baseline; gap:10px; margin-bottom:2px }
+.trResName{ font-family:Unbounded,sans-serif; font-weight:900; font-size:15px }
+.trResPct{ margin-left:auto; font-family:Unbounded,sans-serif; font-weight:900; font-size:22px }
+.trResT{ font-weight:900; font-size:12.5px; opacity:.9; margin-bottom:7px }
+.trWhyList{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:3px }
+.trWhyList li{ font-size:12px; font-weight:700; line-height:1.4; padding-left:16px; position:relative }
+.trWhyList li::before{ position:absolute; left:0; font-weight:900 }
+.trWhyList li.pl::before{ content:"+" }
+.trWhyList li.mn::before{ content:"−" }
+.trCmp{ margin-top:10px; padding-top:9px; border-top:2px dashed rgba(0,0,0,.28) }
+.trCmpHead{ font-family:Unbounded,sans-serif; font-weight:900; font-size:12px; margin-bottom:5px }
 .trNext{ margin-top:12px; padding:11px 20px; border-radius:999px; border:3px solid var(--edge);
   background:linear-gradient(100deg,#FFD75E,#FF9F1C); color:#3A1500;
   font-family:Unbounded,sans-serif; font-weight:900; font-size:13px; cursor:pointer;
@@ -3342,6 +3353,54 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   TXT.ar.coffeeTxt="اشترِ لي قهوة"; TXT.de.coffeeTxt="Spendier mir einen Kaffee";
   TXT.uk.pTrainT="Тренажер драфту";
   TXT.uk.pTrainD="Розбирай реальні ситуації й перевіряй себе проти асистента";
+  TXT.uk.trVBest="Найкращий вибір на цю карту";
+  TXT.uk.trVGood="Добрий пік, майже оптимальний";
+  TXT.uk.trVOk="Робочий варіант, але є кращі";
+  TXT.uk.trVWeak="Слабкий пік у цій ситуації";
+  TXT.uk.trVBad="Поганий вибір — його тут накажуть";
+  TXT.uk.trBetter="Краще було взяти {n} — {p}%";
+  TXT.en.trVBest="Best possible pick here";
+  TXT.en.trVGood="Strong pick, close to optimal";
+  TXT.en.trVOk="Playable, but there are better";
+  TXT.en.trVWeak="Weak pick in this situation";
+  TXT.en.trVBad="Bad choice — it gets punished here";
+  TXT.en.trBetter="{n} was the better call — {p}%";
+  TXT.es.trVBest="La mejor elección aquí";
+  TXT.es.trVGood="Buen pick, casi óptimo";
+  TXT.es.trVOk="Jugable, pero hay mejores";
+  TXT.es.trVWeak="Pick débil en esta situación";
+  TXT.es.trVBad="Mala elección — aquí lo castigan";
+  TXT.es.trBetter="Mejor era {n} — {p}%";
+  TXT.pt.trVBest="A melhor escolha aqui";
+  TXT.pt.trVGood="Boa escolha, quase ótima";
+  TXT.pt.trVOk="Dá para jogar, mas há melhores";
+  TXT.pt.trVWeak="Escolha fraca nesta situação";
+  TXT.pt.trVBad="Escolha ruim — aqui é punida";
+  TXT.pt.trBetter="Melhor seria {n} — {p}%";
+  TXT.ru.trVBest="Лучший выбор на эту карту";
+  TXT.ru.trVGood="Хороший пик, почти оптимальный";
+  TXT.ru.trVOk="Рабочий вариант, но есть лучше";
+  TXT.ru.trVWeak="Слабый пик в этой ситуации";
+  TXT.ru.trVBad="Плохой выбор — его тут накажут";
+  TXT.ru.trBetter="Лучше было взять {n} — {p}%";
+  TXT.tr.trVBest="Buradaki en iyi seçim";
+  TXT.tr.trVGood="İyi seçim, neredeyse optimal";
+  TXT.tr.trVOk="Oynanır, ama daha iyileri var";
+  TXT.tr.trVWeak="Bu durumda zayıf seçim";
+  TXT.tr.trVBad="Kötü seçim — burada cezalandırılır";
+  TXT.tr.trBetter="Daha iyisi {n} olurdu — {p}%";
+  TXT.ar.trVBest="أفضل اختيار هنا";
+  TXT.ar.trVGood="اختيار جيد، قريب من الأمثل";
+  TXT.ar.trVOk="يمكن اللعب به، لكن هناك أفضل";
+  TXT.ar.trVWeak="اختيار ضعيف في هذا الموقف";
+  TXT.ar.trVBad="اختيار سيئ — يُعاقَب هنا";
+  TXT.ar.trBetter="كان الأفضل {n} — {p}%";
+  TXT.de.trVBest="Beste Wahl hier";
+  TXT.de.trVGood="Starker Pick, fast optimal";
+  TXT.de.trVOk="Spielbar, aber es geht besser";
+  TXT.de.trVWeak="Schwacher Pick in dieser Lage";
+  TXT.de.trVBad="Schlechte Wahl — wird hier bestraft";
+  TXT.de.trBetter="{n} wäre besser gewesen — {p}%";
   TXT.uk.trBans="Забанені";
   TXT.en.trBans="Banned";
   TXT.es.trBans="Baneados";
@@ -5030,7 +5089,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
 
     box.innerHTML = `
       <div class="trTop">
-        <div class="trDiffs">${diffBtn("easy",t("trEasy"))}${diffBtn("medium",t("trMed"))}${diffBtn("hard",t("trHard"))}</div>
+        <div class="trDiffs">${diffBtn("easy",t("trEasy"))}${diffBtn("hard",t("trHard"))}</div>
         <span class="trScore">${esc(t("trScore",{a:trRight,b:trTotal}))}</span>
       </div>
 
@@ -5051,13 +5110,11 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
 
   function trRenderOptions(){
     const s = trState, wrap = $id("trPickWrap");
-    const used = s.picks.filter(Boolean);
+    const used = s.picks.filter(Boolean), banned = s.bans || [];
     if(s.options){
       wrap.innerHTML = `<div class="trPick">${s.options.map(trOptBtn).join("")}</div>`;
     } else {
-      // важкий режим — усі бійці з пошуком
-      // забанених не показуємо взагалі — їх не можна взяти в жодному режимі
-      const banned = s.bans || [];
+      // важкий режим — обираєш зі всіх бійців, із пошуком
       const all = Object.keys(BINFO).filter(n=>!used.includes(n) && !banned.includes(n)).sort();
       wrap.innerHTML = `
         <input type="text" class="trSearch" id="trSearch" placeholder="${esc(t("trSearch"))}" autocomplete="off">
@@ -5078,27 +5135,54 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
       <span class="tier ${tierCls(BINFO[n].t)}">${tierText(BINFO[n].t)}</span></button>`;
   }
 
+  // Словесний вердикт за відсотком — щоб число не лишалось голим
+  function trVerdict(p){
+    if(p >= 90) return { k:"ok",   txt:t("trVBest") };
+    if(p >= 70) return { k:"ok",   txt:t("trVGood") };
+    if(p >= 45) return { k:"mid",  txt:t("trVOk") };
+    if(p >= 20) return { k:"no",   txt:t("trVWeak") };
+    return { k:"no", txt:t("trVBad") };
+  }
+
   window.trAnswer = function(name){
-    if(trAnswered) return;            // від повторних натисків
+    if(trAnswered) return;
     trAnswered = true;
     const s = trState;
-    trTotal++;
-    const ok = (s.answers || []).includes(name);
-    if(ok) trRight++;
+    const d = (s.detail && s.detail[name]) || { pct: 1, why: [], best:false };
+    const bestName = s.bestName;
+    const bd = (s.detail && s.detail[bestName]) || { pct:100, why:[] };
 
-    // ставимо вибір на дошку, щоб було видно результат
+    trTotal++;
+    if(d.pct >= 90) trRight++;
+
     s.picks[s.slot] = name;
     trRender();
     $id("trPickWrap").innerHTML = "";
 
-    const whyTxt = (s.why || []).filter(w=>!w[2]).slice(0,3)
-      .map(w => { try{ return t(w[0], w[1] || undefined); }catch(e){ return ""; } })
-      .filter(Boolean).join(" · ");
+    const v = trVerdict(d.pct);
+    const reasons = (arr) => (arr||[])
+      .map(w => { try{ return { t:t(w[0], w[1]||undefined), bad:!!w[2] }; }catch(e){ return null; } })
+      .filter(Boolean).slice(0,4);
+
+    const mine = reasons(d.why);
+    const plus  = mine.filter(x=>!x.bad).map(x=>`<li class="pl">${esc(x.t)}</li>`).join("");
+    const minus = mine.filter(x=> x.bad).map(x=>`<li class="mn">${esc(x.t)}</li>`).join("");
+
+    const cmp = (bestName && bestName !== name)
+      ? `<div class="trCmp">
+           <div class="trCmpHead">${esc(t("trBetter",{n:bestName,p:bd.pct}))}</div>
+           <ul class="trWhyList">${reasons(bd.why).filter(x=>!x.bad).map(x=>`<li class="pl">${esc(x.t)}</li>`).join("")}</ul>
+         </div>` : "";
 
     $id("trBox").insertAdjacentHTML("beforeend", `
-      <div class="trRes ${ok?"ok":"no"}">
-        <div class="trResT">${esc(ok ? t("trGood") : t("trBad",{n:name}))}</div>
-        <div class="trWhy">${esc(t("trBest",{x:(s.answers||[]).join(", ")||"—"}))}${whyTxt?" — "+esc(whyTxt):""}</div>
+      <div class="trRes ${v.k}">
+        <div class="trResTop">
+          <span class="trResName">${esc(name)}</span>
+          <span class="trResPct">${d.pct}%</span>
+        </div>
+        <div class="trResT">${esc(v.txt)}</div>
+        <ul class="trWhyList">${plus}${minus}</ul>
+        ${cmp}
       </div>
       <button class="trNext" onclick="trLoad()">${esc(t("trNext"))}</button>`);
   };
