@@ -594,6 +594,40 @@ button,.pillar,.tabs button,.langbtn,.slot,.chip{
 .mstWr{ flex:0 0 46px; text-align:right; font-family:Unbounded,sans-serif; font-weight:900; font-size:11.5px }
 .mstG{ flex:0 0 46px; text-align:right; font-size:10.5px; color:var(--muted); font-weight:800 }
 
+/* --- список пріоритету: кого качати першим ділом --- */
+.upgPrio{
+  margin-bottom:16px; padding:14px; border-radius:18px; border:3px solid var(--edge);
+  background:linear-gradient(155deg,#3A1A7E 0%,#2A1163 55%,#5C2299 100%);
+  box-shadow:0 5px 0 var(--edge);
+}
+.upgPrioHead{ display:flex; align-items:center; gap:9px; margin-bottom:3px }
+.upgPrioT{ font-family:Unbounded,sans-serif; font-weight:900; font-size:13px;
+  letter-spacing:.03em; text-transform:uppercase; color:#FFD230 }
+.upgPrioN{ margin-left:auto; font-family:Unbounded,sans-serif; font-weight:900;
+  font-size:12px; padding:2px 10px; border-radius:999px;
+  background:rgba(255,210,48,.18); color:#FFD230; border:2px solid rgba(255,210,48,.35) }
+.upgPrioSub{ margin:0 0 11px; font-size:11.5px; font-weight:700; color:#D9CCFF; line-height:1.4 }
+.upgPrioGrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(92px,1fr)); gap:7px }
+.upgCard{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:5px;
+  padding:9px 5px 8px; border-radius:14px; border:2.5px solid var(--edge);
+  background:rgba(255,255,255,.07);
+}
+.upgCard.done{ background:rgba(47,191,113,.22); border-color:#2FBF71 }
+.upgCard.part{ background:rgba(255,210,48,.16); border-color:#FFB020 }
+.upgRank{
+  position:absolute; top:-7px; left:-7px; width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:Unbounded,sans-serif; font-weight:900; font-size:10px;
+  background:#FFD230; color:#3A1500; border:2.5px solid var(--edge);
+}
+.upgCardPort{ width:48px; height:48px; border-radius:13px; object-fit:cover;
+  border:2px solid var(--edge); background:var(--panel); display:block }
+.upgCardNo{ display:flex; align-items:center; justify-content:center;
+  font-family:Unbounded,sans-serif; font-weight:900; font-size:15px; color:var(--muted) }
+.upgCardName{ font-size:11px; font-weight:800; line-height:1.1; text-align:center;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100% }
+
 /* --- екран "Кого прокачувати" --- */
 /* --- тренажер драфту --- */
 .trTop{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px }
@@ -3546,6 +3580,22 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
   TXT.tr.upgBack = TXT.tr.tierBack;
   TXT.ar.upgBack = TXT.ar.tierBack;
   TXT.de.upgBack = TXT.de.tierBack;
+  TXT.uk.uPrioTitle="Качати першим ділом";
+  TXT.uk.uPrioSub="Порядок — це і є пріоритет. Зелений означає, що в тебе він уже повністю готовий, жовтий — відкритий, але недокачаний.";
+  TXT.en.uPrioTitle="Upgrade these first";
+  TXT.en.uPrioSub="The order is the priority. Green means fully built already, yellow means unlocked but not finished.";
+  TXT.es.uPrioTitle="Mejora estos primero";
+  TXT.es.uPrioSub="El orden es la prioridad. Verde significa ya al máximo, amarillo desbloqueado pero sin terminar.";
+  TXT.pt.uPrioTitle="Evolua estes primeiro";
+  TXT.pt.uPrioSub="A ordem é a prioridade. Verde significa no máximo, amarelo desbloqueado mas incompleto.";
+  TXT.ru.uPrioTitle="Качать в первую очередь";
+  TXT.ru.uPrioSub="Порядок — это и есть приоритет. Зелёный значит уже полностью готов, жёлтый — открыт, но недокачан.";
+  TXT.tr.uPrioTitle="Önce bunları geliştir";
+  TXT.tr.uPrioSub="Sıralama önceliktir. Yeşil tam gelişmiş, sarı açık ama tamamlanmamış demek.";
+  TXT.ar.uPrioTitle="طوّر هؤلاء أولًا";
+  TXT.ar.uPrioSub="الترتيب هو الأولوية. الأخضر يعني مكتمل بالفعل، والأصفر مفتوح لكن غير مكتمل.";
+  TXT.de.uPrioTitle="Diese zuerst ausbauen";
+  TXT.de.uPrioSub="Die Reihenfolge ist die Priorität. Grün heißt voll ausgebaut, Gelb freigeschaltet aber unfertig.";
   TXT.uk.pUpgT="Кого прокачувати";
   TXT.uk.pUpgD="За твоїм тегом: хто з сильних бійців ще не готовий і чого саме бракує";
   TXT.uk.uTitle="Кого прокачувати";
@@ -4702,11 +4752,50 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     return list.filter(n => BINFO[n].t !== "A" || aKeep.has(n));
   }
 
+  // Ручний список від автора: кого качати першим чергою в поточній меті.
+  // Порядок має значення — він і є пріоритетом.
+  const UPG_PRIORITY = ["Amber","Shade","Gus","Colette","Maisie","Max","Brock","Rico",
+                        "Ash","Sirius","Emz","Mina","Nori","Poco","Wendy"];
+
+  function renderPriority(){
+    const owned = new Map();
+    const d = lastPlayerData;
+    if(d && Array.isArray(d.brawlers)) d.brawlers.forEach(b => owned.set(normOwnedName(b.name), b));
+
+    return `<div class="upgPrio">
+      <div class="upgPrioHead">
+        <span class="upgPrioT">${esc(t("uPrioTitle"))}</span>
+        <span class="upgPrioN">${UPG_PRIORITY.length}</span>
+      </div>
+      <p class="upgPrioSub">${esc(t("uPrioSub"))}</p>
+      <div class="upgPrioGrid">${UPG_PRIORITY.map((n,i)=>{
+        const info = BINFO[n] || {};
+        const api = owned.get(normOwnedName(n));
+        let state = "none";                       // не відкритий
+        if(api){
+          const full = (api.power||0) >= 11
+            && Array.isArray(api.gadgets) && api.gadgets.length
+            && Array.isArray(api.starPowers) && api.starPowers.length
+            && (Array.isArray(api.hyperCharges) ? api.hyperCharges.length >= 1 : true);
+          state = full ? "done" : "part";
+        }
+        const port = window.brawlerPortrait ? brawlerPortrait(n) : null;
+        return `<div class="upgCard ${state}">
+          <span class="upgRank">${i+1}</span>
+          ${port ? `<img class="upgCardPort" src="${port}" alt="" loading="lazy">`
+                 : `<span class="upgCardPort upgCardNo">${esc(n.slice(0,2))}</span>`}
+          <span class="upgCardName">${esc(n)}</span>
+          <span class="tier ${tierCls(info.t)}">${tierText(info.t)}</span>
+        </div>`;
+      }).join("")}</div>
+    </div>`;
+  }
+
   function renderUpgradeList(){
     const box = $id("upgBox");
     const d = lastPlayerData;
     if(!d || !Array.isArray(d.brawlers)){
-      box.innerHTML = `<p class="tierIntro">${esc(t("uNeedTag"))}</p>`;
+      box.innerHTML = renderPriority() + `<p class="tierIntro">${esc(t("uNeedTag"))}</p>`;
       return;
     }
     const byNorm = new Map();
@@ -4741,14 +4830,14 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
     });
 
     if(!rows.length){
-      box.innerHTML = `<p class="tierIntro">${esc(t("uAllDone"))}</p>`;
+      box.innerHTML = renderPriority() + `<p class="tierIntro">${esc(t("uAllDone"))}</p>`;
       return;
     }
     // спершу тір, далі ті, кому лишилось найменше — їх найдешевше дотягнути
     const ord = { "S+":0, "S":1, "A":2 };
     rows.sort((a,b) => ord[a.t]-ord[b.t] || (b.have-a.have) || a.name.localeCompare(b.name));
 
-    box.innerHTML = `<p class="gCount">${esc(t("uCount", {n: rows.length}))}</p>` + rows.map(r => `
+    box.innerHTML = renderPriority() + `<p class="gCount">${esc(t("uCount", {n: rows.length}))}</p>` + rows.map(r => `
       <div class="upgRow">
         ${r.portrait ? `<img class="upgPort" src="${r.portrait}" alt="" loading="lazy">` : `<span class="upgPort"></span>`}
         <div class="upgBody">
@@ -4776,7 +4865,7 @@ Object.assign(TXT.de,{oibTitle:"In einem echten Browser öffnen", oibDesc:"Dann 
      Тому Воркер збирає власні з боїв тих, хто вводив тег, і віддає агрегат.
      Показуємо лише коли вибірка достатня, і завжди пишемо її розмір,
      щоб було видно, наскільки числу можна вірити. */
-  const MST_MIN_SAMPLE = 400;     // під поріг у 100 ігор на бійця потрібна велика вибірка
+  const MST_MIN_SAMPLE = 120;     // узгоджено з порогом 25 ігор на бійця у Воркері
   let mstLastKey = "";
   async function loadMapStats(){
     const box = $id("mapStats"); if(!box) return;
